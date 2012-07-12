@@ -52,7 +52,7 @@ public class ContentManagerImpl implements ContentManager {
 	
 	private Timer saveRetryTimer;
 	
-	private String pageName;
+	private String pageId;
 	
 	private EventBus eventBus;
 	
@@ -84,7 +84,7 @@ public class ContentManagerImpl implements ContentManager {
 		};
 		
 		
-		pageName = URL.encodeQueryString(getCurrentPageName());
+		pageId = URL.encodeQueryString(getCurrentPageId());
 		
 		UrlBuilder saveUrlBuilder = new UrlBuilder(Globals.get().getContentServiceUrl());
 		saveUrlBuilder.setParameter("action", "save");
@@ -144,11 +144,11 @@ public class ContentManagerImpl implements ContentManager {
 			
 			for ( String container : containers ) {
 				if ( i == 0 ) {
-					builder.append("__sc_page=" + pageName);
+					builder.append("scpageid=" + pageId);
 				}
 				
 				builder.append("&");
-				builder.append( "__sc_container_" + i );
+				builder.append( "sc-content-" + i );
 				builder.append( "=" );
 				builder.append( URL.encodeQueryString(container) );
 				
@@ -190,11 +190,11 @@ public class ContentManagerImpl implements ContentManager {
 			if ( !savedContent.containsKey(container) || !pendingContent.get(container).equals(savedContent.get(container)) ) {
 				if ( first ) {
 					first = false;
-					builder.append("__sc_page=" + pageName);
+					builder.append("scpageid=" + pageId);
 				}
 				
 				builder.append("&");
-				builder.append( URL.encodeQueryString( "__sc_container_" + container ) );
+				builder.append( URL.encodeQueryString( "sc-content-" + container ) );
 				builder.append("=");
 				builder.append( URL.encodeQueryString(MimeBase64.encode(pendingContent.get(container))) );
 			}
@@ -268,13 +268,9 @@ public class ContentManagerImpl implements ContentManager {
 		}
 	}
 	
-	private String getCurrentPageName() {
-		String path = Location.getPath();
-		if ( path.startsWith("/") ) {
-			path = path.substring(1);
-		}
-		return path;
-	}
+	private native String getCurrentPageId()/*-{
+		return $wnd.scpageid;
+	}-*/;
 	
 	private void onPublishError(String message) {
 		publishing = false;
