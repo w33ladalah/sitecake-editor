@@ -1,7 +1,7 @@
 package com.sitecake.contentmanager.client.storage;
 
 import com.google.inject.Inject;
-import com.sitecake.contentmanager.client.config.ConfigRegistry;
+import com.sitecake.commons.client.config.ConfigRegistry;
 
 /**
  * <code>ClientPermanetStorageImpl</code> is a proxy for

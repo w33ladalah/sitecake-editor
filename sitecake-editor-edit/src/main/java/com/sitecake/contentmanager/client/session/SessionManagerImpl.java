@@ -10,9 +10,9 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window.Location;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.inject.Inject;
+import com.sitecake.commons.client.config.ConfigRegistry;
 import com.sitecake.commons.client.config.Globals;
 import com.sitecake.commons.client.util.UrlBuilder;
-import com.sitecake.contentmanager.client.config.ConfigRegistry;
 
 public class SessionManagerImpl implements SessionManager {
 

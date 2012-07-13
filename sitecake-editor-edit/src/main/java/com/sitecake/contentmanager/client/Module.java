@@ -7,6 +7,7 @@ import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.StyleInjector;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.sitecake.commons.client.util.SynchronizationBarrier;
 import com.sitecake.contentmanager.client.errors.FatalErrorOverlay;
 import com.sitecake.contentmanager.client.event.ErrorNotificationEvent;
 import com.sitecake.contentmanager.client.event.ErrorNotificationEvent.Level;
@@ -54,6 +55,7 @@ public class Module implements EntryPoint {
 		
 		// create sync barrier
 		barrier = injector.getSynchronizationBarrier();
+
 		barrier.lock();
 
 		// postpone the main execution branch until all remote-dependent services are ready
@@ -62,13 +64,27 @@ public class Module implements EntryPoint {
 				onModuleLoad3();
 			}
 		});
-
+		
 		injector.getConfigRegistry();
-		injector.getLocaleProxy();
+
 		barrier.release();
 	}
 	
 	private void onModuleLoad3() {
+		barrier.reset();
+		barrier.lock();
+
+		barrier.executeOnReady(new Command() {
+			public void execute() {
+				onModuleLoad4();
+			}
+		});
+		injector.getLocaleProxy();		
+		
+		barrier.release();
+	}
+	
+	private void onModuleLoad4() {
 		barrier.reset();
 		barrier.lock();
 		

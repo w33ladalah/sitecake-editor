@@ -1,4 +1,4 @@
-package com.sitecake.contentmanager.client.config;
+package com.sitecake.commons.client.config;
 
 import java.util.Map;
 

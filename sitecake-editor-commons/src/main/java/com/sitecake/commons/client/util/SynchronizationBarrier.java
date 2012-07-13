@@ -1,4 +1,4 @@
-package com.sitecake.contentmanager.client;
+package com.sitecake.commons.client.util;
 
 import java.util.ArrayList;
 import java.util.List;

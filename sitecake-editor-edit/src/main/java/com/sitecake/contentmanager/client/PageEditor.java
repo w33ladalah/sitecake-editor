@@ -28,7 +28,7 @@ import com.google.gwt.user.client.Window.ClosingHandler;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
-import com.sitecake.contentmanager.client.config.ConfigRegistry;
+import com.sitecake.commons.client.config.ConfigRegistry;
 import com.sitecake.contentmanager.client.container.ContentContainer;
 import com.sitecake.contentmanager.client.container.ContentContainerFactory;
 import com.sitecake.contentmanager.client.content.ContentManager;

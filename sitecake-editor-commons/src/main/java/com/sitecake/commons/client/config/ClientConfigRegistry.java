@@ -1,4 +1,4 @@
-package com.sitecake.contentmanager.client.config;
+package com.sitecake.commons.client.config;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.inject.Inject;

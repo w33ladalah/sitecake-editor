@@ -5,13 +5,18 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.StyleInjector;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.sitecake.commons.client.util.SynchronizationBarrier;
 import com.sitecake.publicmanager.client.resources.ClientBundle;
 import com.sitecake.publicmanager.client.resources.Messages;
 
 public class Module implements EntryPoint {
 
-	private static Messages messages = GinInjector.instance.getLocaleProxy().messages();
+	private static Messages messages;
+	
+	private GinInjector injector;
+	private SynchronizationBarrier barrier;
 	
 	@Override
 	public void onModuleLoad() {
@@ -38,13 +43,31 @@ public class Module implements EntryPoint {
 		StyleInjector.inject(ClientBundle.INSTANCE.css().getText(),true);
 		
 		// initialize Gin mechanism
-		final GinInjector injector = GinInjector.instance;
+		injector = GinInjector.instance;
 		
 		// create the top container that all standalone widgets should be located within
 		TopContainer topContainer = injector.getTopContainer();
 		topContainer.getElement().setId("sitecake-toolbox");
 		RootPanel.get().add(topContainer);
 		
+		// create sync barrier
+		barrier = injector.getSynchronizationBarrier();
+		barrier.lock();
+
+		// postpone the main execution branch until all remote-dependent services are ready
+		barrier.executeOnReady(new Command() {
+			public void execute() {
+				onModuleLoad3();
+			}
+		});
+
+		injector.getConfigRegistry();
+
+		barrier.release();		
+	}
+
+	private void onModuleLoad3() {
+		messages = GinInjector.instance.getLocaleProxy().messages();
 		injector.getLoginManager();
 	}
 	

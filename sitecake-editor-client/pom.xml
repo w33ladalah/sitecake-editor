@@ -48,6 +48,7 @@
 				<configuration>
 					<soyc>false</soyc>
 					<localWorkers>1</localWorkers>
+					<style>OBF</style>
 				</configuration>
 			</plugin>
 			

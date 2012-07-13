@@ -4,7 +4,7 @@ import java.util.Date;
 
 import com.google.gwt.user.client.Cookies;
 import com.google.inject.Inject;
-import com.sitecake.contentmanager.client.config.ConfigRegistry;
+import com.sitecake.commons.client.config.ConfigRegistry;
 
 /**
  * Implements a quasi-permanent storage using browser cookie.

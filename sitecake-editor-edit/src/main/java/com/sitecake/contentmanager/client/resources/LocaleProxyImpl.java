@@ -4,9 +4,9 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
 import com.google.gwt.user.client.Window.Location;
 import com.google.inject.Inject;
+import com.sitecake.commons.client.config.ConfigRegistry;
+import com.sitecake.commons.client.util.SynchronizationBarrier;
 import com.sitecake.contentmanager.client.EventBus;
-import com.sitecake.contentmanager.client.SynchronizationBarrier;
-import com.sitecake.contentmanager.client.config.ConfigRegistry;
 import com.sitecake.contentmanager.client.event.ErrorNotificationEvent;
 import com.sitecake.contentmanager.client.event.ErrorNotificationEvent.Level;
 

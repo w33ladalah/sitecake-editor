@@ -1,4 +1,4 @@
-package com.sitecake.contentmanager.client.config;
+package com.sitecake.commons.client.config;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -89,7 +89,7 @@ public class JavaScriptMap implements Map<String, String> {
 					var value = source[key] + '';
 					
 					// store the value into the internal map
-					this.@com.sitecake.contentmanager.client.config.JavaScriptMap::add(Ljava/lang/String;Ljava/lang/String;)(key, value);
+					this.@com.sitecake.commons.client.config.JavaScriptMap::add(Ljava/lang/String;Ljava/lang/String;)(key, value);
 				}
 			}
 		}

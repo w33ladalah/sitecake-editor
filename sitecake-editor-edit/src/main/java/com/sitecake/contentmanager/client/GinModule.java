@@ -2,11 +2,12 @@ package com.sitecake.contentmanager.client;
 
 import com.google.gwt.inject.client.AbstractGinModule;
 import com.google.inject.Singleton;
+import com.sitecake.commons.client.config.ConfigRegistry;
+import com.sitecake.commons.client.config.ServerConfigRegistry;
 import com.sitecake.commons.client.util.DocumentSelection;
 import com.sitecake.commons.client.util.DomSelector;
+import com.sitecake.commons.client.util.SynchronizationBarrier;
 import com.sitecake.commons.client.util.impl.SizzleDomSelector;
-import com.sitecake.contentmanager.client.config.ClientConfigRegistry;
-import com.sitecake.contentmanager.client.config.ConfigRegistry;
 import com.sitecake.contentmanager.client.container.ClassTaggedContentContainerFactoryImpl;
 import com.sitecake.contentmanager.client.container.ContentContainerFactory;
 import com.sitecake.contentmanager.client.content.ContentManager;
@@ -56,7 +57,7 @@ public class GinModule extends AbstractGinModule {
 		bind(SynchronizationBarrier.class).in(Singleton.class);
 		bind(EventBus.class).in(Singleton.class);
 		bind(ErrorNotificationManager.class).to(ErrorNotificationManagerImpl.class).in(Singleton.class);
-		bind(ConfigRegistry.class).to(ClientConfigRegistry.class).in(Singleton.class);
+		bind(ConfigRegistry.class).to(ServerConfigRegistry.class).in(Singleton.class);
 		bind(LocaleProxy.class).to(LocaleProxyImpl.class).in(Singleton.class);
 		bind(ContentStyleRegistry.class).to(ContentStyleRegistryImpl.class).in(Singleton.class);
 		

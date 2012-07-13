@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module rename-to='publicmanager'>
 
-	<script src="js/slideshow.js"></script>
-	
 	<!-- Inherit the core Web Toolkit stuff.                        -->
 	<inherits name='com.google.gwt.user.User'/>
 	<inherits name="com.google.gwt.i18n.I18N"/>

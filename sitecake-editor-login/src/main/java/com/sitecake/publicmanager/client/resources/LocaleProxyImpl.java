@@ -1,6 +1,9 @@
 package com.sitecake.publicmanager.client.resources;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Window.Location;
+import com.google.inject.Inject;
+import com.sitecake.commons.client.config.ConfigRegistry;
 
 public class LocaleProxyImpl implements LocaleProxy {
 
@@ -19,12 +22,17 @@ public class LocaleProxyImpl implements LocaleProxy {
 	
 	private Messages messages;
 	
+	private ConfigRegistry configRegistry;
+	
 	@Override
 	public Messages messages() {
 		return messages;
 	}
 
-	protected LocaleProxyImpl() {
+	@Inject
+	protected LocaleProxyImpl(ConfigRegistry configRegistry) {
+		this.configRegistry = configRegistry;
+		
 		LocaleCode locale = getLocaleCode();
 		switch ( locale ) {
 		case EN:
@@ -55,35 +63,37 @@ public class LocaleProxyImpl implements LocaleProxy {
 	}
 	
 	private LocaleCode getLocaleCode() {
-		String interfaceLocale = getConfigParamValue(INTERFACE_LOCALE, "en");
-		if ( interfaceLocale.equalsIgnoreCase(LocaleCode.EN.name()) ) {
+		String interfaceLocale = configRegistry.get(INTERFACE_LOCALE);
+		if ( interfaceLocale == null || "".equals(interfaceLocale) ) {
 			return LocaleCode.EN;
-		} else if ( interfaceLocale.equalsIgnoreCase(LocaleCode.SL.name()) ) {
+		} else if ( "auto".equalsIgnoreCase(interfaceLocale) ) {
+			interfaceLocale = Location.getParameter("scln");
+			if ( interfaceLocale == null || "".equals(interfaceLocale) ) {
+				interfaceLocale = getUserLocale();
+			}
+		}
+		
+		if ( LocaleCode.SL.name().equalsIgnoreCase(interfaceLocale) ) {
 			return LocaleCode.SL;
-		} else if ( interfaceLocale.equalsIgnoreCase(LocaleCode.SR.name()) ) {
+		} else if ( LocaleCode.SR.name().equalsIgnoreCase(interfaceLocale) ) {
 			return LocaleCode.SR;
-		} else if ( interfaceLocale.equalsIgnoreCase(LocaleCode.ES.name()) ) {
+		} else if ( LocaleCode.ES.name().equalsIgnoreCase(interfaceLocale) ) {
 			return LocaleCode.ES;
-		} else if ( interfaceLocale.equalsIgnoreCase(LocaleCode.DE.name()) ) {
+		} else if ( LocaleCode.DE.name().equalsIgnoreCase(interfaceLocale) ) {
 			return LocaleCode.DE;
-		} else if ( interfaceLocale.equalsIgnoreCase(LocaleCode.FR.name()) ) {
+		} else if ( LocaleCode.FR.name().equalsIgnoreCase(interfaceLocale) ) {
 			return LocaleCode.FR;
-		} else if ( interfaceLocale.equalsIgnoreCase(LocaleCode.DK.name()) ) {
+		} else if ( LocaleCode.DK.name().equalsIgnoreCase(interfaceLocale) ) {
 			return LocaleCode.DK;
-		} else if ( interfaceLocale.equalsIgnoreCase(LocaleCode.IT.name()) ) {
+		} else if ( LocaleCode.IT.name().equalsIgnoreCase(interfaceLocale) ) {
 			return LocaleCode.IT;
 		} else {
 			return LocaleCode.EN;
 		}
-	}	
+	}
 	
-	private native String getConfigParamValue(String paramName, String defaultValue)/*-{
-		//console.log(sitecakeGlobals, sitecakeGlobals.config, sitecakeGlobals.config[paramName]);
-		if ( $wnd.sitecakeGlobals && $wnd.sitecakeGlobals.config &&
-			$wnd.sitecakeGlobals.config[paramName] ) {
-				return $wnd.sitecakeGlobals.config[paramName];
-		} else {
-				return defaultValue;
-		}
+	private native String getUserLocale()/*-{
+		return $wnd.navigator.userLanguage || $wnd.navigator.language;		
 	}-*/;
+	
 }
