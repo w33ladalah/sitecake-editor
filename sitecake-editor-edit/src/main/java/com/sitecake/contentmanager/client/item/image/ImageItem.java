@@ -321,7 +321,9 @@ public class ImageItem extends ContentItem implements LinkableItem {
 		style = imgElement.getClassName();
 		
 		//TODO: extract and set imageObject.id
-		imageObject.setResizedUrl(imgElement.getSrc());
+		// using getAttribute("src") instead of getSrc() in order to
+		// obtain relative URL present in the HTML text
+		imageObject.setResizedUrl(imgElement.getAttribute("src"));
 		imageObject.setResizedWidth(Integer.valueOf(imgElement.getWidth()));
 		imageObject.setResizedHeight(Integer.valueOf(imgElement.getHeight()));
 		
