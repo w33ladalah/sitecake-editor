@@ -461,12 +461,12 @@ public class ImageItem extends ContentItem implements LinkableItem {
 			srcX + ":" + srcY + ":" +
 			dstWidth + ":" + dstHeight;
 			
-		String html = "<img alt=\"" + description + 
-			"\" width=\"" + dstWidth + 
-			"\" height=\"" + dstHeight + 
-			"\" class=\"" + style + 
-			"\" src=\"" + sourceImageObject.getResizedUrl() + 
-			"\" data=\"" + data + "\"/>";
+		String html = "<img alt=\"" + description + "\" " +
+			"width=\"" + dstWidth + "\" " +
+			"height=\"" + dstHeight + "\" " + 
+			(!"".equals(style) ? "class=\"" + style + "\" ": "") + 
+			"src=\"" + sourceImageObject.getResizedUrl() + "\" " +
+			"data=\"" + data + "\"/>";
 		
 		if ( !"".equals(link) ) {
 			html = "<a href=\"" + link + "\">" + html + "</a>";

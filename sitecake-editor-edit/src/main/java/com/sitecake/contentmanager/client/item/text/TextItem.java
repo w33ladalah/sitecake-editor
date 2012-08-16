@@ -300,7 +300,9 @@ public class TextItem extends ContentItem implements EditableTextItem {
 		if ( tmp.getLastChild().getNodeName().equalsIgnoreCase("br") ) {
 			tmp.getLastChild().removeFromParent();
 		}
-		return "<" + tagName + " class=\"" + style + "\">" + tmp.getInnerHTML() + "</" + tagName + ">";
+		return "<" + tagName + " " +
+				(!"".equals(style) ? "class=\"" + style + "\" ": "") + 
+				">" + tmp.getInnerHTML() + "</" + tagName + ">";
 	}
 
 	public Node appendHtml(String html) {

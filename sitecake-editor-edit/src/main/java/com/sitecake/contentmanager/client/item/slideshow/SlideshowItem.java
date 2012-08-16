@@ -578,7 +578,7 @@ public class SlideshowItem extends ContentItem {
 		
 		confirmedState.set(finalState);
 		
-		double maxWidth = CSSStyleDeclaration.get(container.getElement()).getPropertyValueInt("width");
+		double maxWidth = CSSStyleDeclaration.get(container.getElement()).getPropertyValueDouble("width");
 		double maxHeight = maxWidth / coverImageRatio;
 		
 		RESIZE_MAX_RECT.setWidth( maxWidth );
@@ -621,7 +621,7 @@ public class SlideshowItem extends ContentItem {
 	}
 	
 	private void adjustDimension() {
-		double maxWidth = CSSStyleDeclaration.get(container.getElement()).getPropertyValueInt("width");
+		double maxWidth = CSSStyleDeclaration.get(container.getElement()).getPropertyValueDouble("width");
 		double maxHeight = maxWidth / coverImageRatio;
 		
 		if ( finalState.getRect().getWidth() > maxWidth ) {

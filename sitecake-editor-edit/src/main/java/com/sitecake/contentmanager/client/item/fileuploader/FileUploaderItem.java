@@ -571,7 +571,7 @@ public abstract class FileUploaderItem extends ContentItem {
 	
 	private ImageUploadObject createImageUploadObject(File file) {
 		ImageUploadObject object = new ImageUploadObject(file);
-		object.setRequestedResizedWidth(CSSStyleDeclaration.get(container.getElement()).getPropertyValueInt("width"));
+		object.setRequestedResizedWidth((int)CSSStyleDeclaration.get(container.getElement()).getPropertyValueDouble("width"));
 		return object;
 	}
 
@@ -579,11 +579,11 @@ public abstract class FileUploaderItem extends ContentItem {
 		SlideshowUploadObject object = new SlideshowUploadObject(file);
 		if ( imageUploadForSlideshow && ( listIndex == 0 ) ) {
 			object.setRequestedThumbnailDimension(thumbnailImageDimension);
-			object.setRequestedResizedWidth(CSSStyleDeclaration.get(container.getElement()).getPropertyValueInt("width"));
+			object.setRequestedResizedWidth((int)CSSStyleDeclaration.get(container.getElement()).getPropertyValueDouble("width"));
 		} else if ( imageUploadForSlideshow && ( listIndex != 0 ) ) {
 			object.setRequestedThumbnailDimension(thumbnailImageDimension);
 		} else {
-			object.setRequestedResizedWidth(CSSStyleDeclaration.get(container.getElement()).getPropertyValueInt("width"));
+			object.setRequestedResizedWidth((int)CSSStyleDeclaration.get(container.getElement()).getPropertyValueDouble("width"));
 		}
 		return object;
 	}
