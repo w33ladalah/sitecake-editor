@@ -22,7 +22,9 @@ public class LocaleProxyImpl implements LocaleProxy {
 		DE,
 		FR,
 		DK,
-		IT
+		IT,
+		RU,
+		CS
 	}
 	
 	private Messages messages;
@@ -169,6 +171,36 @@ public class LocaleProxyImpl implements LocaleProxy {
 				}
 			});			
 			break;
+		case RU:
+			GWT.runAsync(new RunAsyncCallback() {
+				
+				@Override
+				public void onSuccess() {
+					messages = GWT.create(MessagesRu.class);
+					completeProcess();
+				}
+				
+				@Override
+				public void onFailure(Throwable reason) {
+					failureCompletition(reason);
+				}
+			});			
+			break;
+		case CS:
+			GWT.runAsync(new RunAsyncCallback() {
+				
+				@Override
+				public void onSuccess() {
+					messages = GWT.create(MessagesCs.class);
+					completeProcess();
+				}
+				
+				@Override
+				public void onFailure(Throwable reason) {
+					failureCompletition(reason);
+				}
+			});			
+			break;
 		}
 	}
 	
@@ -206,6 +238,10 @@ public class LocaleProxyImpl implements LocaleProxy {
 			return LocaleCode.DK;
 		} else if ( LocaleCode.IT.name().equalsIgnoreCase(interfaceLocale) ) {
 			return LocaleCode.IT;
+		} else if ( LocaleCode.RU.name().equalsIgnoreCase(interfaceLocale) ) {
+			return LocaleCode.RU;
+		} else if ( LocaleCode.CS.name().equalsIgnoreCase(interfaceLocale) ) {
+			return LocaleCode.CS;
 		} else {
 			return LocaleCode.EN;
 		}
