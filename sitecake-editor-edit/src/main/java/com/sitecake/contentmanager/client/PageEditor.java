@@ -63,6 +63,8 @@ import com.sitecake.contentmanager.client.event.NewParagraphEvent;
 import com.sitecake.contentmanager.client.event.NewParagraphHandler;
 import com.sitecake.contentmanager.client.event.OverItemEvent;
 import com.sitecake.contentmanager.client.event.OverItemHandler;
+import com.sitecake.contentmanager.client.event.PostEditingEndEvent;
+import com.sitecake.contentmanager.client.event.PostEditingEndHandler;
 import com.sitecake.contentmanager.client.event.PublishEvent;
 import com.sitecake.contentmanager.client.event.PublishHandler;
 import com.sitecake.contentmanager.client.event.RedoEvent;
@@ -103,7 +105,8 @@ import com.sitecake.contentmanager.client.upload.UploadManager;
 public class PageEditor implements DeleteHandler, EditItemHandler, OverItemHandler,
 	UndoHandler, RedoHandler, CancelHandler, SelectorHandler, SelectHandler, MoveHandler,
 	NewItemHandler, UploadHandler, LogoutHandler, PublishHandler, EditCompleteHandler,
-	NewParagraphHandler, MergeParagraphHandler, ErrorNotificationHandler, TextBlockHandler {
+	NewParagraphHandler, MergeParagraphHandler, ErrorNotificationHandler, TextBlockHandler,
+	PostEditingEndHandler {
 	
 	private class TransformationState {
 		private ContentItem item;
@@ -239,6 +242,7 @@ public class PageEditor implements DeleteHandler, EditItemHandler, OverItemHandl
 		eventBus.addHandler(NewParagraphEvent.getType(), this);
 		eventBus.addHandler(ErrorNotificationEvent.getType(), this);
 		eventBus.addHandler(TextBlockEvent.getType(), this);
+		eventBus.addHandler(PostEditingEndEvent.getType(), this);
 		
 		Window.addWindowClosingHandler(new ClosingHandler() {
 			
@@ -1185,6 +1189,17 @@ public class PageEditor implements DeleteHandler, EditItemHandler, OverItemHandl
 		}
 		
 		return item;
+	}
+
+	@Override
+	public void onPostEditingEnd(PostEditingEndEvent event) {
+		ContentItem item = event.getCurr();
+		ContentItem oldItem = event.getPrev();
+		Position position = new Position(item.getContainer(), item.getContainer().getItemIndex(item));
+		SimpleTransformation<ContentItem> editTransformation = new SimpleTransformation<ContentItem>(
+				oldItem, position, item.cloneItem(), position);
+		history.put(editTransformation);
+		save();
 	}
 	
 }

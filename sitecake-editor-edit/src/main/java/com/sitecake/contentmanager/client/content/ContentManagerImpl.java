@@ -11,7 +11,6 @@ import com.google.gwt.http.client.RequestException;
 import com.google.gwt.http.client.Response;
 import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.Window.Location;
 import com.google.inject.Inject;
 import com.sitecake.commons.client.config.Globals;
 import com.sitecake.commons.client.util.MimeBase64;
