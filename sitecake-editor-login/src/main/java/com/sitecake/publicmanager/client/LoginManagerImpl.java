@@ -118,7 +118,7 @@ public class LoginManagerImpl implements LoginManager {
 				public void onSuccess(LoginResponse response) {
 					onLoginResponse(response);
 				}
-				
+
 			});
 		
 		} catch (Throwable exception) {
