@@ -40,10 +40,9 @@ import com.google.inject.Inject;
 import com.sitecake.commons.client.config.ConfigRegistry;
 import com.sitecake.commons.client.config.Globals;
 import com.sitecake.commons.client.util.DomUtil;
-import com.sitecake.commons.client.util.StringScrambler;
 import com.sitecake.contentmanager.client.ContentStyleRegistry;
 import com.sitecake.contentmanager.client.EventBus;
-import com.sitecake.contentmanager.client.SecuredStringConstants;
+import com.sitecake.contentmanager.client.GlobalConstants;
 import com.sitecake.contentmanager.client.event.ContentManagamentEvent;
 import com.sitecake.contentmanager.client.event.ContentManagamentEvent.EventType;
 import com.sitecake.contentmanager.client.event.ContentManagamentHandler;
@@ -71,7 +70,6 @@ import com.sitecake.contentmanager.client.toolbar.StyleSelector.StyleSelectorHan
 
 // TODO: extract functionality of draggable fixed widget
 public class ContentManagerToolbar extends Composite {
-
 	private static final String POSITION_X = "ContentManagerToolbar.left";
 	private static final String POSITION_Y = "ContentManagerToolbar.top";
 	
@@ -160,7 +158,7 @@ public class ContentManagerToolbar extends Composite {
 	
 	@Inject
 	public ContentManagerToolbar(EventBus eventBus, ConfigRegistry configRegistry, PropertyManager propertyManager,
-			ContentStyleRegistry contentStyleRegistry, SecuredStringConstants securedStringConstants,
+			ContentStyleRegistry contentStyleRegistry, GlobalConstants globalConstants,
 			LocaleProxy localeProxy) {
 		this.propertyManager = propertyManager;
 		this.eventBus = eventBus;
@@ -183,9 +181,8 @@ public class ContentManagerToolbar extends Composite {
 				"<div class=\"" + EditorClientBundle.INSTANCE.css().toolbarPublishDisabled() + "\">" + 
 				messages.publishButton() + "</div>"
 		);
-		
-		String version = StringScrambler.unscramble(securedStringConstants.version());
-		logoLink.setTitle(version);
+
+		logoLink.setTitle(globalConstants.version());
 		
 		createComponents();
 		

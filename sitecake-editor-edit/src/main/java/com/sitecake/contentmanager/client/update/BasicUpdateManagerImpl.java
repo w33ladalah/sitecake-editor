@@ -28,11 +28,11 @@ public class BasicUpdateManagerImpl implements UpdateManager {
 	 */
 	private static final long updateCheckTimeMargine = 24*60*60*1000L;
 	
-	private static String version  = StringScrambler.unscramble(GinInjector.instance.getSecuredStringConstants().rawVersion());
+	private static String version  = StringScrambler.unscramble(GinInjector.instance.getGlobalConstants().rawVersion());
 	
-	private static String hostSystem = StringScrambler.unscramble(GinInjector.instance.getSecuredStringConstants().hostSystem());
+	private static String hostSystem = StringScrambler.unscramble(GinInjector.instance.getGlobalConstants().hostSystem());
 	
-	private static String updateCheckUrl = StringScrambler.unscramble(GinInjector.instance.getSecuredStringConstants().updateCheckUrl());
+	private static String updateCheckUrl = StringScrambler.unscramble(GinInjector.instance.getGlobalConstants().updateCheckUrl());
 	
 	private static String serverVersion = Globals.get().getServerVersionId();
 	

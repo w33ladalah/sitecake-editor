@@ -26,7 +26,7 @@ public interface GinInjector extends Ginjector {
 	public static final GinInjector instance = GWT.create(GinInjector.class);
 	
 	TopContainer getTopContainer();
-	SecuredStringConstants getSecuredStringConstants();
+	GlobalConstants getGlobalConstants();
 	EventBus getEventBus();
 	SynchronizationBarrier getSynchronizationBarrier();
 	ConfigRegistry getConfigRegistry();

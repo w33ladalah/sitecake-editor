@@ -47,7 +47,7 @@ public class GinModule extends AbstractGinModule {
 	protected void configure() {
 		bind(TopContainer.class).in(Singleton.class);
 		
-		bind(SecuredStringConstants.class).in(Singleton.class);
+		bind(GlobalConstants.class).in(Singleton.class);
 		
 		bind(DomSelector.class).to(SizzleDomSelector.class).in(Singleton.class);
 		//bind(DomSelector.class).to(JqueryDomSelector.class).in(Singleton.class);
