@@ -11,17 +11,19 @@ import com.sitecake.contentmanager.client.event.DeleteEvent;
 import com.sitecake.contentmanager.client.event.EndEditingEvent;
 import com.sitecake.contentmanager.client.event.EndEditingHandler;
 import com.sitecake.contentmanager.client.event.MoveEvent;
+import com.sitecake.contentmanager.client.event.MoveEvent.Direction;
+import com.sitecake.contentmanager.client.event.PageManagerEvent;
 import com.sitecake.contentmanager.client.event.RedoEvent;
 import com.sitecake.contentmanager.client.event.SelectEvent;
 import com.sitecake.contentmanager.client.event.StartEditingEvent;
 import com.sitecake.contentmanager.client.event.StartEditingHandler;
 import com.sitecake.contentmanager.client.event.UndoEvent;
-import com.sitecake.contentmanager.client.event.MoveEvent.Direction;
 
 public class KeyboardController implements CloseHandler<Window> {
 
 	private static final int KEY_Z = 90;
 	private static final int KEY_Y = 89;
+	private static final int KEY_P = 80;
 	private static final int KEY_ESC = 27;
 	private static final int KEY_DEL = 46;
 	private static final int KEY_A = 65;
@@ -134,7 +136,11 @@ public class KeyboardController implements CloseHandler<Window> {
 					sink = true;
 				}
 				break;
-				
+			case KEY_P:
+				if ( !editMode ) {
+					eventBus.fireEvent(new PageManagerEvent(true));
+					sink = true;
+				}				
 		}
 		
 		if ( sink ) {

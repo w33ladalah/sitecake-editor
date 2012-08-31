@@ -21,6 +21,8 @@ import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.EventTarget;
 import com.google.gwt.dom.client.Node;
+import com.google.gwt.dom.client.NodeList;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.ClosingEvent;
@@ -63,6 +65,8 @@ import com.sitecake.contentmanager.client.event.NewParagraphEvent;
 import com.sitecake.contentmanager.client.event.NewParagraphHandler;
 import com.sitecake.contentmanager.client.event.OverItemEvent;
 import com.sitecake.contentmanager.client.event.OverItemHandler;
+import com.sitecake.contentmanager.client.event.PageManagerEvent;
+import com.sitecake.contentmanager.client.event.PageManagerHandler;
 import com.sitecake.contentmanager.client.event.PostEditingEndEvent;
 import com.sitecake.contentmanager.client.event.PostEditingEndHandler;
 import com.sitecake.contentmanager.client.event.PublishEvent;
@@ -106,7 +110,7 @@ public class PageEditor implements DeleteHandler, EditItemHandler, OverItemHandl
 	UndoHandler, RedoHandler, CancelHandler, SelectorHandler, SelectHandler, MoveHandler,
 	NewItemHandler, UploadHandler, LogoutHandler, PublishHandler, EditCompleteHandler,
 	NewParagraphHandler, MergeParagraphHandler, ErrorNotificationHandler, TextBlockHandler,
-	PostEditingEndHandler {
+	PostEditingEndHandler, PageManagerHandler {
 	
 	private class TransformationState {
 		private ContentItem item;
@@ -215,6 +219,8 @@ public class PageEditor implements DeleteHandler, EditItemHandler, OverItemHandl
 	
 	private Messages messages;
 	
+	private boolean pageManager;
+	
 	@Inject
 	public PageEditor(EventBus eventBus, ContentContainerFactory containerFactory, EditorHistory history,
 			KeyboardController keyboardController, PropertyManager propertyManager, ConfigRegistry configRegistry, ContentManagerToolbar toolbar,
@@ -243,6 +249,7 @@ public class PageEditor implements DeleteHandler, EditItemHandler, OverItemHandl
 		eventBus.addHandler(ErrorNotificationEvent.getType(), this);
 		eventBus.addHandler(TextBlockEvent.getType(), this);
 		eventBus.addHandler(PostEditingEndEvent.getType(), this);
+		eventBus.addHandler(PageManagerEvent.getType(), this);
 		
 		Window.addWindowClosingHandler(new ClosingHandler() {
 			
@@ -273,6 +280,7 @@ public class PageEditor implements DeleteHandler, EditItemHandler, OverItemHandl
 		selectedItems = new ArrayList<ContentItem>();
 		
 		editPhase = EditPhase.IDLE;
+		pageManager = false;
 		
 		itemOrderComparator = new ItemOrderComparator();
 		
@@ -677,10 +685,15 @@ public class PageEditor implements DeleteHandler, EditItemHandler, OverItemHandl
 
 	@Override
 	public void onCancel(CancelEvent event) {
-		if ( !isActionExecutable() ) return;
-		
-		switchToNewEditPhase(EditPhase.IDLE, true);
-		unselectAllItems();
+		if (pageManager) {
+			pageManager = false;
+			showBodyElements();
+		} else {
+			if ( !isActionExecutable() ) return;
+			
+			switchToNewEditPhase(EditPhase.IDLE, true);
+			unselectAllItems();
+		}
 	}
 
 	@Override
@@ -1200,6 +1213,48 @@ public class PageEditor implements DeleteHandler, EditItemHandler, OverItemHandl
 				oldItem, position, item.cloneItem(), position);
 		history.put(editTransformation);
 		save();
+	}
+	
+	private void showBodyElements() {
+		NodeList<Node> nodes = RootPanel.getBodyElement().getChildNodes();
+		for (int i=0; i<nodes.getLength(); i++) {
+			Node node = nodes.getItem(i);
+			if (node.getNodeType() == Node.ELEMENT_NODE) {
+				Element el = node.cast();
+				String val = el.getStyle().getDisplay();
+				if (val != null && !"".equals(val)) {
+					if (el.hasAttribute("display-orig")) {
+						el.getStyle().setDisplay(Style.Display.valueOf(el.getAttribute("display-orig")));
+						el.removeAttribute("display-orig");
+					} else {
+						el.getStyle().clearDisplay();
+					}
+				}
+			}
+		}
+	}
+	
+	private void hideBodyElements() {
+		NodeList<Node> nodes = RootPanel.getBodyElement().getChildNodes();
+		for (int i=0; i<nodes.getLength(); i++) {
+			Node node = nodes.getItem(i);
+			if (node.getNodeType() == Node.ELEMENT_NODE) {
+				Element el = node.cast();
+				String val = el.getStyle().getDisplay();
+				if (val != null && !"".equals(val)) {
+					el.setAttribute("display-orig", val);
+				}
+				el.getStyle().setDisplay(Style.Display.NONE);
+			}
+		}
+	}
+
+	@Override
+	public void onPageManager(PageManagerEvent event) {
+		if (!pageManager && event.isOpen()) {
+			pageManager = true;
+			hideBodyElements();
+		}
 	}
 	
 }
