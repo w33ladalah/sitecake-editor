@@ -1,6 +1,5 @@
 package com.sitecake.contentmanager.client.resources;
 
-import com.google.gwt.i18n.client.Messages.DefaultMessage;
 
 
 public interface MessagesCs extends com.google.gwt.i18n.client.Messages, Messages {
