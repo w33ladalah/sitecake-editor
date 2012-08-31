@@ -13,7 +13,7 @@ import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
 import com.google.gwt.user.rebind.SourceWriter;
 import com.sitecake.commons.client.util.StringScrambler;
 
-public class SecuredStringConstantsGenerator extends Generator {
+public class StringConstantsGenerator extends Generator {
 
 	@Override
 	public String generate(TreeLogger logger, GeneratorContext context, String typeName) throws UnableToCompleteException {

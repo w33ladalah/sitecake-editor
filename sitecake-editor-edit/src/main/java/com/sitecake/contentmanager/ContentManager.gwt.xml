@@ -42,8 +42,8 @@
 	]]></property-provider>
 	
 	
-	<generate-with class="com.sitecake.commons.compile.SecuredStringConstantsGenerator">
-		<when-type-assignable class="com.sitecake.contentmanager.client.SecuredStringConstants"/>
+	<generate-with class="com.sitecake.commons.compile.StringConstantsGenerator">
+		<when-type-assignable class="com.sitecake.contentmanager.client.GlobalConstants"/>
 	</generate-with>
 
 	<replace-with class="com.sitecake.contentmanager.client.item.text.TextItemImplStandard">
