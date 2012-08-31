@@ -31,6 +31,13 @@ public class JavaScriptRegExp extends JavaScriptObject {
 			return null;
 	}-*/;
 
+	private native static JsArrayString matchJs(JavaScriptRegExp regexp, String string)/*-{
+		if ( string )
+			return string.match(regexp);
+		else
+			return null;
+	}-*/;
+	
 	public static List<String> match(String regexp, String string) {
 		List<String> result;
 		
@@ -54,6 +61,23 @@ public class JavaScriptRegExp extends JavaScriptObject {
 		else
 			return null;
 	}-*/;
+	
+	public static List<String> match(JavaScriptRegExp regexp, String string) {
+		List<String> result;
+		
+		JsArrayString jsResult = matchJs(regexp, string);
+		
+		if ( jsResult != null ) {
+			result = new ArrayList<String>();
+			for (int index = 0; index < jsResult.length(); index++ ) {
+				result.add(jsResult.get(index));
+			}
+		} else {
+			result = null;
+		}
+		
+		return result;		
+	}
 	
 	public native static String replace(String input, String regexp, String regexpOptions, String replacement)/*-{
 		return input.replace(new RegExp(regexp, regexpOptions), replacement);
@@ -82,5 +106,7 @@ public class JavaScriptRegExp extends JavaScriptObject {
 		return this.exec(string);
 	}-*/;
 	
-	
+	public final native JsArrayString match(String string)/*-{
+		return string.match(this);
+	}-*/;
 }
