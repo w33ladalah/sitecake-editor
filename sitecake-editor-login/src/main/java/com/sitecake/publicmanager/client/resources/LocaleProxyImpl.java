@@ -19,7 +19,8 @@ public class LocaleProxyImpl implements LocaleProxy {
 		DK,
 		IT,
 		RU,
-		CS
+		CS,
+		SK
 	}
 	
 	private Messages messages;
@@ -67,6 +68,9 @@ public class LocaleProxyImpl implements LocaleProxy {
 		case CS:
 			messages = GWT.create(MessagesCs.class);
 			break;
+		case SK:
+			messages = GWT.create(MessagesSk.class);
+			break;
 		}
 	}
 	
@@ -99,6 +103,8 @@ public class LocaleProxyImpl implements LocaleProxy {
 			return LocaleCode.RU;
 		} else if ( LocaleCode.CS.name().equalsIgnoreCase(interfaceLocale) ) {
 			return LocaleCode.CS;
+		} else if ( LocaleCode.SK.name().equalsIgnoreCase(interfaceLocale) ) {
+			return LocaleCode.SK;
 		} else {
 			return LocaleCode.EN;
 		}
