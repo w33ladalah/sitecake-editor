@@ -86,6 +86,11 @@ public class PasteHolderItem extends ContentItem {
 	}
 
 	@Override
+	public String getItemSelector() {
+		return "." + CONTENT_TYPE_NAME;
+	}
+
+	@Override
 	public ContentItem cloneItem() {
 		PasteHolderItem clone = PasteHolderItem.create(type);
 		return clone;

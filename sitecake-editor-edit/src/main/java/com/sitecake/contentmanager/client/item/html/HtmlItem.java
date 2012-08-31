@@ -70,7 +70,12 @@ public class HtmlItem extends ContentItem {
 	public String getContentTypeName() {
 		return CONTENT_TYPE_NAME;
 	}
-	
+		
+	@Override
+	public String getItemSelector() {
+		return "div." + DISCRIMINATOR;
+	}
+
 	@Override
 	public String getHtml() {
 		return "<div class=\"sc-html\">" + html + "</div>";

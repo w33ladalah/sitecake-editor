@@ -47,7 +47,12 @@ public class GenericContentItem extends ContentItem {
 	public String getContentTypeName() {
 		return CONTENT_TYPE_NAME;
 	}
-	
+		
+	@Override
+	public String getItemSelector() {
+		return ".sc-generic";
+	}
+
 	@Override
 	public String getHtml() {
 		return outerHTML;

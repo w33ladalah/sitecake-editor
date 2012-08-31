@@ -330,6 +330,11 @@ public class VideoItem extends ContentItem {
 	}
 	
 	@Override
+	public String getItemSelector() {
+		return "div." + DISCRIMINATOR;
+	}
+
+	@Override
 	public String getHtml() {
 		return "<div class=\"" + DISCRIMINATOR + "\" " + 
 				"style=\"width:" + embeddedVideo.width + "px;height:" + 

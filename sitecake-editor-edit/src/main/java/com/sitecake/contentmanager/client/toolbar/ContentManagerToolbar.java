@@ -423,7 +423,7 @@ public class ContentManagerToolbar extends Composite {
 	private void onStartEditing(StartEditingEvent event) {
 		editedItem = event.getItem();
 		
-		List<String> styles = contentStyleRegistry.get(editedItem.getContainer().getName(), editedItem.getContentTypeName());
+		List<String> styles = contentStyleRegistry.get(editedItem.getContainer().getName(), editedItem.getItemSelector());
 		if ( styles != null && styleSelector != null ) {
 			styleSelector.setStyles(styles, editedItem.getStyle());
 			styleSelector.setVisible(true);

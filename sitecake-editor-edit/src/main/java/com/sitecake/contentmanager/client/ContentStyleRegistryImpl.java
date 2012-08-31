@@ -5,57 +5,78 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayString;
+import com.google.gwt.dom.client.Element;
+import com.google.inject.Inject;
+import com.sitecake.commons.client.util.JavaScriptRegExp;
+import com.sitecake.commons.client.util.dom.CSSStyleRule;
+import com.sitecake.commons.client.util.dom.StyleSheet;
+import com.sitecake.contentmanager.client.container.ContentContainerFactory;
 
 public class ContentStyleRegistryImpl implements ContentStyleRegistry {
 	
-	private static final String STYLES_OBJECT_NAME = "sitecakeGlobals.styles";
+	private Map<String, List<String>> styles;
+	private ContentContainerFactory contentContainerFactory;
 	
-	private Map<String, Map<String, List<String>>> styles;
-	
-	public ContentStyleRegistryImpl() {
-		styles = new HashMap<String, Map<String, List<String>>>();
-		initStyles();
+	@Inject
+	public ContentStyleRegistryImpl(ContentContainerFactory contentContainerFactory) {
+		this.contentContainerFactory = contentContainerFactory;
+		styles = new HashMap<String, List<String>>();
+		init();
 	}
 	
 	@Override
-	public List<String> get(String containerName, String contentType) {
-		List<String> contentTypeStyles = null;
+	public List<String> get(String containerName, String itemSelector) {
+		List<String> itemStyles = null;
 		if ( styles.containsKey(containerName) ) {
-			Map<String, List<String>> containerStyles = styles.get(containerName);
-			if ( containerStyles.containsKey(contentType) ) {
-				contentTypeStyles = containerStyles.get(contentType);
+			List<String> containerStyles = styles.get(containerName);
+			itemStyles = new ArrayList<String>();
+			for (String rawStyle : containerStyles) {
+				if (rawStyle.startsWith(itemSelector) && rawStyle.length() > itemSelector.length()) {
+					String itemStyle = rawStyle.substring(itemSelector.length()).replace('.', ' ').trim();
+					if (!"".equals(itemStyle)) {
+						itemStyles.add(itemStyle);
+					}
+				}
 			}
 		}
-		return contentTypeStyles;
+		return (itemStyles == null) ? null : (itemStyles.isEmpty() ? null : itemStyles);
 	}
 
-	private void putStyles(String containerName, String contentType, JsArrayString styles) {
-
-		List<String> contentTypeStyles = new ArrayList<String>();
-		for ( int i=0; i < styles.length(); i++ ) {
-			contentTypeStyles.add(styles.get(i));
-		}
-		
-		Map<String, List<String>> containerStyles = this.styles.get(containerName);
-		if ( containerStyles == null ) {
-			containerStyles = new HashMap<String, List<String>>();
-			this.styles.put(containerName, containerStyles);
-		}
-		
-		containerStyles.put(contentType, contentTypeStyles);
-	}
-	
-	private native void initStyles()/*-{
-		var stylesObject = eval('$wnd.' + @com.sitecake.contentmanager.client.ContentStyleRegistryImpl::STYLES_OBJECT_NAME);
-		
-		for ( var containerName in stylesObject ) {
-			var containerStyles = stylesObject[containerName];
-			for ( var contentType in containerStyles ) {
-				var contentTypeStyles = containerStyles[contentType];
-				this.@com.sitecake.contentmanager.client.ContentStyleRegistryImpl::putStyles(Ljava/lang/String;Ljava/lang/String;Lcom/google/gwt/core/client/JsArrayString;)
-						(containerName, contentType, contentTypeStyles);
+	private void init() {
+		Map<String, Element> containers = contentContainerFactory.list();
+		for (String containerName : containers.keySet()) {
+			List<String> containerStyles = new ArrayList<String>();
+			styles.put(containerName, containerStyles);
+			Element element = containers.get(containerName);
+			List<JavaScriptRegExp> matchers = new ArrayList<JavaScriptRegExp>();
+			if (element.hasAttribute("id")) {
+				matchers.add(JavaScriptRegExp.create("^\\s*#" + element.getAttribute("id") + "\\s+>?\\s*([^\\s,]+)\\s*$"));
 			}
+			String[] cssClasseNames = element.getClassName().trim().split("\\s+");
+			for (String cssClassName : cssClasseNames) {
+				matchers.add(JavaScriptRegExp.create("^\\s*." + cssClassName + "\\s+>?\\s*([^\\s,]+)\\s*$"));
+			}
+			
+			JsArray<StyleSheet> styleSheets = StyleSheet.getAll();
+			for (int i = 0; i < styleSheets.length(); i++) {
+				StyleSheet styleSheet = styleSheets.get(i);
+				for (int j = 0; j < styleSheet.cssRules().length(); j++) {
+					CSSStyleRule rule = styleSheet.cssRules().get(j);
+					String[] selectors = rule.selectorText().split(",");
+					for (String selector : selectors) {
+						for (JavaScriptRegExp matcher : matchers) {
+							JsArrayString matches = matcher.match(selector);
+							if (matches != null && matches.length() == 2) {
+								containerStyles.add(matches.get(1));
+							}
+						}
+					}
+				}
+			}
+			
 		}
-	}-*/;
+	}
+
 }

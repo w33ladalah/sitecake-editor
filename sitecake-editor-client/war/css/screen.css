@@ -296,7 +296,22 @@ body {
 .iconDelicious {	background: url(../images/socialIcons.gif) -65px 0px;}
 .iconRss {	background: url(../images/socialIcons.gif) -86px 0px;}
 
+.sideColumn p.red {
+	background-color: red;
+}
 
+.mainColumn > p.blue,
+.sideColumn p.blue {
+	background-color: blue;
+}
+
+.sideColumn h1.yellow {
+	background-color: yellow;
+}
+
+.sideColumn div.sc-html.green {
+	background-color: green;
+}
 
 
 

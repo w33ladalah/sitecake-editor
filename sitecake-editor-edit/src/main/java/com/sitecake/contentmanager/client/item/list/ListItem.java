@@ -67,6 +67,11 @@ public abstract class ListItem extends ContentEditableBaseItem implements Editab
 		return CONTENT_TYPE_NAME;
 	}
 	
+	@Override
+	public String getItemSelector() {
+		return "ul";
+	}
+
 	public String getHtmlText() {
 		return htmlText;
 	}

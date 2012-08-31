@@ -74,6 +74,8 @@ public abstract class ContentItem extends WidgetEx implements HasClickHandlers, 
 
 	public abstract String getContentTypeName();
 	
+	public abstract String getItemSelector();
+	
 	public ContentContainer getContainer() {
 		return container;
 	}
@@ -229,7 +231,7 @@ public abstract class ContentItem extends WidgetEx implements HasClickHandlers, 
 	
 	protected void adjustContentStyle() {
 		if ( !DEFAULT_STYLE.equals(getStyle()) ) {
-			List<String> styles = contentStyleRegistry.get(container.getName(), getContentTypeName());
+			List<String> styles = contentStyleRegistry.get(container.getName(), getItemSelector());
 			if ( styles == null || !styles.contains(getStyle()) ) {
 				setStyle(DEFAULT_STYLE);
 			}

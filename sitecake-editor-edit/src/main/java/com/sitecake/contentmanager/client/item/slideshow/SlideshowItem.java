@@ -174,6 +174,11 @@ public class SlideshowItem extends ContentItem {
 		return CONTENT_TYPE_NAME;
 	}
 	
+	@Override
+	public String getItemSelector() {
+		return "div." + DISCRIMINATOR;
+	}
+
 	public static SlideshowItem create(List<SlideshowImage> images) {
 		SlideshowItem item = GWT.create(SlideshowItem.class);
 		item.init(images, null);

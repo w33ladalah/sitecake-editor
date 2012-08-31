@@ -22,32 +22,21 @@ import com.google.gwt.event.dom.client.MouseMoveEvent;
 import com.google.gwt.event.dom.client.MouseMoveHandler;
 import com.google.gwt.event.dom.client.MouseUpEvent;
 import com.google.gwt.event.dom.client.MouseUpHandler;
-import com.google.gwt.http.client.Request;
-import com.google.gwt.http.client.RequestBuilder;
-import com.google.gwt.http.client.RequestCallback;
-import com.google.gwt.http.client.RequestException;
-import com.google.gwt.http.client.Response;
-import com.google.gwt.http.client.URL;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
-import com.sitecake.commons.client.config.Globals;
 import com.sitecake.commons.client.util.CSSStyleDeclaration;
 import com.sitecake.commons.client.util.DomUtil;
-import com.sitecake.commons.client.util.UrlBuilder;
 import com.sitecake.contentmanager.client.EventBus;
 import com.sitecake.contentmanager.client.GinInjector;
 import com.sitecake.contentmanager.client.commons.Axis;
 import com.sitecake.contentmanager.client.commons.Point;
 import com.sitecake.contentmanager.client.commons.Rectangle;
 import com.sitecake.contentmanager.client.event.EditCompleteEvent;
-import com.sitecake.contentmanager.client.event.ErrorNotificationEvent;
-import com.sitecake.contentmanager.client.event.ErrorNotificationEvent.Level;
 import com.sitecake.contentmanager.client.event.LinkEditorEvent;
-import com.sitecake.contentmanager.client.event.PostEditingEndEvent;
 import com.sitecake.contentmanager.client.item.ContentItem;
 import com.sitecake.contentmanager.client.resources.EditorClientBundle;
 import com.sitecake.contentmanager.client.toolbar.LinkableItem;
@@ -227,10 +216,6 @@ public class ImageItem extends ContentItem implements LinkableItem {
 	
 	private ImageObject sourceImageObject;
 	
-	private ImageObject transImageObject;
-	
-	private ContentItem prev;
-	
 	private double imageRatio;
 	
 	private String link = "";
@@ -238,6 +223,8 @@ public class ImageItem extends ContentItem implements LinkableItem {
 	private String linkOrig;
 	
 	private String description;
+	
+	private String origTranformation;
 	
 	private EventBus eventBus = GinInjector.instance.getEventBus();
 	
@@ -322,6 +309,11 @@ public class ImageItem extends ContentItem implements LinkableItem {
 		return CONTENT_TYPE_NAME;
 	}
 	
+	@Override
+	public String getItemSelector() {
+		return "img";
+	}
+
 	public void init(Element element) {
 		ImageObject imageObject = new ImageObject();
 		
@@ -334,13 +326,15 @@ public class ImageItem extends ContentItem implements LinkableItem {
 		style = imgElement.getClassName();
 		
 		//TODO: extract and set imageObject.id
-		// using getAttribute("src") instead of getSrc() in order to
-		// obtain relative URL present in the HTML text
-		imageObject.setResizedUrl(imgElement.getAttribute("src"));
+		imageObject.setResizedUrl(imgElement.getSrc());
 		imageObject.setResizedWidth(Integer.valueOf(imgElement.getWidth()));
 		imageObject.setResizedHeight(Integer.valueOf(imgElement.getHeight()));
 		
 		description = imgElement.getAttribute("alt");
+		
+		if ( imgElement.hasAttribute("data") ) {
+			origTranformation = imgElement.getAttribute("data");
+		}
 		
 		init(imageObject, element);
 	}
@@ -354,8 +348,13 @@ public class ImageItem extends ContentItem implements LinkableItem {
 	private void init(ImageObject imageObject, Element element) {
 
 		sourceImageObject = imageObject.clone();
-		transImageObject = sourceImageObject.clone();
 		imageRatio = ((double)sourceImageObject.getResizedWidth()) / sourceImageObject.getResizedHeight(); 
+		
+		if ( origTranformation == null ) {
+			origTranformation = sourceImageObject.getResizedWidth() + ":" + sourceImageObject.getResizedHeight() + ":" +
+					0 + ":" + 0 + ":" +
+					sourceImageObject.getResizedWidth() + ":" + sourceImageObject.getResizedHeight();
+		}
 		
 		finalState = new TransformationState(
 				imageObject.getResizedWidth(),
@@ -423,7 +422,6 @@ public class ImageItem extends ContentItem implements LinkableItem {
 		//clone.init(sourceImageObject, null);
 
 		clone.sourceImageObject = sourceImageObject.clone();
-		clone.transImageObject = transImageObject.clone();
 		clone.imageRatio = imageRatio; 
 		
 		clone.finalState = finalState.clone();
@@ -431,6 +429,7 @@ public class ImageItem extends ContentItem implements LinkableItem {
 		clone.currentState = currentState.clone();
 		clone.workingState = workingState.clone();
 		clone.tmpState = tmpState.clone();
+		clone.origTranformation = origTranformation;
 		
 		clone.cloneInit();
 		
@@ -439,11 +438,38 @@ public class ImageItem extends ContentItem implements LinkableItem {
 
 	@Override
 	public String getHtml() {
-		String html = "<img alt=\"" + description + "\" " +
-				"width=\"" + transImageObject.getResizedWidth() + "\" " +
-				"height=\"" + transImageObject.getResizedHeight() + "\" " + 
-				(!"".equals(style) ? "class=\"" + style + "\" ": "") + 
-				"src=\"" + transImageObject.getResizedUrl() + "\"/>";
+		String[] dataParts = origTranformation.split(":");
+		double origSrcWidth = Double.parseDouble(dataParts[0]);
+		double origSrcHeight = Double.parseDouble(dataParts[1]);
+		double origSrcX = Double.parseDouble(dataParts[2]);
+		double origSrcY = Double.parseDouble(dataParts[3]);
+		double origDstWidth = Double.parseDouble(dataParts[4]);
+		double origDstHeight = Double.parseDouble(dataParts[5]);
+		
+		double xCorrection = finalState.getTarget().getWidth() / origDstWidth;
+		double yCorrection = finalState.getTarget().getHeight() / origDstHeight;
+		
+		NumberFormat numberFormat = NumberFormat.getFormat("######");
+		
+		String srcWidth = numberFormat.format( xCorrection * origSrcWidth );
+		String srcHeight = numberFormat.format( yCorrection * origSrcHeight );
+		
+		String srcX = numberFormat.format( xCorrection * origSrcX + Math.abs( finalState.getTarget().getStart().getX() ) );
+		String srcY = numberFormat.format( yCorrection * origSrcY + Math.abs( finalState.getTarget().getStart().getY() ) );
+
+		String dstWidth = numberFormat.format(finalState.getViewport().getWidth());
+		String dstHeight = numberFormat.format(finalState.getViewport().getHeight());
+		
+		String data = srcWidth + ":" + srcHeight + ":" +
+			srcX + ":" + srcY + ":" +
+			dstWidth + ":" + dstHeight;
+			
+		String html = "<img alt=\"" + description + 
+			"\" width=\"" + dstWidth + 
+			"\" height=\"" + dstHeight + 
+			"\" class=\"" + style + 
+			"\" src=\"" + sourceImageObject.getResizedUrl() + 
+			"\" data=\"" + data + "\"/>";
 		
 		if ( !"".equals(link) ) {
 			html = "<a href=\"" + link + "\">" + html + "</a>";
@@ -493,7 +519,6 @@ public class ImageItem extends ContentItem implements LinkableItem {
 	@Override
 	public void startEditing(String mode) {
 		if ( !edited ) {
-			prev = this.cloneItem();
 			setSelected(false);
 			edited = true;
 			confirmedState.set(finalState);
@@ -524,16 +549,14 @@ public class ImageItem extends ContentItem implements LinkableItem {
 			dirty = dirty || !link.equals(linkOrig);
 		}
 		
+		if ( super.stopEditing(cancel) ) {
+			dirty = true;
+		}
+		
 		setMode(Mode.VIEW);
 		DOM.releaseCapture(getElement());
 		
-		boolean parentDirty = super.stopEditing(cancel);
-		if (!cancel && dirty) { 
-			transform();
-			return false;
-		}
-		
-		return dirty || parentDirty;
+		return dirty;
 	}
 
 	@Override
@@ -1261,77 +1284,6 @@ public class ImageItem extends ContentItem implements LinkableItem {
 		link = "";
 		eventBus.fireEventDeferred(new LinkEditorEvent("", true));
 		eventBus.fireEventDeferred(new EditCompleteEvent());
-	}
-	
-	private void transform() {
-		UrlBuilder urlBuilder = new UrlBuilder(Globals.get().getContentServiceUrl());
-		urlBuilder.setParameter("action", "image_transform");
-		
-		RequestBuilder request = new RequestBuilder(RequestBuilder.POST, urlBuilder.buildString());		
-		request.setHeader("Content-Type", "application/x-www-form-urlencoded");		
-		request.setCallback(new RequestCallback() {
-			
-			@Override
-			public void onResponseReceived(Request request, Response response) {				
-				onTransformResponse(response);			
-			}						
-			
-			@Override
-			public void onError(Request request, Throwable exception) {				
-				onTransformError(exception.getMessage());			
-			}		
-		});
-		
-		StringBuilder builder = new StringBuilder();
-		builder.append("image=" + URL.encodeQueryString(sourceImageObject.getResizedUrl()));
-		builder.append("&");		
-		builder.append("data=" + calculateTransformation());	
-		request.setRequestData(builder.toString());
-		
-		try {
-			request.send();
-		} catch (RequestException e) {
-			onTransformError(e.getMessage());
-		}
-	}
-	
-	private String calculateTransformation() {
-		NumberFormat numberFormat = NumberFormat.getFormat("######");
-		
-		String srcWidth = numberFormat.format( finalState.getTarget().getWidth() );
-		String srcHeight = numberFormat.format( finalState.getTarget().getHeight() );
-		
-		String srcX = numberFormat.format( Math.abs( finalState.getTarget().getStart().getX() ) );
-		String srcY = numberFormat.format( Math.abs( finalState.getTarget().getStart().getY() ) );
-
-		String dstWidth = numberFormat.format(finalState.getViewport().getWidth());
-		String dstHeight = numberFormat.format(finalState.getViewport().getHeight());
-		
-		return srcWidth + ":" + srcHeight + ":" +
-			srcX + ":" + srcY + ":" +
-			dstWidth + ":" + dstHeight;
-	}
-	
-	private void onTransformResponse(Response response) {
-		if ( response.getStatusCode() == 200 ) {
-			ImageTransformResponse trResponse = ImageTransformResponse.get(response.getText()).cast();
-			if ( trResponse.isSuccess() ) {
-				transImageObject.setResizedUrl(trResponse.getUrl());
-				transImageObject.setResizedWidth((int)finalState.getViewport().getWidth());
-				transImageObject.setResizedHeight((int)finalState.getViewport().getHeight());
-				eventBus.fireEventDeferred(new PostEditingEndEvent(prev, this));
-			} else {
-				eventBus.fireEventDeferred(new ErrorNotificationEvent(Level.ERROR, 
-						trResponse.getErrorMessage(), response.getText()));				
-			}
-			
-		} else {
-			eventBus.fireEventDeferred(new ErrorNotificationEvent(Level.ERROR, response.getStatusText()));			
-		}
-	}
-	
-	private void onTransformError(String message) {
-		eventBus.fireEventDeferred(new ErrorNotificationEvent(Level.ERROR, message));
 	}
 	
 }

@@ -35,6 +35,11 @@ public class ContactItem extends ContentItem {
 	}
 
 	@Override
+	public String getItemSelector() {
+		return "div." + DISCRIMINATOR;
+	}
+
+	@Override
 	public String getHtml() {
 		// TODO Auto-generated method stub
 		return null;

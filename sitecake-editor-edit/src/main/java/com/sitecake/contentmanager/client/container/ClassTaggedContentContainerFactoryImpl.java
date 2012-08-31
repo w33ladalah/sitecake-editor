@@ -1,7 +1,9 @@
 package com.sitecake.contentmanager.client.container;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.Element;
@@ -29,7 +31,6 @@ public class ClassTaggedContentContainerFactoryImpl implements
 
 	@Override
 	public List<ContentContainer> create() {
-
 		List<ContentContainer> result = new ArrayList<ContentContainer>();
 		
 		JsArray<Element> containerElements = GinInjector.instance.getDomSelector().select(CONTENT_CONTAINER_SELECTOR);
@@ -44,6 +45,22 @@ public class ClassTaggedContentContainerFactoryImpl implements
 			}
 		}
 		return result;
+	}
+
+	@Override
+	public Map<String, Element> list() {
+		Map<String, Element> containers = new HashMap<String, Element>();
+		JsArray<Element> containerElements = GinInjector.instance.getDomSelector().select(CONTENT_CONTAINER_SELECTOR);
+		for ( int i = 0; i < containerElements.length(); i++ ) {
+			Element element = containerElements.get(i);
+			String className = element.getClassName();
+			List<String> matches = JavaScriptRegExp.match(CONTENT_CONTAINER_NAME_PATTERN, className);
+			if ( matches != null && matches.size() == 2 ) {
+				String name = matches.get(1);
+				containers.put(name, element);
+			}
+		}
+		return containers;
 	}
 
 }

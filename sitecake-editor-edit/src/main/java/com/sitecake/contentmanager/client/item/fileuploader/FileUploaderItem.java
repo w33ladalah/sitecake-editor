@@ -268,6 +268,11 @@ public abstract class FileUploaderItem extends ContentItem {
 	}
 	
 	@Override
+	public String getItemSelector() {
+		return "." + CONTENT_TYPE_NAME;
+	}
+
+	@Override
 	public String getHtml() {
 		// this kind of item should not be saved
 		return "";
