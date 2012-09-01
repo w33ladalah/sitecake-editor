@@ -11,7 +11,6 @@ import com.google.gwt.core.ext.typeinfo.JMethod;
 import com.google.gwt.core.ext.typeinfo.TypeOracle;
 import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
 import com.google.gwt.user.rebind.SourceWriter;
-import com.sitecake.commons.client.util.StringScrambler;
 
 public class StringConstantsGenerator extends Generator {
 
@@ -38,11 +37,11 @@ public class StringConstantsGenerator extends Generator {
 						String rawValue = method.getAnnotation(RawStringValue.class).value();
 						String develRawValue = method.getAnnotation(RawStringValue.class).develValue();
 						sourceWriter.println("public String " + method.getName() + "() { ");
-						sourceWriter.println("String value = \"" + StringScrambler.scramble(rawValue) + "\";");
+						sourceWriter.println("String value = \"" + rawValue + "\";");
 						
 						if ( !"".equals(develRawValue) ) {
 							sourceWriter.println("if ( !com.google.gwt.core.client.GWT.isScript() ) {");
-							sourceWriter.println("value = \"" + StringScrambler.scramble(develRawValue) + "\";");
+							sourceWriter.println("value = \"" + develRawValue + "\";");
 							sourceWriter.println("}");
 						}
 						sourceWriter.println("return value;");
