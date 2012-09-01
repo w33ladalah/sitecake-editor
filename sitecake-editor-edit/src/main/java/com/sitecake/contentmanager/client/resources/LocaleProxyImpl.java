@@ -2,9 +2,9 @@ package com.sitecake.contentmanager.client.resources;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
-import com.google.gwt.user.client.Window.Location;
 import com.google.inject.Inject;
 import com.sitecake.commons.client.config.ConfigRegistry;
+import com.sitecake.commons.client.util.Locale;
 import com.sitecake.commons.client.util.SynchronizationBarrier;
 import com.sitecake.contentmanager.client.EventBus;
 import com.sitecake.contentmanager.client.event.ErrorNotificationEvent;
@@ -12,62 +12,28 @@ import com.sitecake.contentmanager.client.event.ErrorNotificationEvent.Level;
 
 public class LocaleProxyImpl implements LocaleProxy {
 
-	private static final String INTERFACE_LOCALE = "LocaleProxyImpl.interfaceLocale";
-	
-	public enum LocaleCode {
-		EN,
-		SL,
-		SR,
-		ES,
-		DE,
-		FR,
-		DK,
-		IT,
-		RU,
-		CS,
-		SK
-	}
-	
 	private Messages messages;
 	
 	private SynchronizationBarrier synchronizationBarrier;
 	
 	private EventBus eventBus;
-	
-	private ConfigRegistry configRegistry;
 
 	@Override
 	public Messages messages() {
 		return messages;
 	}
-
+	
 	@Inject
 	protected LocaleProxyImpl(SynchronizationBarrier synchronizationBarrier,
-			EventBus eventBus, ConfigRegistry configRegistry) {
+			EventBus eventBus, ConfigRegistry configRegistry, Locale locale) {
 		this.synchronizationBarrier = synchronizationBarrier;
 		this.eventBus = eventBus;
-		this.configRegistry = configRegistry;
 		
 		synchronizationBarrier.lock();
 		
-		LocaleCode locale = getLocaleCode();
-		switch ( locale ) {
-		case EN:
-			GWT.runAsync(new RunAsyncCallback() {
-				
-				@Override
-				public void onSuccess() {
-					messages = GWT.create(MessagesEn.class);
-					completeProcess();
-				}
-				
-				@Override
-				public void onFailure(Throwable reason) {
-					failureCompletition(reason);
-				}
-			});
-			break;
-		case SL:
+		String code = locale.code().toLowerCase();
+		
+		if (code.startsWith("sl")) {
 			GWT.runAsync(new RunAsyncCallback() {
 				
 				@Override
@@ -81,8 +47,7 @@ public class LocaleProxyImpl implements LocaleProxy {
 					failureCompletition(reason);
 				}
 			});			
-			break;
-		case SR:
+		} else if (code.startsWith("sr")) {
 			GWT.runAsync(new RunAsyncCallback() {
 				
 				@Override
@@ -96,8 +61,7 @@ public class LocaleProxyImpl implements LocaleProxy {
 					failureCompletition(reason);
 				}
 			});			
-			break;
-		case ES:
+		} else if (code.startsWith("es")) {
 			GWT.runAsync(new RunAsyncCallback() {
 				
 				@Override
@@ -111,8 +75,7 @@ public class LocaleProxyImpl implements LocaleProxy {
 					failureCompletition(reason);
 				}
 			});			
-			break;
-		case DE:
+		} else if (code.startsWith("de")) {
 			GWT.runAsync(new RunAsyncCallback() {
 				
 				@Override
@@ -126,8 +89,7 @@ public class LocaleProxyImpl implements LocaleProxy {
 					failureCompletition(reason);
 				}
 			});			
-			break;
-		case FR:
+		} else if (code.startsWith("fr")) {
 			GWT.runAsync(new RunAsyncCallback() {
 				
 				@Override
@@ -141,8 +103,7 @@ public class LocaleProxyImpl implements LocaleProxy {
 					failureCompletition(reason);
 				}
 			});			
-			break;
-		case DK:
+		} else if (code.startsWith("dk")) {
 			GWT.runAsync(new RunAsyncCallback() {
 				
 				@Override
@@ -156,8 +117,7 @@ public class LocaleProxyImpl implements LocaleProxy {
 					failureCompletition(reason);
 				}
 			});			
-			break;
-		case IT:
+		} else if (code.startsWith("it")) {
 			GWT.runAsync(new RunAsyncCallback() {
 				
 				@Override
@@ -171,8 +131,7 @@ public class LocaleProxyImpl implements LocaleProxy {
 					failureCompletition(reason);
 				}
 			});			
-			break;
-		case RU:
+		} else if (code.startsWith("ru")) {
 			GWT.runAsync(new RunAsyncCallback() {
 				
 				@Override
@@ -186,8 +145,7 @@ public class LocaleProxyImpl implements LocaleProxy {
 					failureCompletition(reason);
 				}
 			});			
-			break;
-		case CS:
+		} else if (code.startsWith("cs")) {
 			GWT.runAsync(new RunAsyncCallback() {
 				
 				@Override
@@ -201,8 +159,7 @@ public class LocaleProxyImpl implements LocaleProxy {
 					failureCompletition(reason);
 				}
 			});			
-			break;
-		case SK:
+		} else if (code.startsWith("sk")) {
 			GWT.runAsync(new RunAsyncCallback() {
 				
 				@Override
@@ -216,8 +173,49 @@ public class LocaleProxyImpl implements LocaleProxy {
 					failureCompletition(reason);
 				}
 			});			
-			break;
-		}
+		} else if (code.equals("pt-br")) {
+			GWT.runAsync(new RunAsyncCallback() {
+				
+				@Override
+				public void onSuccess() {
+					messages = GWT.create(MessagesPtBr.class);
+					completeProcess();
+				}
+				
+				@Override
+				public void onFailure(Throwable reason) {
+					failureCompletition(reason);
+				}
+			});			
+		} else if (code.startsWith("pt")) {
+			GWT.runAsync(new RunAsyncCallback() {
+				
+				@Override
+				public void onSuccess() {
+					messages = GWT.create(MessagesPt.class);
+					completeProcess();
+				}
+				
+				@Override
+				public void onFailure(Throwable reason) {
+					failureCompletition(reason);
+				}
+			});			
+		} else {
+			GWT.runAsync(new RunAsyncCallback() {
+				
+				@Override
+				public void onSuccess() {
+					messages = GWT.create(MessagesEn.class);
+					completeProcess();
+				}
+				
+				@Override
+				public void onFailure(Throwable reason) {
+					failureCompletition(reason);
+				}
+			});
+		}		
 	}
 	
 	private void completeProcess() {
@@ -229,43 +227,4 @@ public class LocaleProxyImpl implements LocaleProxy {
 		synchronizationBarrier.release();
 	}
 	
-	private LocaleCode getLocaleCode() {
-		String interfaceLocale = configRegistry.get(INTERFACE_LOCALE);
-		if ( interfaceLocale == null || "".equals(interfaceLocale) ) {
-			return LocaleCode.EN;
-		} else if ( "auto".equalsIgnoreCase(interfaceLocale) ) {
-			interfaceLocale = Location.getParameter("scln");
-			if ( interfaceLocale == null || "".equals(interfaceLocale) ) {
-				interfaceLocale = getUserLocale();
-			}
-		}
-		
-		if ( LocaleCode.SL.name().equalsIgnoreCase(interfaceLocale) ) {
-			return LocaleCode.SL;
-		} else if ( LocaleCode.SR.name().equalsIgnoreCase(interfaceLocale) ) {
-			return LocaleCode.SR;
-		} else if ( LocaleCode.ES.name().equalsIgnoreCase(interfaceLocale) ) {
-			return LocaleCode.ES;
-		} else if ( LocaleCode.DE.name().equalsIgnoreCase(interfaceLocale) ) {
-			return LocaleCode.DE;
-		} else if ( LocaleCode.FR.name().equalsIgnoreCase(interfaceLocale) ) {
-			return LocaleCode.FR;
-		} else if ( LocaleCode.DK.name().equalsIgnoreCase(interfaceLocale) ) {
-			return LocaleCode.DK;
-		} else if ( LocaleCode.IT.name().equalsIgnoreCase(interfaceLocale) ) {
-			return LocaleCode.IT;
-		} else if ( LocaleCode.RU.name().equalsIgnoreCase(interfaceLocale) ) {
-			return LocaleCode.RU;
-		} else if ( LocaleCode.CS.name().equalsIgnoreCase(interfaceLocale) ) {
-			return LocaleCode.CS;
-		} else if ( LocaleCode.SK.name().equalsIgnoreCase(interfaceLocale) ) {
-			return LocaleCode.SK;
-		} else {
-			return LocaleCode.EN;
-		}
-	}
-	
-	private native String getUserLocale()/*-{
-		return $wnd.navigator.userLanguage || $wnd.navigator.language;		
-	}-*/;
 }
