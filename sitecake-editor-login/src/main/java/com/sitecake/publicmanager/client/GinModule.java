@@ -5,6 +5,7 @@ import com.google.inject.Singleton;
 import com.sitecake.commons.client.config.ConfigRegistry;
 import com.sitecake.commons.client.config.ServerConfigRegistry;
 import com.sitecake.commons.client.util.DomSelector;
+import com.sitecake.commons.client.util.Locale;
 import com.sitecake.commons.client.util.SynchronizationBarrier;
 import com.sitecake.commons.client.util.impl.SizzleDomSelector;
 import com.sitecake.publicmanager.client.resources.LocaleProxy;
@@ -20,6 +21,7 @@ public class GinModule extends AbstractGinModule {
 		bind(SynchronizationBarrier.class).in(Singleton.class);
 		bind(ConfigRegistry.class).to(ServerConfigRegistry.class).in(Singleton.class);		
 		bind(LocaleProxy.class).to(LocaleProxyImpl.class).in(Singleton.class);
+		bind(Locale.class).in(Singleton.class);
 	}
 
 }

@@ -6,6 +6,7 @@ import com.sitecake.commons.client.config.ConfigRegistry;
 import com.sitecake.commons.client.config.ServerConfigRegistry;
 import com.sitecake.commons.client.util.DocumentSelection;
 import com.sitecake.commons.client.util.DomSelector;
+import com.sitecake.commons.client.util.Locale;
 import com.sitecake.commons.client.util.SynchronizationBarrier;
 import com.sitecake.commons.client.util.impl.SizzleDomSelector;
 import com.sitecake.contentmanager.client.container.ClassTaggedContentContainerFactoryImpl;
@@ -90,6 +91,8 @@ public class GinModule extends AbstractGinModule {
 		
 		bind(EditableDomUtils.class).in(Singleton.class);
 		bind(Selection.class).to(SelectionImpl.class).in(Singleton.class);
+		
+		bind(Locale.class).in(Singleton.class);
 	}
 
 }

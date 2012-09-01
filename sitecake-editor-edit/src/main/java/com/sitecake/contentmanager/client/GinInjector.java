@@ -6,6 +6,7 @@ import com.google.gwt.inject.client.Ginjector;
 import com.sitecake.commons.client.config.ConfigRegistry;
 import com.sitecake.commons.client.util.DocumentSelection;
 import com.sitecake.commons.client.util.DomSelector;
+import com.sitecake.commons.client.util.Locale;
 import com.sitecake.commons.client.util.SynchronizationBarrier;
 import com.sitecake.contentmanager.client.content.ContentManager;
 import com.sitecake.contentmanager.client.contextmenu.ContextMenu;
@@ -47,4 +48,5 @@ public interface GinInjector extends Ginjector {
 	EditableDomUtils getEditableDomUtils();
 	Selection getSelection();
 	LocaleProxy getLocaleProxy();
+	Locale getLocale();
 }
