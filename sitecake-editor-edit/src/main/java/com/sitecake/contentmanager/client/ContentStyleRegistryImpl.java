@@ -62,8 +62,13 @@ public class ContentStyleRegistryImpl implements ContentStyleRegistry {
 			JsArray<StyleSheet> styleSheets = StyleSheet.getAll();
 			for (int i = 0; i < styleSheets.length(); i++) {
 				StyleSheet styleSheet = styleSheets.get(i);
-				for (int j = 0; j < styleSheet.cssRules().length(); j++) {
-					CSSStyleRule rule = styleSheet.cssRules().get(j);
+				if (styleSheet == null) continue;
+				JsArray<CSSStyleRule> cssRules = styleSheet.cssRules();
+				if (cssRules == null) continue;
+				for (int j = 0; j < cssRules.length(); j++) {
+					CSSStyleRule rule = cssRules.get(j);
+					if (rule == null) continue;
+					if (rule.selectorText() == null) continue;
 					String[] selectors = rule.selectorText().split(",");
 					for (String selector : selectors) {
 						for (JavaScriptRegExp matcher : matchers) {
