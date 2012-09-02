@@ -8,7 +8,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.sitecake.commons.client.config.Globals;
 import com.sitecake.commons.client.util.MimeBase64;
-import com.sitecake.commons.client.util.StringScrambler;
 import com.sitecake.commons.client.util.UrlBuilder;
 import com.sitecake.contentmanager.client.EventBus;
 import com.sitecake.contentmanager.client.GinInjector;
@@ -28,11 +27,11 @@ public class BasicUpdateManagerImpl implements UpdateManager {
 	 */
 	private static final long updateCheckTimeMargine = 24*60*60*1000L;
 	
-	private static String version  = StringScrambler.unscramble(GinInjector.instance.getGlobalConstants().rawVersion());
+	private static String version  = GinInjector.instance.getGlobalConstants().rawVersion();
 	
-	private static String hostSystem = StringScrambler.unscramble(GinInjector.instance.getGlobalConstants().hostSystem());
+	private static String hostSystem = GinInjector.instance.getGlobalConstants().hostSystem();
 	
-	private static String updateCheckUrl = StringScrambler.unscramble(GinInjector.instance.getGlobalConstants().updateCheckUrl());
+	private static String updateCheckUrl = GinInjector.instance.getGlobalConstants().updateCheckUrl();
 	
 	private static String serverVersion = Globals.get().getServerVersionId();
 	
