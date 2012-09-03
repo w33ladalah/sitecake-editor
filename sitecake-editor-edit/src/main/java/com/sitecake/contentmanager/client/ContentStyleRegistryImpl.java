@@ -52,11 +52,11 @@ public class ContentStyleRegistryImpl implements ContentStyleRegistry {
 			Element element = containers.get(containerName);
 			List<JavaScriptRegExp> matchers = new ArrayList<JavaScriptRegExp>();
 			if (element.hasAttribute("id")) {
-				matchers.add(JavaScriptRegExp.create("^\\s*#" + element.getAttribute("id") + "\\s+>?\\s*([^\\s,]+)\\s*$"));
+				matchers.add(JavaScriptRegExp.create("^\\s*#" + element.getAttribute("id") + "\\s+>?\\s*([^\\s,]+)"));
 			}
 			String[] cssClasseNames = element.getClassName().trim().split("\\s+");
 			for (String cssClassName : cssClasseNames) {
-				matchers.add(JavaScriptRegExp.create("^\\s*." + cssClassName + "\\s+>?\\s*([^\\s,]+)\\s*$"));
+				matchers.add(JavaScriptRegExp.create("^\\s*." + cssClassName + "\\s+>?\\s*([^\\s,]+)"));
 			}
 			
 			JsArray<StyleSheet> styleSheets = StyleSheet.getAll();
@@ -73,7 +73,8 @@ public class ContentStyleRegistryImpl implements ContentStyleRegistry {
 					for (String selector : selectors) {
 						for (JavaScriptRegExp matcher : matchers) {
 							JsArrayString matches = matcher.match(selector);
-							if (matches != null && matches.length() == 2) {
+							if (matches != null && matches.length() == 2
+									&& !containerStyles.contains(matches.get(1))) {
 								containerStyles.add(matches.get(1));
 							}
 						}
