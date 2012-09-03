@@ -108,11 +108,7 @@ public class TextItem extends ContentItem implements EditableTextItem {
 		return contentTypeName;
 	}
 	
-	@Override
-	public String getItemSelector() {
-		return type.toString().toLowerCase();
-	}
-
+	
 	@Override
 	public void setStyle(String style) {
 		if ( !this.style.equals(style) ) {
@@ -299,7 +295,14 @@ public class TextItem extends ContentItem implements EditableTextItem {
 	@Override
 	public String getHtml() {
 		String tagName = getElement().getTagName();
-		return "<" + tagName + " class=\"" + style + "\">" + htmlText + "</" + tagName + ">";
+		Element tmp = DOM.createDiv();
+		tmp.setInnerHTML(htmlText);
+		if ( tmp.getLastChild().getNodeName().equalsIgnoreCase("br") ) {
+			tmp.getLastChild().removeFromParent();
+		}
+		return "<" + tagName + " " +
+				(!"".equals(style) ? "class=\"" + style + "\" ": "") + 
+				">" + tmp.getInnerHTML() + "</" + tagName + ">";
 	}
 
 	public Node appendHtml(String html) {
