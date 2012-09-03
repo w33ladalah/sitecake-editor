@@ -108,7 +108,11 @@ public class TextItem extends ContentItem implements EditableTextItem {
 		return contentTypeName;
 	}
 	
-	
+	@Override
+	public String getItemSelector() {
+		return type.toString().toLowerCase();
+	}
+
 	@Override
 	public void setStyle(String style) {
 		if ( !this.style.equals(style) ) {

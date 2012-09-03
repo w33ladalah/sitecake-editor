@@ -35,9 +35,9 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
 import com.sitecake.commons.client.config.Globals;
-import com.sitecake.commons.client.util.CSSStyleDeclaration;
 import com.sitecake.commons.client.util.DomUtil;
 import com.sitecake.commons.client.util.UrlBuilder;
+import com.sitecake.commons.client.util.dom.CSSStyleDeclaration;
 import com.sitecake.contentmanager.client.EventBus;
 import com.sitecake.contentmanager.client.GinInjector;
 import com.sitecake.contentmanager.client.commons.Axis;
@@ -322,6 +322,11 @@ public class ImageItem extends ContentItem implements LinkableItem {
 		return CONTENT_TYPE_NAME;
 	}
 	
+	@Override
+	public String getItemSelector() {
+		return "img";
+	}
+
 	public void init(Element element) {
 		ImageObject imageObject = new ImageObject();
 		

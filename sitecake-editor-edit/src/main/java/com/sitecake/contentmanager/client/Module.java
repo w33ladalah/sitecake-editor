@@ -53,6 +53,9 @@ public class Module implements EntryPoint {
 		topContainer.getElement().setId("sitecake-toolbox");
 		RootPanel.get().add(topContainer);
 		
+		// inject SizzleDomSelector 
+		injector.getDomSelector();
+		
 		// create sync barrier
 		barrier = injector.getSynchronizationBarrier();
 
