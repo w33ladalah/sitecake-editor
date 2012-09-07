@@ -35,8 +35,6 @@ import com.sitecake.contentmanager.client.item.text.TextItem;
 import com.sitecake.contentmanager.client.resources.EditorClientBundle;
 import com.sitecake.contentmanager.client.resources.Messages;
 import com.sitecake.contentmanager.client.toolbar.ContentItemCreator;
-import com.sitecake.contentmanager.client.upload.ImageUploadObject;
-import com.sitecake.contentmanager.client.upload.SlideshowUploadObject;
 import com.sitecake.contentmanager.client.upload.UploadBatch;
 import com.sitecake.contentmanager.client.upload.UploadManager;
 import com.sitecake.contentmanager.client.upload.UploadObject;
@@ -375,19 +373,19 @@ public abstract class FileUploaderItem extends ContentItem {
 					continue;
 				}
 				
-				SlideshowUploadObject slideshowUploadObject = (SlideshowUploadObject)uploadObject;
-				
 				SlideshowImage slideshowImage = new SlideshowImage();
 				
-				slideshowImage.setId(slideshowUploadObject.getId());
-				slideshowImage.setUrl(slideshowUploadObject.getUrl());
-				slideshowImage.setThumbnailUrl(slideshowUploadObject.getThumbnailUrl());
-				slideshowImage.setThumbnailWidth(slideshowUploadObject.getThumbnailWidth());
-				slideshowImage.setThumbnailHeight(slideshowUploadObject.getThumbnailHeight());
-				slideshowImage.setCover( slideshowUploadObject.getResizedUrl() != null );
-				slideshowImage.setCoverUrl(slideshowUploadObject.getResizedUrl());
-				slideshowImage.setCoverWidth(slideshowUploadObject.getResizedWidth());
-				slideshowImage.setCoverHeight(slideshowUploadObject.getResizedHeight());
+				slideshowImage.setId(uploadObject.getResponse().getProperty("id"));
+				slideshowImage.setUrl(uploadObject.getResponse().getProperty("url"));
+				slideshowImage.setCover(uploadObject.getResponse().getProperty("resizedUrl") != null );
+				slideshowImage.setCoverUrl(uploadObject.getResponse().getProperty("resizedUrl"));
+				
+				String coverWidth = uploadObject.getResponse().getProperty("resizedWidth");
+				if ( coverWidth != null )
+					slideshowImage.setCoverWidth(Double.valueOf(coverWidth));
+				String coverHeight = uploadObject.getResponse().getProperty("resizedHeight");
+				if ( coverHeight != null )
+					slideshowImage.setCoverHeight(Double.valueOf(coverHeight));
 				
 				slideshowImages.add(slideshowImage);
 			}
@@ -410,17 +408,20 @@ public abstract class FileUploaderItem extends ContentItem {
 					continue;
 				}
 				
-				if ( uploadObject instanceof ImageUploadObject ) {
+				if ( uploadObject.getHeader("X-IMAGE") != null ) {
 
-					ImageUploadObject imageUploadObject = (ImageUploadObject)uploadObject;
-					
 					final ImageObject image = new ImageObject();
 					
-					image.setId(imageUploadObject.getId());
-					image.setUrl(imageUploadObject.getUrl());
-					image.setResizedUrl(imageUploadObject.getResizedUrl());
-					image.setResizedWidth(imageUploadObject.getResizedWidth());
-					image.setResizedHeight(imageUploadObject.getResizedHeight());
+					image.setId(uploadObject.getResponse().getProperty("id"));
+					image.setUrl(uploadObject.getResponse().getProperty("url"));
+					image.setResizedUrl(uploadObject.getResponse().getProperty("resizedUrl"));
+
+					String resizedWidth = uploadObject.getResponse().getProperty("resizedWidth");
+					if ( resizedWidth != null )
+						image.setResizedWidth(Double.valueOf(resizedWidth).intValue());
+					String resizedHeight = uploadObject.getResponse().getProperty("resizedHeight");
+					if ( resizedHeight != null )
+						image.setResizedHeight(Double.valueOf(resizedHeight).intValue());
 					
 					ContentItemCreator imageItemCreator = new ContentItemCreator() {
 						
@@ -434,7 +435,7 @@ public abstract class FileUploaderItem extends ContentItem {
 					
 				} else {
 					
-					final String link = "<a href=\"" + uploadObject.getUrl() + "\">" + 
+					final String link = "<a href=\"" + uploadObject.getResponse().getProperty("url") + "\">" + 
 						uploadObject.getFileName() + " (" + HumanReadable.bytes(uploadObject.getFile().size()) + ")</a>";
 					
 					ContentItemCreator fileItemCreator = new ContentItemCreator() {
@@ -574,21 +575,22 @@ public abstract class FileUploaderItem extends ContentItem {
 		return uploadObject;
 	}
 	
-	private ImageUploadObject createImageUploadObject(File file) {
-		ImageUploadObject object = new ImageUploadObject(file);
-		object.setRequestedResizedWidth((int)CSSStyleDeclaration.get(container.getElement()).getPropertyValueDouble("width"));
+	private UploadObject createImageUploadObject(File file) {
+		UploadObject object = new UploadObject(file);
+		object.setHeader("X-IMAGE", "true");
+		int requestedWidth = (int)CSSStyleDeclaration.get(container.getElement()).getPropertyValueDouble("width");
+		if ( requestedWidth > 0 )
+			object.setHeader("X-RESIZE-WIDTH", String.valueOf(requestedWidth));
 		return object;
 	}
 
-	private SlideshowUploadObject createSlideshowUploadObject(File file, int listIndex) {
-		SlideshowUploadObject object = new SlideshowUploadObject(file);
-		if ( imageUploadForSlideshow && ( listIndex == 0 ) ) {
-			object.setRequestedThumbnailDimension(thumbnailImageDimension);
-			object.setRequestedResizedWidth((int)CSSStyleDeclaration.get(container.getElement()).getPropertyValueDouble("width"));
-		} else if ( imageUploadForSlideshow && ( listIndex != 0 ) ) {
-			object.setRequestedThumbnailDimension(thumbnailImageDimension);
-		} else {
-			object.setRequestedResizedWidth((int)CSSStyleDeclaration.get(container.getElement()).getPropertyValueDouble("width"));
+	private UploadObject createSlideshowUploadObject(File file, int listIndex) {
+		UploadObject object = new UploadObject(file);
+		object.setHeader("X-IMAGE", "true");
+		if ( listIndex == 0 ) {
+			int requestedWidth = (int)CSSStyleDeclaration.get(container.getElement()).getPropertyValueDouble("width");
+			if ( requestedWidth > 0 )
+				object.setHeader("X-RESIZE-WIDTH", String.valueOf(requestedWidth));
 		}
 		return object;
 	}

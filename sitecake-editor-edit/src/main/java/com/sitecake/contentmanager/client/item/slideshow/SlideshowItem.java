@@ -5,10 +5,10 @@ import java.util.List;
 
 import com.allen_sauer.gwt.dnd.client.util.DOMUtil;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.EventTarget;
 import com.google.gwt.dom.client.ImageElement;
+import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Unit;
@@ -25,7 +25,6 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
 import com.sitecake.commons.client.util.DomUtil;
 import com.sitecake.commons.client.util.Guid;
-import com.sitecake.commons.client.util.JavaScriptRegExp;
 import com.sitecake.commons.client.util.dom.CSSStyleDeclaration;
 import com.sitecake.contentmanager.client.EventBus;
 import com.sitecake.contentmanager.client.GinInjector;
@@ -202,20 +201,15 @@ public class SlideshowItem extends ContentItem {
 		for ( int i = 0; i < element.getChildCount(); i++ ) {
 			SlideshowImage slideshowImage = new SlideshowImage();
 			
+			Node childNode = element.getChild(i);
+			if ( Node.ELEMENT_NODE != childNode.getNodeType() )
+				continue;
+			
 			Element itemElement = element.getChild(i).cast();
 			
 			String url = itemElement.getAttribute("href");
-			JavaScriptRegExp re = JavaScriptRegExp.create("(.*)([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})-3-orig\\.(.*)$", "gi");
-			JsArrayString matches = re.exec(url);
-			String urlPrefix = matches.get(1);
-			String id = matches.get(2);
-			String ext = matches.get(3);
 
-			String thumbnailUrl = urlPrefix + id + "-3-thumb." + ext;
-
-			slideshowImage.setId(id);
 			slideshowImage.setUrl(url);
-			slideshowImage.setThumbnailUrl(thumbnailUrl);
 			slideshowImage.setDescription(itemElement.getAttribute("title"));
 			
 			ImageElement imgElement = itemElement.getFirstChildElement().cast();
@@ -246,8 +240,8 @@ public class SlideshowItem extends ContentItem {
 		element.addClassName(DISCRIMINATOR);
 		SlideshowImage cover = getCoverImage();
 		coverImageElement.setSrc(cover.getCoverUrl());
-		coverImageElement.setWidth(cover.getCoverWidth());
-		coverImageElement.setHeight(cover.getCoverHeight());
+		coverImageElement.setWidth((int)cover.getCoverWidth());
+		coverImageElement.setHeight((int)cover.getCoverHeight());
 		coverImageRatio = (double)cover.getCoverWidth() / cover.getCoverHeight();
 		
 		if ( origElement != null ) {

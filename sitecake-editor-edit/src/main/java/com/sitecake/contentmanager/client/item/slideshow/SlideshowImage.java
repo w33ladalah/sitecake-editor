@@ -8,15 +8,9 @@ public class SlideshowImage {
 	
 	private String coverUrl;
 	
-	private String thumbnailUrl;
+	private double coverWidth;
 	
-	private int coverWidth;
-	
-	private int coverHeight;
-	
-	private int thumbnailWidth;
-	
-	private int thumbnailHeight;
+	private double coverHeight;
 	
 	private boolean cover;
 	
@@ -46,44 +40,20 @@ public class SlideshowImage {
 		this.coverUrl = coverUrl;
 	}
 
-	public String getThumbnailUrl() {
-		return thumbnailUrl;
-	}
-
-	public void setThumbnailUrl(String thumbnailUrl) {
-		this.thumbnailUrl = thumbnailUrl;
-	}
-
-	public int getCoverWidth() {
+	public double getCoverWidth() {
 		return coverWidth;
 	}
 
-	public void setCoverWidth(int coverWidth) {
+	public void setCoverWidth(double coverWidth) {
 		this.coverWidth = coverWidth;
 	}
 
-	public int getCoverHeight() {
+	public double getCoverHeight() {
 		return coverHeight;
 	}
 
-	public void setCoverHeight(int coverHeight) {
+	public void setCoverHeight(double coverHeight) {
 		this.coverHeight = coverHeight;
-	}
-
-	public int getThumbnailWidth() {
-		return thumbnailWidth;
-	}
-
-	public void setThumbnailWidth(int thumbnailWidth) {
-		this.thumbnailWidth = thumbnailWidth;
-	}
-
-	public int getThumbnailHeight() {
-		return thumbnailHeight;
-	}
-
-	public void setThumbnailHeight(int thumbnailHeight) {
-		this.thumbnailHeight = thumbnailHeight;
 	}
 
 	public boolean isCover() {

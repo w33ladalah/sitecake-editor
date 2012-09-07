@@ -43,7 +43,7 @@ public class SlideshowEditorImage extends Widget implements HasClickHandlers, Ha
 	
 	public SlideshowEditorImage(SlideshowImage image) {
 		setElement(uiBinder.createAndBindUi(this));
-		imageElement.setSrc(image.getThumbnailUrl());
+		imageElement.setSrc(image.getCoverUrl());
 		//imageElement.setWidth(image.getThumbnailWidth());
 		//imageElement.setHeight(image.getThumbnailHeight());
 	}

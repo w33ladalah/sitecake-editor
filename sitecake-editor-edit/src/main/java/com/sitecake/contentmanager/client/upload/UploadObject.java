@@ -1,5 +1,8 @@
 package com.sitecake.contentmanager.client.upload;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.sitecake.commons.client.util.MimeType;
 import com.sitecake.contentmanager.client.dom.File;
 
@@ -12,8 +15,6 @@ public class UploadObject {
 		ABORTED
 	}
 	
-	private String id;
-	
 	private Status status;
 	
 	private File file;
@@ -22,32 +23,18 @@ public class UploadObject {
 	
 	private String mimeType;
 	
-	private String url;
-
 	private String errorMessage;
 	
-	public String getId() {
-		return id;
-	}
-
-	void setId(String id) {
-		this.id = id;
-	}
-
+	private UploadObjectResponse response;
+	
+	private Map<String, String> headers;
+	
 	public Status getStatus() {
 		return status;
 	}
 
 	void setStatus(Status status) {
 		this.status = status;
-	}
-
-	public String getUrl() {
-		return url;
-	}
-
-	void setUrl(String url) {
-		this.url = url;
 	}
 
 	public File getFile() {
@@ -60,6 +47,7 @@ public class UploadObject {
 
 	public void setFileName(String fileName) {
 		this.fileName = fileName;
+		headers.put("X-FILENAME", fileName);
 	}
 
 	public String getMimeType() {
@@ -74,16 +62,37 @@ public class UploadObject {
 		return errorMessage;
 	}
 
-	void setErrorMessage(String errorMessage) {
+	public void setErrorMessage(String errorMessage) {
 		this.errorMessage = errorMessage;
 	}
 
+	public UploadObjectResponse getResponse() {
+		return response;
+	}
+
+	public void setResponse(UploadObjectResponse response) {
+		this.response = response;
+	}
+
+	public Map<String, String> headers() {
+		return headers;
+	}
+	
+	public void setHeader(String name, String value) {
+		headers.put(name, value);
+	}
+	
+	public String getHeader(String name) {
+		return headers.get(name);
+	}
+	
 	public UploadObject(File file) {
-		super();
+		headers = new HashMap<String, String>();
 		this.file = file;
 
 		status = Status.INITALIZED;
 		fileName = file.name();
+		headers.put("X-FILENAME", fileName);
 		
 		mimeType = file.mediaType();
 		if ( mimeType == null || "".equals(mimeType) ) {

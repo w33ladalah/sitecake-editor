@@ -2,6 +2,7 @@ package com.sitecake.contentmanager.client.upload;
 
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 import com.google.gwt.core.client.JavaScriptException;
@@ -208,54 +209,14 @@ public class UploadManagerImpl implements UploadManager {
 		}
 		
 		uploadObject.setStatus(UploadObject.Status.UPLOADED);
-		uploadObject.setId(response.getId());
-		uploadObject.setUrl(response.getUrl());
-		
-		if ( uploadObject instanceof SlideshowUploadObject ) {
-			
-			SlideshowUploadObject slideshowUploadObject = (SlideshowUploadObject)uploadObject;
-			SlideshowUploadObjectResponse slideshowResponse = response.cast();
-			
-			slideshowUploadObject.setResizedUrl(slideshowResponse.getResizedUrl());
-			slideshowUploadObject.setThumbnailUrl(slideshowResponse.getThumbnailUrl());
-			slideshowUploadObject.setResizedWidth(slideshowResponse.getResizedWidth());
-			slideshowUploadObject.setResizedHeight(slideshowResponse.getResizedHeight());
-			slideshowUploadObject.setThumbnailWidth(slideshowResponse.getThumbnailWidth());
-			slideshowUploadObject.setThumbnailHeight(slideshowResponse.getThumbnailHeight());
-			
-		} else if ( uploadObject instanceof ImageUploadObject ) {
-			
-			ImageUploadObject imageUploadObject = (ImageUploadObject)uploadObject;
-			ImageUploadObjectResponse imageResponse = response.cast();
-			
-			imageUploadObject.setResizedUrl(imageResponse.getResizedUrl());
-			imageUploadObject.setResizedWidth(imageResponse.getResizedWidth());
-			imageUploadObject.setResizedHeight(imageResponse.getResizedHeight());
-			
-		} 
+		uploadObject.setResponse(response);
 	}
 	
 	private void setUploadObjectRequest() {
-
-		xhr.setRequestHeader("X-UploadObject-FileName", uploadObject.getFileName().toLowerCase());
-		
-		if ( uploadObject instanceof SlideshowUploadObject ) {
-			
-			SlideshowUploadObject slideshowUploadObject = (SlideshowUploadObject)uploadObject;
-
-			if ( slideshowUploadObject.getRequestedResizedWidth() != -1 ) {
-				xhr.setRequestHeader("X-ImageUpload-ResizeWidth", String.valueOf(slideshowUploadObject.getRequestedResizedWidth()) );
-			}
-			
-			xhr.setRequestHeader("X-ImageUpload-ThumbDim", String.valueOf(slideshowUploadObject.getRequestedThumbnailDimension()) );
-			
-		} else if ( uploadObject instanceof ImageUploadObject ) {
-			
-			ImageUploadObject imageUploadObject = (ImageUploadObject)uploadObject;
-			
-			xhr.setRequestHeader("X-ImageUpload-ResizeWidth", String.valueOf(imageUploadObject.getRequestedResizedWidth()) );
-			
-		} 
+		Map<String, String> headers = uploadObject.headers();
+		for (String name : headers.keySet()) {
+			xhr.setRequestHeader(name, headers.get(name));
+		}
 	}
 	
 	private void setProgress(int fileBytesUploaded) {
