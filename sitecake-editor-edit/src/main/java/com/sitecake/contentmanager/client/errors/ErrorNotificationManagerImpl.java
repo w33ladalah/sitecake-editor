@@ -6,11 +6,12 @@ import com.sitecake.contentmanager.client.EventBus;
 import com.sitecake.contentmanager.client.TopContainer;
 import com.sitecake.contentmanager.client.event.ErrorNotificationEvent;
 import com.sitecake.contentmanager.client.event.ErrorNotificationHandler;
-import com.sitecake.contentmanager.client.resources.NonLocaleMessages;
+import com.sitecake.contentmanager.client.resources.LocaleProxy;
+import com.sitecake.contentmanager.client.resources.Messages;
 
 public class ErrorNotificationManagerImpl implements ErrorNotificationManager {
 
-	private static NonLocaleMessages messages = GWT.create(NonLocaleMessages.class);
+	private Messages messages;
 	
 	private ErrorNotificationDisplay errorDisplay;
 	
@@ -19,8 +20,10 @@ public class ErrorNotificationManagerImpl implements ErrorNotificationManager {
 	private int notificationNumber = 1;
 	
 	@Inject
-	public ErrorNotificationManagerImpl(EventBus eventBus, TopContainer topContainer) {
+	public ErrorNotificationManagerImpl(EventBus eventBus, TopContainer topContainer,
+			LocaleProxy localeProxy) {
 		this.topContainer = topContainer;
+		this.messages = localeProxy.messages();
 		
 		errorDisplay = GWT.create(ErrorNotificationDisplay.class);
 		

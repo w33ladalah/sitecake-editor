@@ -12,11 +12,14 @@ import com.sitecake.contentmanager.client.errors.FatalErrorOverlay;
 import com.sitecake.contentmanager.client.event.ErrorNotificationEvent;
 import com.sitecake.contentmanager.client.event.ErrorNotificationEvent.Level;
 import com.sitecake.contentmanager.client.resources.EditorClientBundle;
+import com.sitecake.contentmanager.client.resources.Messages;
 import com.sitecake.contentmanager.client.resources.NonLocaleMessages;
 
 public class Module implements EntryPoint {
 
-	private static NonLocaleMessages messages = GWT.create(NonLocaleMessages.class);
+	private static NonLocaleMessages nonLocaleMessages = GWT.create(NonLocaleMessages.class);
+	
+	private Messages messages;
 	
 	private GinInjector injector;
 	private SynchronizationBarrier barrier;
@@ -55,7 +58,7 @@ public class Module implements EntryPoint {
 		
 		// inject SizzleDomSelector 
 		injector.getDomSelector();
-		
+
 		// create sync barrier
 		barrier = injector.getSynchronizationBarrier();
 
@@ -82,7 +85,8 @@ public class Module implements EntryPoint {
 				onModuleLoad4();
 			}
 		});
-		injector.getLocaleProxy();		
+		
+		messages = injector.getLocaleProxy().messages();		
 		
 		barrier.release();
 	}
@@ -115,15 +119,17 @@ public class Module implements EntryPoint {
 					}
 				}
 				
+				String message = (messages != null) ? messages.uncaughtException() :
+					nonLocaleMessages.uncaughtException();
 				injector.getEventBus().fireEvent(new ErrorNotificationEvent(Level.FATAL, 
-						messages.uncaughtException(), text));
+						message, text));
 			}
 		});
 		
 		// load all services (also remote-dependent ones)
 		injector.getSessionManager();
 		injector.getUpdateManager();
-		
+
 		barrier.release();
 	}
 	
@@ -144,10 +150,15 @@ public class Module implements EntryPoint {
 		System.err.print(text);
 		
 		FatalErrorOverlay overlay;
+		String errorMsg1 = (messages != null) ? messages.errorMessage1() :
+			nonLocaleMessages.errorMessage1();
+		String errorMsg2 = (messages != null) ? messages.errorMessage2() :
+			nonLocaleMessages.errorMessage2();
+		
 		if ( GWT.isScript() ) {
-			overlay = new FatalErrorOverlay(messages.errorMessage1(), messages.errorMessage2(), text);
+			overlay = new FatalErrorOverlay(errorMsg1, errorMsg2, text);
 		} else {
-			overlay = new FatalErrorOverlay(messages.errorMessage1(), messages.errorMessage2(), "");
+			overlay = new FatalErrorOverlay(errorMsg1, errorMsg2, "");
 		}
 		
 		RootPanel.get().add(overlay);
