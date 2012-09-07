@@ -215,8 +215,8 @@ public class GoogleEmbeddedMap implements EmbeddedMap {
 		kmlLayer.setMap(map);		
 	}-*/;
 	
-	private static final String GOOGLE_MAP_RE = "(^|\\s|\")(https?://maps\\.google\\.[a-zA-Z]{2,4}/[^\\?]*\\?[^\"\\s]+)";
-	
+	private static final String GOOGLE_MAP_RE = "(^|\\s|\")(https?://maps\\.google(\\.[a-zA-Z]{2,4}){1,2}/[^\\?]*\\?[^\"\\s]+)";
+
 	public static GoogleEmbeddedMap create(String input) {
 		
 		try {
