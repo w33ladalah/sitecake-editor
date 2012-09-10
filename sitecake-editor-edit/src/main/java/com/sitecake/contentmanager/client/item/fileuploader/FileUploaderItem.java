@@ -29,6 +29,8 @@ import com.sitecake.contentmanager.client.event.UploadEvent;
 import com.sitecake.contentmanager.client.item.ContentItem;
 import com.sitecake.contentmanager.client.item.image.ImageItem;
 import com.sitecake.contentmanager.client.item.image.ImageObject;
+import com.sitecake.contentmanager.client.item.slider.SliderEntry;
+import com.sitecake.contentmanager.client.item.slider.SliderItem;
 import com.sitecake.contentmanager.client.item.slideshow.SlideshowImage;
 import com.sitecake.contentmanager.client.item.slideshow.SlideshowItem;
 import com.sitecake.contentmanager.client.item.text.TextItem;
@@ -82,6 +84,7 @@ public abstract class FileUploaderItem extends ContentItem {
 		GENERIC,
 		IMAGE,
 		SLIDESHOW,
+		SLIDER,
 		AUDIO,
 		VIDEO
 	}
@@ -170,6 +173,9 @@ public abstract class FileUploaderItem extends ContentItem {
 			break;
 		case SLIDESHOW:
 			textMessage.addClassName(EditorClientBundle.INSTANCE.css().uploadTextSlideshow());
+			break;
+		case SLIDER:
+			textMessage.addClassName(EditorClientBundle.INSTANCE.css().uploadTextSlider());
 			break;
 		default:
 			textMessage.addClassName(EditorClientBundle.INSTANCE.css().uploadTextFile());
@@ -400,6 +406,31 @@ public abstract class FileUploaderItem extends ContentItem {
 			
 			contentItemCreators.add(slideshowCreator);
 			
+		} else if ( type.equals(Type.SLIDER) ) {
+			
+			final List<SliderEntry> sliderEntries = new ArrayList<SliderEntry>();
+			
+			for ( UploadObject uploadObject : uploadBatch.getUploadObjects() ) {
+				
+				if ( !uploadObject.getStatus().equals(UploadObject.Status.UPLOADED) ) {
+					continue;
+				}
+				
+				SliderEntry entry = new SliderEntry();
+				entry.setUrl(uploadObject.getResponse().getProperty("url"));
+				sliderEntries.add(entry);
+			}
+			
+			ContentItemCreator slideshowCreator = new ContentItemCreator() {
+				
+				public ContentItem create() {
+					SliderItem item = SliderItem.create(sliderEntries);
+					return item;
+				}
+			};
+			
+			contentItemCreators.add(slideshowCreator);
+			
 		} else {
 			
 			for ( UploadObject uploadObject : uploadBatch.getUploadObjects() ) {
@@ -519,6 +550,7 @@ public abstract class FileUploaderItem extends ContentItem {
 		
 		case IMAGE:
 		case SLIDESHOW:
+		case SLIDER:
 			isAllowed = mimeType.equals(MimeType.IMAGE_JPEG) ||
 				mimeType.equals(MimeType.IMAGE_GIF) ||
 				mimeType.equals(MimeType.IMAGE_PNG) ||
@@ -563,6 +595,8 @@ public abstract class FileUploaderItem extends ContentItem {
 			case IMAGE_GIF:
 				if ( imageUploadForSlideshow ) {
 					uploadObject = createSlideshowUploadObject(file, listIndex);
+				} else if ( type.equals(Type.SLIDER) ) {
+					uploadObject = createSliderImageUploadObject(file);
 				} else {
 					uploadObject = createImageUploadObject(file);
 				}
@@ -584,6 +618,12 @@ public abstract class FileUploaderItem extends ContentItem {
 		return object;
 	}
 
+	private UploadObject createSliderImageUploadObject(File file) {
+		UploadObject object = new UploadObject(file);
+		object.setHeader("X-IMAGE", "true");
+		return object;
+	}
+	
 	private UploadObject createSlideshowUploadObject(File file, int listIndex) {
 		UploadObject object = new UploadObject(file);
 		object.setHeader("X-IMAGE", "true");
@@ -601,6 +641,7 @@ public abstract class FileUploaderItem extends ContentItem {
 		switch ( type ) {
 		case IMAGE:
 		case SLIDESHOW:
+		case SLIDER:
 			message = messages.selectFilesToUploadImage();
 			break;
 		case VIDEO:
@@ -629,6 +670,7 @@ public abstract class FileUploaderItem extends ContentItem {
 		switch ( type ) {
 		case IMAGE:
 		case SLIDESHOW:
+		case SLIDER:
 			mimeTypes = MimeType.IMAGE_JPEG + "," + MimeType.IMAGE_GIF + "," + MimeType.IMAGE_PNG;
 			break;
 		case VIDEO:

@@ -193,6 +193,9 @@ public interface EditorClientBundle extends ClientBundle {
 	@Source("images/placeholder/icon-slideshow.png")
 	ImageResource uploadSlideshow();	
 
+	@Source("images/placeholder/icon-slideshow.png")
+	ImageResource uploadSlider();	
+	
 	@Source("images/placeholder/icon-file.png")
 	ImageResource uploadFile();	
 
@@ -299,6 +302,12 @@ public interface EditorClientBundle extends ClientBundle {
 	
 	@Source("images/toolbar/icon-slideshow-active.png")
 	ImageResource toolbarIconSlideshowActive();
+
+	@Source("images/toolbar/icon-slider.png")
+	ImageResource toolbarIconSlider();
+	
+	@Source("images/toolbar/icon-slider-active.png")
+	ImageResource toolbarIconSliderActive();
 	
 	@Source("images/toolbar/icon-video.png")
 	ImageResource toolbarIconVideo();

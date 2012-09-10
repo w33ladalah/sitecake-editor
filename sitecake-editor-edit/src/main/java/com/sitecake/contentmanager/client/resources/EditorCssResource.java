@@ -283,6 +283,9 @@ public interface EditorCssResource extends CssResource {
 	@ClassName("upload-text-slideshow")
 	String uploadTextSlideshow();
 
+	@ClassName("upload-text-slider")
+	String uploadTextSlider();
+
 	@ClassName("upload-text-file")
 	String uploadTextFile();
 	
@@ -390,6 +393,12 @@ public interface EditorCssResource extends CssResource {
 	
 	@ClassName("new-slideshow-item-active")
 	String newSlideshowItemActive();
+
+	@ClassName("new-slider-item")
+	String newSliderItem();
+	
+	@ClassName("new-slider-item-active")
+	String newSliderItemActive();
 	
 	@ClassName("new-video-item")
 	String newVideoItem();

@@ -6,6 +6,7 @@ import com.sitecake.contentmanager.client.item.html.HtmlItemFactory;
 import com.sitecake.contentmanager.client.item.image.ImageItemFactory;
 import com.sitecake.contentmanager.client.item.list.ListItemFactory;
 import com.sitecake.contentmanager.client.item.map.MapItemFactory;
+import com.sitecake.contentmanager.client.item.slider.SliderItemFactory;
 import com.sitecake.contentmanager.client.item.slideshow.SlideshowItemFactory;
 import com.sitecake.contentmanager.client.item.text.TextItemFactory;
 import com.sitecake.contentmanager.client.item.video.VideoItemFactory;
@@ -21,6 +22,7 @@ public class ContentItemFactoryRegistryProvider implements Provider<ContentItemF
 		registry.registerFactory(new VideoItemFactory());
 		registry.registerFactory(new MapItemFactory());
 		registry.registerFactory(new SlideshowItemFactory());
+		registry.registerFactory(new SliderItemFactory());
 		registry.registerFactory(new ImageItemFactory());
 		registry.registerFactory(new HtmlItemFactory());
 		registry.registerFactory(new ListItemFactory());

@@ -12,7 +12,8 @@ public enum ToolbarComponent {
 	IMAGE, 			// image
 	FLASH,			// any flash/swf content
 	VIDEO,			// youtube/vimeo/etc. flash/html5 video
-	SLIDESHOW,		// image slide show
+	SLIDESHOW,		// image slideshow
+	SLIDER,			// image slider
 	MAP,			// google map widget
 	HTML,			// row HTML block
 	CBOX,			// contact box/form

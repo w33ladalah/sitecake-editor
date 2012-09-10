@@ -774,6 +774,14 @@ div.upload-text-file {
 	width: 100%;
 }
 
+@sprite div.upload-select div.upload-text-slider {
+	gwt-image: 'uploadSlider';
+	background-position: center 48px;
+	line-height: 91px;
+	height: 100%;
+	width: 100%;
+}
+
 @sprite div.upload-select div.upload-text-file {
 	gwt-image: 'uploadFile';
 	background-position: center 48px;
@@ -975,6 +983,14 @@ div.video-item-select-overlay {
 
 @sprite .new-slideshow-item-active div {
 	gwt-image: 'toolbarIconSlideshowActive';
+}
+
+@sprite .new-slider-item div {
+	gwt-image: 'toolbarIconSlider';
+}
+
+@sprite .new-slider-item-active div {
+	gwt-image: 'toolbarIconSliderActive';
 }
 
 @sprite .new-flash-item div {

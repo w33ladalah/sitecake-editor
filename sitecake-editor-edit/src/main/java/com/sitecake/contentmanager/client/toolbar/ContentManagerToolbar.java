@@ -74,7 +74,7 @@ public class ContentManagerToolbar extends Composite {
 	private static final String POSITION_Y = "ContentManagerToolbar.top";
 	
 	private static final String TOOLBAR_COMPONENTS = "Toolbar.components";
-	private static final String DEFAULT_TOOLBAR_COMPONENTS = "HEADING1,HEADING2,HEADING3,TEXTLIST,TEXT,SEP,IMAGE,SLIDESHOW,VIDEO,SEP,FLASH,MAP,HTML,FILE,CBOX";
+	private static final String DEFAULT_TOOLBAR_COMPONENTS = "HEADING1,HEADING2,HEADING3,TEXTLIST,TEXT,SEP,IMAGE,SLIDESHOW,SLIDER,VIDEO,SEP,FLASH,MAP,HTML,FILE,CBOX";
 	
 	private static ContentManagerToolbarUiBinder uiBinder = GWT
 			.create(ContentManagerToolbarUiBinder.class);
@@ -491,6 +491,9 @@ public class ContentManagerToolbar extends Composite {
 					break;
 				case SLIDESHOW:
 					toolbarItem = new NewSlideshowItem();
+					break;
+				case SLIDER:
+					toolbarItem = new NewSliderItem();
 					break;
 				case VIDEO:
 					toolbarItem = new NewVideoItem();
