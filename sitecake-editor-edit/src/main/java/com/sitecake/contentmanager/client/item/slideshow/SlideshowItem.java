@@ -526,6 +526,9 @@ public class SlideshowItem extends ContentItem {
 			case RESIZE:
 				dragStartResize();
 				break;
+			
+			default:
+				break;
 		}
 	}
 
@@ -534,6 +537,9 @@ public class SlideshowItem extends ContentItem {
 			case RESIZE:
 				dragMoveResize();
 				break;
+				
+			default:
+				break;				
 		}
 	}
 
@@ -542,6 +548,9 @@ public class SlideshowItem extends ContentItem {
 			case RESIZE:
 				dragStopResize();
 				break;
+				
+			default:
+				break;				
 		}
 	}
 

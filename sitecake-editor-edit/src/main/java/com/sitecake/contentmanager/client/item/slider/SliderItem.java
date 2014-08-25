@@ -107,7 +107,7 @@ public class SliderItem extends ContentItem {
 		this.entries = entries;
 		
 		if ( origElement != null && origElement.getClassName() != null )
-			setStyle(origElement.getClassName().replaceAll(DISCRIMINATOR, ""));
+			setStyle(origElement.getClassName().replaceAll(DISCRIMINATOR, "").trim());
 		
 		codeContainer.setInnerHTML(generateSliderCode(entries));
 	}

@@ -1,6 +1,7 @@
 package com.sitecake.contentmanager.client.resources;
 
 
+
 public interface MessagesPtBr extends com.google.gwt.i18n.client.Messages, Messages {
 
 	@DefaultMessage("Ops! O SiteCake teve um problema!")
@@ -11,6 +12,9 @@ public interface MessagesPtBr extends com.google.gwt.i18n.client.Messages, Messa
 	
 	@DefaultMessage("Detalhes do problema")
 	String uncaughtException();
+	
+	@DefaultMessage("Invalid response received from the server")	
+	String invalidServiceResponse();
 	
 	@DefaultMessage("Clique para editar")
 	String newTextItemDefaultContent();

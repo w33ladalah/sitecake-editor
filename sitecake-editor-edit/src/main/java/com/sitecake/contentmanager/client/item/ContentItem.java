@@ -59,6 +59,7 @@ public abstract class ContentItem extends WidgetEx implements HasClickHandlers, 
 
 	public void setStyle(String style) {
 		assert style != null;
+		style = style.trim();
 		
 		if ( !this.style.equals(style) ) {
 			if ( "".equals(style) ) {

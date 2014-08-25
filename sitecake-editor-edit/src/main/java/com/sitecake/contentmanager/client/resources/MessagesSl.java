@@ -1,6 +1,7 @@
 package com.sitecake.contentmanager.client.resources;
 
 
+
 public interface MessagesSl extends com.google.gwt.i18n.client.Messages, Messages {
 	
 	@DefaultMessage("Prišlo je do napake!")
@@ -11,6 +12,9 @@ public interface MessagesSl extends com.google.gwt.i18n.client.Messages, Message
 	
 	@DefaultMessage("Nedefinirana napaka")
 	String uncaughtException();
+	
+	@DefaultMessage("Invalid response received from the server")	
+	String invalidServiceResponse();
 	
 	@DefaultMessage("Klikni za urejanje")
 	String newTextItemDefaultContent();

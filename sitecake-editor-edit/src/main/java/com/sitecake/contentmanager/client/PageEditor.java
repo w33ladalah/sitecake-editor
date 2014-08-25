@@ -93,6 +93,7 @@ import com.sitecake.contentmanager.client.item.html.HtmlItem;
 import com.sitecake.contentmanager.client.item.map.MapItem;
 import com.sitecake.contentmanager.client.item.text.TextItem;
 import com.sitecake.contentmanager.client.item.video.VideoItem;
+import com.sitecake.contentmanager.client.pages.PageManager;
 import com.sitecake.contentmanager.client.properties.PropertyManager;
 import com.sitecake.contentmanager.client.resources.LocaleProxy;
 import com.sitecake.contentmanager.client.resources.Messages;
@@ -219,7 +220,8 @@ public class PageEditor implements DeleteHandler, EditItemHandler, OverItemHandl
 	
 	private Messages messages;
 	
-	private boolean pageManager;
+	private boolean pageManagerActive;
+	private PageManager pageManager;
 	
 	@Inject
 	public PageEditor(EventBus eventBus, ContentContainerFactory containerFactory, EditorHistory history,
@@ -280,12 +282,15 @@ public class PageEditor implements DeleteHandler, EditItemHandler, OverItemHandl
 		selectedItems = new ArrayList<ContentItem>();
 		
 		editPhase = EditPhase.IDLE;
-		pageManager = false;
+		pageManagerActive = false;
 		
 		itemOrderComparator = new ItemOrderComparator();
 		
 		topContainer.add(toolbar);
 		toolbar.setDragController(toolbarDragController);
+		
+		pageManager = GinInjector.instance.getPageManager();
+		RootPanel.get().add(pageManager);
 	}
 
 	private void initContainers(ContentContainerFactory containerFactory) {
@@ -487,6 +492,8 @@ public class PageEditor implements DeleteHandler, EditItemHandler, OverItemHandl
 	public void onDelete(DeleteEvent event) {
 		if ( !isActionExecutable() ) return;
 
+		//if ( editPhase.equals(EditPhase.EDITING_ITEM)) return;
+		
 		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 			
 			@Override
@@ -685,8 +692,9 @@ public class PageEditor implements DeleteHandler, EditItemHandler, OverItemHandl
 
 	@Override
 	public void onCancel(CancelEvent event) {
-		if (pageManager) {
-			pageManager = false;
+		if (pageManagerActive) {
+			pageManagerActive = false;
+			pageManager.close();
 			showBodyElements();
 		} else {
 			if ( !isActionExecutable() ) return;
@@ -1221,6 +1229,8 @@ public class PageEditor implements DeleteHandler, EditItemHandler, OverItemHandl
 			Node node = nodes.getItem(i);
 			if (node.getNodeType() == Node.ELEMENT_NODE) {
 				Element el = node.cast();
+				if (pageManager.getElement().equals(el))
+					continue;				
 				String val = el.getStyle().getDisplay();
 				if (val != null && !"".equals(val)) {
 					if (el.hasAttribute("display-orig")) {
@@ -1240,6 +1250,8 @@ public class PageEditor implements DeleteHandler, EditItemHandler, OverItemHandl
 			Node node = nodes.getItem(i);
 			if (node.getNodeType() == Node.ELEMENT_NODE) {
 				Element el = node.cast();
+				if (pageManager.getElement().equals(el))
+					continue;
 				String val = el.getStyle().getDisplay();
 				if (val != null && !"".equals(val)) {
 					el.setAttribute("display-orig", val);
@@ -1251,9 +1263,10 @@ public class PageEditor implements DeleteHandler, EditItemHandler, OverItemHandl
 
 	@Override
 	public void onPageManager(PageManagerEvent event) {
-		if (!pageManager && event.isOpen()) {
-			pageManager = true;
+		if (!pageManagerActive && event.isOpen()) {
+			pageManagerActive = true;
 			hideBodyElements();
+			pageManager.enable();
 		}
 	}
 	

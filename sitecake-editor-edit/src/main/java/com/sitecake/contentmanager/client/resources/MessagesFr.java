@@ -1,6 +1,7 @@
 package com.sitecake.contentmanager.client.resources;
 
 
+
 public interface MessagesFr extends com.google.gwt.i18n.client.Messages, Messages {
 
 	@DefaultMessage("SiteCake a rencontré un problème!")
@@ -11,6 +12,9 @@ public interface MessagesFr extends com.google.gwt.i18n.client.Messages, Message
 	
 	@DefaultMessage("Erreur inconnue")
 	String uncaughtException();
+	
+	@DefaultMessage("Invalid response received from the server")	
+	String invalidServiceResponse();
 	
 	@DefaultMessage("Cliquer pour éditer")
 	String newTextItemDefaultContent();

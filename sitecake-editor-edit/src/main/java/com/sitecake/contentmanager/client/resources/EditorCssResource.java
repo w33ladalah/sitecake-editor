@@ -424,4 +424,7 @@ public interface EditorCssResource extends CssResource {
 	@ClassName("new-contact-item-active")
 	String newContactItemActive();
 	
+	@ClassName("page-manager-positioner")
+	String pageManagerPositioner();
+	
 }

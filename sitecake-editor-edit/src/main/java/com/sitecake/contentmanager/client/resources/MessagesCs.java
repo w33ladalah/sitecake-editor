@@ -13,6 +13,9 @@ public interface MessagesCs extends com.google.gwt.i18n.client.Messages, Message
 	@DefaultMessage("Nezachycená výjimka")
 	String uncaughtException();
 	
+	@DefaultMessage("Invalid response received from the server")	
+	String invalidServiceResponse();
+	
 	@DefaultMessage("Klikněte pro editaci")
 	String newTextItemDefaultContent();
 	

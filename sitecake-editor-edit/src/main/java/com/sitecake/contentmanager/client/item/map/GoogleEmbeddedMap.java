@@ -216,11 +216,19 @@ public class GoogleEmbeddedMap implements EmbeddedMap {
 	}-*/;
 	
 	private static final String GOOGLE_MAP_RE = "(^|\\s|\")(https?://maps\\.google(\\.[a-zA-Z]{2,4}){1,2}/[^\\?]*\\?[^\"\\s]+)";
-
+	private static final String GOOGLE_NEW_MAP_RE = "(https?)://(www\\.)?google\\.([a-z]{2,4})/maps/(place/(.+)/)?@(-?[0-9\\.]+),(-?[0-9\\.]+),([0-9]+)(m|z)/?";
+	
 	public static GoogleEmbeddedMap create(String input) {
 		
 		try {
-			List<String> matches = JsStringUtil.match(GOOGLE_MAP_RE, input);
+			List<String> matches = JsStringUtil.match(GOOGLE_NEW_MAP_RE, input);
+			if (matches != null) {
+				input = matches.get(1) + "://maps.google." + matches.get(3) + "/?" +
+						"ll=" + matches.get(6) + "," + matches.get(7) +
+						((matches.get(5) != null) ? "&q=" + matches.get(5) : "") +
+						"&z=" + ("m".equalsIgnoreCase(matches.get(9)) ?  "12" : matches.get(8));
+			}
+			matches = JsStringUtil.match(GOOGLE_MAP_RE, input);
 			if ( matches == null || matches.size() < 3 || matches.get(2) == null ) return null;
 			
 			GoogleEmbeddedMap map = new GoogleEmbeddedMap();

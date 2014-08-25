@@ -1,6 +1,7 @@
 package com.sitecake.contentmanager.client.resources;
 
 
+
 public interface MessagesSk extends com.google.gwt.i18n.client.Messages, Messages {
 
 	@DefaultMessage("V SiteCake došlo k preblému!")
@@ -11,6 +12,9 @@ public interface MessagesSk extends com.google.gwt.i18n.client.Messages, Message
 	
 	@DefaultMessage("Nezachytená výnimka")
 	String uncaughtException();
+	
+	@DefaultMessage("Invalid response received from the server")	
+	String invalidServiceResponse();
 	
 	@DefaultMessage("Kliknite pre editáciu")
 	String newTextItemDefaultContent();

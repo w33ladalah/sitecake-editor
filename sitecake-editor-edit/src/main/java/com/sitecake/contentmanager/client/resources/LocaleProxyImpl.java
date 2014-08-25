@@ -201,6 +201,34 @@ public class LocaleProxyImpl implements LocaleProxy {
 					failureCompletition(reason);
 				}
 			});			
+		} else if (code.startsWith("pl")) {
+			GWT.runAsync(new RunAsyncCallback() {
+				
+				@Override
+				public void onSuccess() {
+					messages = GWT.create(MessagesPl.class);
+					completeProcess();
+				}
+				
+				@Override
+				public void onFailure(Throwable reason) {
+					failureCompletition(reason);
+				}
+			});		
+		} else if (code.startsWith("zh-cn")) {
+			GWT.runAsync(new RunAsyncCallback() {
+				
+				@Override
+				public void onSuccess() {
+					messages = GWT.create(MessagesZhCn.class);
+					completeProcess();
+				}
+				
+				@Override
+				public void onFailure(Throwable reason) {
+					failureCompletition(reason);
+				}
+			});
 		} else {
 			GWT.runAsync(new RunAsyncCallback() {
 				

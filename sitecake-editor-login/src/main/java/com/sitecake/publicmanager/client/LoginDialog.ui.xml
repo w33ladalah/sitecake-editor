@@ -44,8 +44,6 @@
 			<g:HTMLPanel>
 				<div style="clear:both"></div>
 				<g:Anchor ui:field="switchToChangeBox" styleName="{res.css.linkButton}"/>
-				<span class="{res.css.linkButton}">|</span>
-				<g:Anchor ui:field="forgotPasswordButton" styleName="{res.css.linkButton}"/>
 			</g:HTMLPanel>
 		</g:FlowPanel>
 		

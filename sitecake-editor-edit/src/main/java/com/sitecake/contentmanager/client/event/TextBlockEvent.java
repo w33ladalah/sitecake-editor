@@ -15,8 +15,7 @@ public class TextBlockEvent extends GwtEvent<TextBlockHandler> {
 		HTML,
 		VIDEO,
 		FLASH,
-		MAP,
-		AUTO
+		MAP
 	}
 	
 	private ContentItem originItem;

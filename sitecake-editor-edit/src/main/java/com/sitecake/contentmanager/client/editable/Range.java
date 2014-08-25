@@ -1158,15 +1158,18 @@ public class Range {
 				
 				for ( int i = 0; i < rangeTreeNode.children.size(); i++) {
 					switch ( rangeTreeNode.children.get(i).type ) {
-					case NONE:
-						noneFound = true;
-						break;
-					case FULL:
-						fullFound = true;
-						break;
-					case PARTIAL:
-						partialFound = true;
-						break;
+						case NONE:
+							noneFound = true;
+							break;
+						case FULL:
+							fullFound = true;
+							break;
+						case PARTIAL:
+							partialFound = true;
+							break;
+							
+						default:
+							break;
 					}
 				}
 

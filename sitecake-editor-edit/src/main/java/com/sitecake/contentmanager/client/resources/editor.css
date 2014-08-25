@@ -1016,3 +1016,11 @@ div.video-item-select-overlay {
 @sprite .new-contact-item-active div {
 	gwt-image: 'toolbarIconContactActive';
 }
+
+.page-manager-positioner {
+	border: dotted 1px red;
+	width: 148px;
+	height: 198px;
+	display: inline-block;
+	margin: 10px;
+}

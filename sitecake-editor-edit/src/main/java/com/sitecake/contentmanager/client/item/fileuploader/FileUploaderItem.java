@@ -466,7 +466,7 @@ public abstract class FileUploaderItem extends ContentItem {
 					
 				} else {
 					
-					final String link = "<a href=\"" + uploadObject.getResponse().getProperty("url") + "\">" + 
+					final String link = "<a href=\"" + uploadObject.getResponse().getProperty("url") + "\" target=\"_blank\">" + 
 						uploadObject.getFileName() + " (" + HumanReadable.bytes(uploadObject.getFile().size()) + ")</a>";
 					
 					ContentItemCreator fileItemCreator = new ContentItemCreator() {

@@ -42,6 +42,10 @@ public class LocaleProxyImpl implements LocaleProxy {
 			messages = GWT.create(MessagesPtBr.class);
 		} else if (code.startsWith("pt")) {
 			messages = GWT.create(MessagesPt.class);
+		} else if (code.startsWith("pl")) {
+			messages = GWT.create(MessagesPl.class);
+		} else if (code.startsWith("zh-cn")) {
+			messages = GWT.create(MessagesZhCn.class);
 		} else {
 			messages = GWT.create(MessagesEn.class);
 		}

@@ -17,6 +17,10 @@ import com.sitecake.contentmanager.client.event.RedoEvent;
 import com.sitecake.contentmanager.client.event.SelectEvent;
 import com.sitecake.contentmanager.client.event.StartEditingEvent;
 import com.sitecake.contentmanager.client.event.StartEditingHandler;
+import com.sitecake.contentmanager.client.event.StartPageManagerEvent;
+import com.sitecake.contentmanager.client.event.StartPageManagerHandler;
+import com.sitecake.contentmanager.client.event.StopPageManagerEvent;
+import com.sitecake.contentmanager.client.event.StopPageManagerHandler;
 import com.sitecake.contentmanager.client.event.UndoEvent;
 
 public class KeyboardController implements CloseHandler<Window> {
@@ -26,6 +30,7 @@ public class KeyboardController implements CloseHandler<Window> {
 	private static final int KEY_P = 80;
 	private static final int KEY_ESC = 27;
 	private static final int KEY_DEL = 46;
+	private static final int KEY_BACKSPACE = 8;	
 	private static final int KEY_A = 65;
 	private static final int KEY_ARROW_LEFT = 37;
 	private static final int KEY_ARROW_RIGHT = 39;
@@ -35,6 +40,8 @@ public class KeyboardController implements CloseHandler<Window> {
 	private EventBus eventBus;
 	
 	private boolean editMode = false;
+	
+	private boolean pageManagerMode = false;
 	
 	@Inject
 	public KeyboardController(EventBus eventBus) {
@@ -55,6 +62,21 @@ public class KeyboardController implements CloseHandler<Window> {
 				editMode = false;
 			}
 		});
+		
+		eventBus.addHandler(StartPageManagerEvent.getType(), new StartPageManagerHandler() {
+			@Override
+			public void onStartPageManager(StartPageManagerEvent event) {
+				pageManagerMode = true;
+			}
+		});
+
+		eventBus.addHandler(StopPageManagerEvent.getType(), new StopPageManagerHandler() {
+			@Override
+			public void onStopPageManager(StopPageManagerEvent event) {
+				pageManagerMode = false;
+			}
+		});
+		
 	}
 
 	@Override
@@ -65,13 +87,16 @@ public class KeyboardController implements CloseHandler<Window> {
 	private native void init()/*-{
 		var self = this;
 		$doc.onkeydown = function(evt) {
-			self.@com.sitecake.contentmanager.client.KeyboardController::onKeyDown(Lcom/google/gwt/user/client/Event;)(evt || $wnd.event);
+			var ret = self.@com.sitecake.contentmanager.client.KeyboardController::onKeyDown(Lcom/google/gwt/user/client/Event;)(evt || $wnd.event);
+			return ret;
 		}
 		$doc.onkeypress = function(evt) {
-			self.@com.sitecake.contentmanager.client.KeyboardController::onKeyPress(Lcom/google/gwt/user/client/Event;)(evt || $wnd.event);
+			var ret = self.@com.sitecake.contentmanager.client.KeyboardController::onKeyPress(Lcom/google/gwt/user/client/Event;)(evt || $wnd.event);
+			return ret;
 		}
 		$doc.onkeyup = function(evt) {
-			self.@com.sitecake.contentmanager.client.KeyboardController::onKeyUp(Lcom/google/gwt/user/client/Event;)(evt || $wnd.event);
+			var ret = self.@com.sitecake.contentmanager.client.KeyboardController::onKeyUp(Lcom/google/gwt/user/client/Event;)(evt || $wnd.event);
+			return ret;
 		}
 	}-*/;
 	
@@ -81,7 +106,7 @@ public class KeyboardController implements CloseHandler<Window> {
 		$doc.onkeyup = null;		
 	}-*/;
 	
-	private void onKeyDown(Event event) {
+	private Boolean onKeyDown(Event event) {
 		int keyCode = DOM.eventGetKeyCode(event);
 		boolean ctrlKey = DOM.eventGetCtrlKey(event) || DOM.eventGetMetaKey(event);
 		//GWT.log("onKeyDown:" + keyCode);
@@ -108,36 +133,38 @@ public class KeyboardController implements CloseHandler<Window> {
 				}
 				break;
 			case KEY_DEL:
-				if ( !editMode ) {
+			case KEY_BACKSPACE:
+				if ( !editMode && !pageManagerMode) {
 					eventBus.fireEvent(new DeleteEvent(null));
+					sink = true;
 				}
 				break;
 			case KEY_ARROW_LEFT:
-				if ( !editMode ) {
+				if ( !editMode && !pageManagerMode) {
 					eventBus.fireEvent(new MoveEvent(Direction.LEFT));
 					sink = true;
 				}
 				break;
 			case KEY_ARROW_RIGHT:
-				if ( !editMode ) {
+				if ( !editMode && !pageManagerMode) {
 					eventBus.fireEvent(new MoveEvent(Direction.RIGHT));
 					sink = true;
 				}
 				break;
 			case KEY_ARROW_UP:
-				if ( !editMode ) {
+				if ( !editMode && !pageManagerMode) {
 					eventBus.fireEvent(new MoveEvent(Direction.UP));
 					sink = true;
 				}
 				break;
 			case KEY_ARROW_DOWN:
-				if ( !editMode ) {
+				if ( !editMode && !pageManagerMode) {
 					eventBus.fireEvent(new MoveEvent(Direction.DOWN));
 					sink = true;
 				}
 				break;
 			case KEY_P:
-				if ( !editMode ) {
+				if ( !editMode && !pageManagerMode) {
 					eventBus.fireEvent(new PageManagerEvent(true));
 					sink = true;
 				}				
@@ -145,14 +172,57 @@ public class KeyboardController implements CloseHandler<Window> {
 		
 		if ( sink ) {
 			event.preventDefault();
+			event.stopPropagation();
+			return false;
 		}
+		return true;
 	}
 	
-	private void onKeyPress(Event event) {
+	private Boolean onKeyPress(Event event) {
+		int keyCode = DOM.eventGetKeyCode(event);
+		//boolean ctrlKey = DOM.eventGetCtrlKey(event) || DOM.eventGetMetaKey(event);
+		//GWT.log("onKeyDown:" + keyCode);
+		boolean sink = false;
 		
+		switch ( keyCode ) {
+		
+			case KEY_BACKSPACE:
+				if ( !editMode && !pageManagerMode) {
+					sink = true;
+				}
+				break;		
+		}
+		
+		if ( sink ) {
+			event.preventDefault();
+			event.stopPropagation();
+			return false;
+		}
+		
+		return true;
 	}
 	
-	private void onKeyUp(Event event) {
+	private Boolean onKeyUp(Event event) {
+		int keyCode = DOM.eventGetKeyCode(event);
+		//boolean ctrlKey = DOM.eventGetCtrlKey(event) || DOM.eventGetMetaKey(event);
+		//GWT.log("onKeyDown:" + keyCode);
+		boolean sink = false;
 		
+		switch ( keyCode ) {
+		
+			case KEY_BACKSPACE:
+				if ( !editMode && !pageManagerMode) {
+					sink = true;
+				}
+				break;		
+		}
+		
+		if ( sink ) {
+			event.preventDefault();
+			event.stopPropagation();
+			return false;
+		}
+		
+		return true;
 	}	
 }

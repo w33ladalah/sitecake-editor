@@ -56,7 +56,15 @@ public class BasicUpdateManagerImpl implements UpdateManager {
 	}
 	
 	private void checkForUpdate() {
-		UrlBuilder urlBuilder = new UrlBuilder(updateCheckUrl);
+		UrlBuilder urlBuilder;
+		
+		try {
+			urlBuilder = new UrlBuilder(updateCheckUrl);
+		} catch (IllegalArgumentException e) {
+			eventBus.fireEventDeferred(new ErrorNotificationEvent(Level.WARNING, 
+					e.getMessage()));
+			return;
+		}
 		
 		String data = "version=" + version +
 			"&hostSystem=" + hostSystem +

@@ -17,12 +17,7 @@ public class CSSStyleDeclaration extends JavaScriptObject {
 	}-*/;
 	
 	public final int getPropertyValueInt(String propertyName) {
-		String value = getPropertyValue(propertyName);
-		int result = 0;
-		if ( propertyName != null && !"".equals(propertyName) ) {
-			result = Integer.valueOf(value.replaceAll("px", "").trim());
-		}
-		return result;
+		return (int)getPropertyValueDouble(propertyName);
 	}
 	
 	public final double getPropertyValueDouble(String propertyName) {

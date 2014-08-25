@@ -14,6 +14,10 @@ public interface Messages {
 	//@Description("The error details prefix in case of an unknown error")
 	//@DefaultMessage("Uncaught Exception")
 	String uncaughtException();
+
+	//@Description("The error details prefix in case of an invalid server-side response")
+	//@DefaultMessage("Invalid response received from the server")	
+	String invalidServiceResponse();
 	
 	//@Description("The initial text content of a new text item (heading, paragraph)")
 	//@DefaultMessage("Click to edit")

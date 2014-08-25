@@ -3,7 +3,8 @@
 	
 	<ui:with field='res' type='com.sitecake.contentmanager.client.resources.EditorClientBundle'/>
 	
-	<div class="sc-html">
+	<div class="sc-html" style="position:relative">
+		<div style="position:absolute;left:0px;top:0px;right:0px;bottom:0px;"></div>
 		<textarea ui:field="codeEditor" class="{res.css.htmlItemCode}"/>
 		<div ui:field="codeWrapper"/>
 	</div>

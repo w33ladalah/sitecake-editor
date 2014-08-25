@@ -1,6 +1,7 @@
 package com.sitecake.contentmanager.client.resources;
 
 
+
 public interface MessagesRu extends com.google.gwt.i18n.client.Messages, Messages {
 
 	@DefaultMessage("CMS обнаржил ошибку!")
@@ -11,6 +12,9 @@ public interface MessagesRu extends com.google.gwt.i18n.client.Messages, Message
 	
 	@DefaultMessage("Неизвестная ошибка")
 	String uncaughtException();
+	
+	@DefaultMessage("Invalid response received from the server")	
+	String invalidServiceResponse();
 	
 	@DefaultMessage("Нажмите для редактирования")
 	String newTextItemDefaultContent();

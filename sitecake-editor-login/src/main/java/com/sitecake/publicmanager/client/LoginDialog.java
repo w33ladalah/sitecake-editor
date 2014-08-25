@@ -112,9 +112,6 @@ public class LoginDialog extends Composite {
 	@UiField
 	Anchor switchToChangeBox;
 	
-	@UiField
-	Anchor forgotPasswordButton;
-	
 	private Fade showEffect;
 	
 	private Fade hideEffect;
@@ -145,8 +142,6 @@ public class LoginDialog extends Composite {
 		);
 		switchToLoginBox.setText(messages.cancelChangeButton());
 		switchToChangeBox.setText(messages.switchToChangePassword());
-		forgotPasswordButton.setText(messages.forgotPassword());
-		forgotPasswordButton.setHref(messages.forgotPasswordLinkUrl());
 		
 		changeBox.setVisible(false);
 		loginMode = true;

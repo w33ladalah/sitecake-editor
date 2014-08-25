@@ -24,6 +24,7 @@ import com.sitecake.contentmanager.client.history.EditorHistoryImpl;
 import com.sitecake.contentmanager.client.item.ContentItemFactoryRegistry;
 import com.sitecake.contentmanager.client.item.ContentItemFactoryRegistryProvider;
 import com.sitecake.contentmanager.client.item.slideshow.SlideshowEditor;
+import com.sitecake.contentmanager.client.pages.PageManager;
 import com.sitecake.contentmanager.client.properties.BasicPropertyManager;
 import com.sitecake.contentmanager.client.properties.PropertyManager;
 import com.sitecake.contentmanager.client.resources.LocaleProxy;
@@ -93,6 +94,8 @@ public class GinModule extends AbstractGinModule {
 		bind(Selection.class).to(SelectionImpl.class).in(Singleton.class);
 		
 		bind(Locale.class).in(Singleton.class);
+		
+		bind(PageManager.class).in(Singleton.class);
 	}
 
 }

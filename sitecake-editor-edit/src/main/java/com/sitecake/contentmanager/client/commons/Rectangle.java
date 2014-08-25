@@ -260,6 +260,9 @@ public class Rectangle {
 					start.setY(end.getY() - height);
 				}
 				break;
+				
+			case NONE:
+				break;
 		}
 	}
 	
@@ -320,7 +323,10 @@ public class Rectangle {
 		case SE:
 			end.add(dx, dy);
 			break;
-			
+
+		case PAN:
+		case NONE:
+			break;
 		}
 		
 		if ( swapPoints ) {

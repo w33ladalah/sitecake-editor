@@ -98,8 +98,8 @@ public class TrashBin extends Widget implements DropController {
 	protected void onAttach() {
 		super.onAttach();
 		
-		Integer left = propertyManager.getPropertyInteger(POSITION_X, Integer.MAX_VALUE, PropertyScope.APPLICATION);
-		Integer top = propertyManager.getPropertyInteger(POSITION_Y, Integer.MAX_VALUE, PropertyScope.APPLICATION);
+		Integer left = propertyManager.getPropertyFloat(POSITION_X, (float)Integer.MAX_VALUE, PropertyScope.APPLICATION).intValue();
+		Integer top = propertyManager.getPropertyFloat(POSITION_Y, (float)Integer.MAX_VALUE, PropertyScope.APPLICATION).intValue();
 		
 		setPosition(left, top, true, true);
 		

@@ -2,6 +2,7 @@ package com.sitecake.contentmanager.client.resources;
 
 
 
+
 public interface MessagesSr extends com.google.gwt.i18n.client.Messages, Messages {
 	
 	@DefaultMessage("SiteCake je naišao na problem!")
@@ -12,6 +13,9 @@ public interface MessagesSr extends com.google.gwt.i18n.client.Messages, Message
 	
 	@DefaultMessage("Nepoznata greška")
 	String uncaughtException();
+	
+	@DefaultMessage("Invalid response received from the server")	
+	String invalidServiceResponse();
 	
 	@DefaultMessage("Kliknite da bi ste izmenili")
 	String newTextItemDefaultContent();

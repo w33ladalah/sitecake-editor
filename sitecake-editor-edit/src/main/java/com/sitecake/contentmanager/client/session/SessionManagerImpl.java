@@ -123,7 +123,13 @@ public class SessionManagerImpl implements SessionManager {
 	
 	private void doLogout() {
 		RootPanel.getBodyElement().getStyle().setCursor(Cursor.WAIT);
-		Location.reload();
+		String path = Location.getPath();
+		path = path.replaceAll("sc\\-admin\\.php", "");
+		String page = Location.getParameter("page");
+		if (page == null) {
+			page = "";
+		}
+		Location.replace(path + page);
 	}
 	
 	private void errorHandler(String errorMessage) {

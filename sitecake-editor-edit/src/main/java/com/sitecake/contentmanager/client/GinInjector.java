@@ -15,6 +15,7 @@ import com.sitecake.contentmanager.client.editable.EditableDomUtils;
 import com.sitecake.contentmanager.client.editable.Selection;
 import com.sitecake.contentmanager.client.errors.ErrorNotificationManager;
 import com.sitecake.contentmanager.client.item.slideshow.SlideshowEditor;
+import com.sitecake.contentmanager.client.pages.PageManager;
 import com.sitecake.contentmanager.client.resources.LocaleProxy;
 import com.sitecake.contentmanager.client.select.LassoSelectorController;
 import com.sitecake.contentmanager.client.session.SessionManager;
@@ -49,4 +50,5 @@ public interface GinInjector extends Ginjector {
 	Selection getSelection();
 	LocaleProxy getLocaleProxy();
 	Locale getLocale();
+	PageManager getPageManager();
 }

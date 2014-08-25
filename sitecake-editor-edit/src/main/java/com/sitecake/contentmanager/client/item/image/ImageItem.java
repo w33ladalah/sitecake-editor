@@ -342,8 +342,8 @@ public class ImageItem extends ContentItem implements LinkableItem {
 		// using getAttribute("src") instead of getSrc() in order to
 		// obtain relative URL present in the HTML text
 		imageObject.setResizedUrl(imgElement.getAttribute("src"));
-		imageObject.setResizedWidth(Integer.valueOf(imgElement.getWidth()));
-		imageObject.setResizedHeight(Integer.valueOf(imgElement.getHeight()));
+		imageObject.setResizedWidth(imgElement.getWidth());
+		imageObject.setResizedHeight(imgElement.getHeight());
 		
 		description = imgElement.getAttribute("alt");
 		
@@ -711,6 +711,9 @@ public class ImageItem extends ContentItem implements LinkableItem {
 			case FRAME:
 				result = true;
 				break;
+			
+			case VIEW:
+				break;
 		}
 		
 		return result;
@@ -755,6 +758,9 @@ public class ImageItem extends ContentItem implements LinkableItem {
 			case FRAME:
 				dragStartFrame();
 				break;
+
+			case VIEW:
+				break;
 		}			
 	}
 	
@@ -771,6 +777,10 @@ public class ImageItem extends ContentItem implements LinkableItem {
 			case FRAME:
 				dragStopFrame();
 				break;
+				
+			case VIEW:
+				break;
+
 		}			
 	}
 	
@@ -787,6 +797,10 @@ public class ImageItem extends ContentItem implements LinkableItem {
 			case FRAME:
 				dragMoveFrame();
 				break;
+
+			case VIEW:
+				break;
+
 		}			
 	}
 	
@@ -900,6 +914,13 @@ public class ImageItem extends ContentItem implements LinkableItem {
 			case FRAME:
 				confirmFrame();
 				break;
+				
+			case VIEW:
+				break;
+				
+			default:
+				break;
+
 		}
 		
 		eventBus.fireEventDeferred(new EditCompleteEvent());
@@ -913,6 +934,12 @@ public class ImageItem extends ContentItem implements LinkableItem {
 	
 			case FRAME:
 				cancelFrame();
+				break;
+				
+			case VIEW:
+				break;
+
+			default:
 				break;
 		}			
 	}
@@ -956,6 +983,10 @@ public class ImageItem extends ContentItem implements LinkableItem {
 			case FRAME:
 				nextMode = Mode.RESIZE;
 				break;
+				
+			case VIEW:
+				break;
+
 		}
 		
 		return nextMode;
@@ -1086,6 +1117,10 @@ public class ImageItem extends ContentItem implements LinkableItem {
 				internalCssClassName = cssStyle.modeFrame();
 				externalCssClassName = EditorClientBundle.INSTANCE.css().imageEditorModeFrame();
 				break;
+				
+			case VIEW:
+				break;
+
 		}
 		
 		getElement().removeClassName(cssStyle.modeCrop());

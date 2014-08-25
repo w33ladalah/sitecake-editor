@@ -304,8 +304,8 @@ public class ContentManagerToolbar extends Composite {
 		super.onAttach();
 		
 		int posX = Window.getClientWidth() / 2 - this.getOffsetWidth() / 2;
-		Integer left = propertyManager.getPropertyInteger(POSITION_X, posX, PropertyScope.APPLICATION);
-		Integer top = propertyManager.getPropertyInteger(POSITION_Y, 20, PropertyScope.APPLICATION);
+		Integer left = propertyManager.getPropertyFloat(POSITION_X, (float)posX, PropertyScope.APPLICATION).intValue();
+		Integer top = propertyManager.getPropertyFloat(POSITION_Y, (float)20, PropertyScope.APPLICATION).intValue();
 		
 		setPosition(left, top, true, true);
 		
@@ -490,10 +490,10 @@ public class ContentManagerToolbar extends Composite {
 					toolbarItem = new NewImageItem();
 					break;
 				case SLIDESHOW:
-					toolbarItem = new NewSlideshowItem();
+					//toolbarItem = new NewSlideshowItem();
 					break;
 				case SLIDER:
-					toolbarItem = new NewSliderItem();
+					//toolbarItem = new NewSliderItem();
 					break;
 				case VIDEO:
 					toolbarItem = new NewVideoItem();
