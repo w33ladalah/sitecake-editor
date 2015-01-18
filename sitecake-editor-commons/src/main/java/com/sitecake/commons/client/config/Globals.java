@@ -33,28 +33,12 @@ public class Globals extends JavaScriptObject {
 			return false;
 		} 
 	}-*/;
-	
-	public final native String getLicenseServiceUrl()/*-{
-		return this.licenseServiceUrl;
-	}-*/;
 
-	public final native String getContentServiceUrl()/*-{
-		return this.contentServiceUrl;
-	}-*/;
-
-	public final native String getUploadServiceUrl()/*-{
-		return this.uploadServiceUrl;
-	}-*/;
-	
-	public final native String getSessionServiceUrl()/*-{
-		return this.sessionServiceUrl;
+	public final native String getServiceUrl()/*-{
+		return this.serviceUrl;
 	}-*/;
 	
 	public final native String getServerVersionId()/*-{
 		return ( this.serverVersionId ) ? this.serverVersionId : "<unknown>";
 	}-*/;
-	
-	public final native String getSessionId()/*-{
-		return ( this.sessionId ) ? this.sessionId : "<unknown>";
-	}-*/;	
 }

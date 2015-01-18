@@ -100,10 +100,11 @@ public class LoginManagerImpl implements LoginManager {
 		loginDialog.setProgress(true);
 		loginDialog.setMessage("");
 
-		UrlBuilder urlBuilder = new UrlBuilder(Globals.get().getSessionServiceUrl());
+		UrlBuilder urlBuilder = new UrlBuilder(Globals.get().getServiceUrl());
 		String credentialHash = Sha1.hashHex(credential);
+		urlBuilder.setParameter("service", "_session");		
 		urlBuilder.setParameter("action", "login");
-		urlBuilder.setParameter("credential", URL.encodeQueryString(credentialHash));
+		urlBuilder.setParameter("credentials", URL.encodeQueryString(credentialHash));
 		
 		JsonpRequestBuilder requestBuilder = new JsonpRequestBuilder();
 		try {
@@ -179,12 +180,13 @@ public class LoginManagerImpl implements LoginManager {
 		loginDialog.setProgress(true);
 		this.newCredential = newCredential;
 		
-		UrlBuilder urlBuilder = new UrlBuilder(Globals.get().getSessionServiceUrl());
+		UrlBuilder urlBuilder = new UrlBuilder(Globals.get().getServiceUrl());
 		String credentialHash = Sha1.hashHex(credential);
 		String newCredentialHash = Sha1.hashHex(newCredential);
+		urlBuilder.setParameter("service", "_session");
 		urlBuilder.setParameter("action", "change");
-		urlBuilder.setParameter("credential", URL.encodeQueryString(credentialHash));
-		urlBuilder.setParameter("newCredential", URL.encodeQueryString(newCredentialHash));
+		urlBuilder.setParameter("credentials", URL.encodeQueryString(credentialHash));
+		urlBuilder.setParameter("newCredentials", URL.encodeQueryString(newCredentialHash));
 		
 		JsonpRequestBuilder requestBuilder = new JsonpRequestBuilder();
 		try {

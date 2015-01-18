@@ -33,7 +33,6 @@ import com.sitecake.commons.client.util.UrlBuilder;
 import com.sitecake.contentmanager.client.EventBus;
 import com.sitecake.contentmanager.client.GinInjector;
 import com.sitecake.contentmanager.client.event.ErrorNotificationEvent;
-import com.sitecake.contentmanager.client.event.StartPageManagerEvent;
 import com.sitecake.contentmanager.client.event.ErrorNotificationEvent.Level;
 import com.sitecake.contentmanager.client.resources.LocaleProxy;
 import com.sitecake.contentmanager.client.resources.Messages;
@@ -222,7 +221,8 @@ public class PageManager extends Composite {
 	}
 	
 	private void initPageService() {
-		UrlBuilder urlBuilder = new UrlBuilder(Globals.get().getContentServiceUrl());
+		UrlBuilder urlBuilder = new UrlBuilder(Globals.get().getServiceUrl());
+		urlBuilder.setParameter("service", "_pages");
 		urlBuilder.setParameter("action", "pages");
 		
 		serviceRequest = new RequestBuilder(RequestBuilder.POST, urlBuilder.buildString());		

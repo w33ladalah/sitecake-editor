@@ -1304,8 +1304,9 @@ public class ImageItem extends ContentItem implements LinkableItem {
 	}
 	
 	private void transform() {
-		UrlBuilder urlBuilder = new UrlBuilder(Globals.get().getContentServiceUrl());
-		urlBuilder.setParameter("action", "image_transform");
+		UrlBuilder urlBuilder = new UrlBuilder(Globals.get().getServiceUrl());
+		urlBuilder.setParameter("service", "_image");
+		urlBuilder.setParameter("action", "image");
 		
 		RequestBuilder request = new RequestBuilder(RequestBuilder.POST, urlBuilder.buildString());		
 		request.setHeader("Content-Type", "application/x-www-form-urlencoded");		
