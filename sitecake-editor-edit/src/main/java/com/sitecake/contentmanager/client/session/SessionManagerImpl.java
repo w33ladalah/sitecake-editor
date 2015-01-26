@@ -32,7 +32,8 @@ public class SessionManagerImpl implements SessionManager {
 	public SessionManagerImpl(ConfigRegistry configRegistry) {
 		keepAliveInterval = configRegistry.getInteger(KEEP_ALIVE_INTERVAL, DEFAULT_KEEP_ALIVE_INTERVAL_VALUE);
 		
-		UrlBuilder aliveUrlBuilder = new UrlBuilder(Globals.get().getSessionServiceUrl());
+		UrlBuilder aliveUrlBuilder = new UrlBuilder(Globals.get().getServiceUrl());
+		aliveUrlBuilder.setParameter("service", "_session");
 		aliveUrlBuilder.setParameter("action", "alive");
 		aliveRequestBuilder = new RequestBuilder(RequestBuilder.GET, aliveUrlBuilder.buildString());
 		
@@ -70,7 +71,8 @@ public class SessionManagerImpl implements SessionManager {
 
 	@Override
 	public void logout() {
-		UrlBuilder urlBuilder = new UrlBuilder(Globals.get().getSessionServiceUrl());
+		UrlBuilder urlBuilder = new UrlBuilder(Globals.get().getServiceUrl());
+		urlBuilder.setParameter("service", "_session");
 		urlBuilder.setParameter("action", "logout");
 		
 		RequestBuilder logoutRequest = new RequestBuilder(RequestBuilder.GET, urlBuilder.buildString());
@@ -102,7 +104,8 @@ public class SessionManagerImpl implements SessionManager {
 	}
 
 	private void keepAlive() {
-		UrlBuilder urlBuilder = new UrlBuilder(Globals.get().getSessionServiceUrl());
+		UrlBuilder urlBuilder = new UrlBuilder(Globals.get().getServiceUrl());
+		urlBuilder.setParameter("service", "_session");
 		urlBuilder.setParameter("action", "alive");
 		
 		try {

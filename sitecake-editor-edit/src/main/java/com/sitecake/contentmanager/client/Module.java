@@ -137,8 +137,8 @@ public class Module implements EntryPoint {
 		
 		String text = "Uncaught exception: ";
 		while (throwable != null) {
+			text += throwable.getMessage() + "\n";
 			StackTraceElement[] stackTraceElements = throwable.getStackTrace();
-			text += throwable.toString() + "\n";
 			for (int i = 0; i < stackTraceElements.length; i++) {
 				text += "    at " + stackTraceElements[i] + "\n";
 			}
@@ -155,12 +155,7 @@ public class Module implements EntryPoint {
 		String errorMsg2 = (messages != null) ? messages.errorMessage2() :
 			nonLocaleMessages.errorMessage2();
 		
-		if ( GWT.isScript() ) {
-			overlay = new FatalErrorOverlay(errorMsg1, errorMsg2, text);
-		} else {
-			overlay = new FatalErrorOverlay(errorMsg1, errorMsg2, "");
-		}
-		
+		overlay = new FatalErrorOverlay(errorMsg1, errorMsg2, text);		
 		RootPanel.get().add(overlay);
 	}
 

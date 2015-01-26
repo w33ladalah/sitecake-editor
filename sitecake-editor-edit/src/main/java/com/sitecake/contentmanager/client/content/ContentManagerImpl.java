@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gwt.core.client.JsArray;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.http.client.RequestCallback;
@@ -16,6 +18,7 @@ import com.sitecake.commons.client.config.Globals;
 import com.sitecake.commons.client.util.MimeBase64;
 import com.sitecake.commons.client.util.UrlBuilder;
 import com.sitecake.contentmanager.client.EventBus;
+import com.sitecake.contentmanager.client.GinInjector;
 import com.sitecake.contentmanager.client.event.ContentManagamentEvent;
 import com.sitecake.contentmanager.client.event.ContentManagamentEvent.EventType;
 import com.sitecake.contentmanager.client.event.ErrorNotificationEvent;
@@ -85,7 +88,8 @@ public class ContentManagerImpl implements ContentManager {
 		
 		pageId = URL.encodeQueryString(getCurrentPageId());
 		
-		UrlBuilder saveUrlBuilder = new UrlBuilder(Globals.get().getContentServiceUrl());
+		UrlBuilder saveUrlBuilder = new UrlBuilder(Globals.get().getServiceUrl());
+		saveUrlBuilder.setParameter("service", "_content");
 		saveUrlBuilder.setParameter("action", "save");
 		
 		saveRequest = new RequestBuilder(RequestBuilder.POST, saveUrlBuilder.buildString());		
@@ -103,7 +107,8 @@ public class ContentManagerImpl implements ContentManager {
 			}		
 		});				
 
-		UrlBuilder publishUrlBuilder = new UrlBuilder(Globals.get().getContentServiceUrl());
+		UrlBuilder publishUrlBuilder = new UrlBuilder(Globals.get().getServiceUrl());
+		publishUrlBuilder.setParameter("service", "_content");
 		publishUrlBuilder.setParameter("action", "publish");
 		
 		publishRequest = new RequestBuilder(RequestBuilder.POST, publishUrlBuilder.buildString());		
@@ -138,22 +143,8 @@ public class ContentManagerImpl implements ContentManager {
 	public void publish(List<String> containers) {
 		abort = false;
 		if ( containers.size() > 0 ) {
-			StringBuilder builder = new StringBuilder();
-			int i = 0;
-			
-			for ( String container : containers ) {
-				if ( i == 0 ) {
-					builder.append("scpageid=" + pageId);
-				}
-				
-				builder.append("&");
-				builder.append( "sc-content-" + i );
-				builder.append( "=" );
-				builder.append( URL.encodeQueryString(container) );
-				
-				i++;
-			}		
-			
+			StringBuilder builder = new StringBuilder();			
+			builder.append("scpageid=" + pageId);
 			publishRequest.setRequestData(builder.toString());
 			
 			try {
@@ -193,7 +184,7 @@ public class ContentManagerImpl implements ContentManager {
 				}
 				
 				builder.append("&");
-				builder.append( URL.encodeQueryString( "sc-content-" + container ) );
+				builder.append( URL.encodeQueryString( container ) );
 				builder.append("=");
 				builder.append( URL.encodeQueryString(MimeBase64.encode(pendingContent.get(container))) );
 			}
@@ -267,9 +258,10 @@ public class ContentManagerImpl implements ContentManager {
 		}
 	}
 	
-	private native String getCurrentPageId()/*-{
-		return $wnd.scpageid;
-	}-*/;
+	private String getCurrentPageId() {
+		JsArray<Element> metaTags = GinInjector.instance.getDomSelector().select("meta[content='sitecake']");
+		return metaTags.get(0).getAttribute("data-pageid");
+	};
 	
 	private void onPublishError(String message) {
 		publishing = false;

@@ -117,8 +117,14 @@ public class UploadManagerImpl implements UploadManager {
 		if ( uploadBatch != null && batchIterator.hasNext() ) {
 			uploadObject = batchIterator.next();
 
-			UrlBuilder urlBuilder = new UrlBuilder( Globals.get().getUploadServiceUrl());
-			urlBuilder.setParameter("action", "upload");
+			UrlBuilder urlBuilder = new UrlBuilder( Globals.get().getServiceUrl());
+			if (uploadObject.getHeader("X-IMAGE") != null) {
+				urlBuilder.setParameter("service", "_image");
+				urlBuilder.setParameter("action", "upload");				
+			} else {
+				urlBuilder.setParameter("service", "_upload");
+				urlBuilder.setParameter("action", "upload");
+			}
 			
 			xhr = XMLHttpRequest2.create2();
 			xhr.open("post", urlBuilder.buildString());
