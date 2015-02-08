@@ -7,70 +7,64 @@ package com.sitecake.contentmanager.client.item.image;
  * is returned back to the sc editor.
  */
 public class ImageObject {
-
-	/**
-	 * The image object id - an UUID.
-	 */
-	private String id;
 	
 	/**
-	 * The URL of the uploaded original image.
+	 * The Image URL (src attribute of the IMG tag).
 	 */
-	private String url;
+	private String src;
+	
+	private String srcset;
+	
+	private String sizes;
 	
 	/**
-	 * The URL of the processed/resized image.
+	 * The width of the resized image in px.
 	 */
-	private String resizedUrl;
-	
-	/**
-	 * The width of the resized image.
-	 */
-	private int resizedWidth;
+	private int width;
 	
 	/**
 	 * The height of the resized image.
 	 */
-	private int resizedHeight;
+	private int height;
 
-	public String getId() {
-		return id;
+	public String getSrc() {
+		return src;
 	}
 
-	public void setId(String id) {
-		this.id = id;
+	public void setSrc(String src) {
+		this.src = src;
+	}
+	
+	public String getSrcset() {
+		return srcset;
 	}
 
-	public String getUrl() {
-		return url;
+	public void setSrcset(String srcset) {
+		this.srcset = srcset;
 	}
 
-	public void setUrl(String url) {
-		this.url = url;
+	public String getSizes() {
+		return sizes;
 	}
 
-	public String getResizedUrl() {
-		return resizedUrl;
+	public void setSizes(String sizes) {
+		this.sizes = sizes;
 	}
 
-	public void setResizedUrl(String resizedUrl) {
-		this.resizedUrl = resizedUrl;
+	public int getWidth() {
+		return width;
 	}
 
-	public int getResizedWidth() {
-		return resizedWidth;
+	public void setWidth(int width) {
+		this.width = width;
 	}
 
-	public void setResizedWidth(int resizedWidth) {
-		this.resizedWidth = resizedWidth;
+	public int getHeight() {
+		return height;
 	}
 
-	public int getResizedHeight() {
-		return resizedHeight;
-	}
-
-	public void setResizedHeight(int resizedHeight) {
-		this.resizedHeight = resizedHeight;
+	public void setHeight(int height) {
+		this.height = height;
 	}
 
 	/**
@@ -78,12 +72,12 @@ public class ImageObject {
 	 */
 	public ImageObject clone() {
 		ImageObject clone = new ImageObject();
-		
-		clone.id = id;
-		clone.url = url;
-		clone.resizedUrl = resizedUrl;
-		clone.resizedWidth = resizedWidth;
-		clone.resizedHeight = resizedHeight;
+
+		clone.src = src;
+		clone.srcset = srcset;
+		clone.sizes = sizes;
+		clone.width = width;
+		clone.height = height;
 		
 		return clone;
 	}

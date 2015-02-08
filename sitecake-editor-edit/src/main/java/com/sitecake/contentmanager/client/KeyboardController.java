@@ -163,11 +163,13 @@ public class KeyboardController implements CloseHandler<Window> {
 					sink = true;
 				}
 				break;
+			/*
 			case KEY_P:
 				if ( !editMode && !pageManagerMode) {
 					eventBus.fireEvent(new PageManagerEvent(true));
 					sink = true;
-				}				
+				}
+			*/				
 		}
 		
 		if ( sink ) {

@@ -443,16 +443,14 @@ public abstract class FileUploaderItem extends ContentItem {
 
 					final ImageObject image = new ImageObject();
 					
-					image.setId(uploadObject.getResponse().getProperty("id"));
-					image.setUrl(uploadObject.getResponse().getProperty("url"));
-					image.setResizedUrl(uploadObject.getResponse().getProperty("resizedUrl"));
+					image.setSrc(uploadObject.getResponse().getProperty("url"));
 
-					String resizedWidth = uploadObject.getResponse().getProperty("resizedWidth");
-					if ( resizedWidth != null )
-						image.setResizedWidth(Double.valueOf(resizedWidth).intValue());
-					String resizedHeight = uploadObject.getResponse().getProperty("resizedHeight");
-					if ( resizedHeight != null )
-						image.setResizedHeight(Double.valueOf(resizedHeight).intValue());
+					String width = uploadObject.getResponse().getProperty("width");
+					if ( width != null )
+						image.setWidth(Double.valueOf(width).intValue());
+					String height = uploadObject.getResponse().getProperty("height");
+					if ( height != null )
+						image.setHeight(Double.valueOf(height).intValue());
 					
 					ContentItemCreator imageItemCreator = new ContentItemCreator() {
 						
