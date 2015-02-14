@@ -55,12 +55,11 @@
 			<artifactId>selection</artifactId>
 			<version>20100915</version>
 		</dependency>
-
   		<dependency>
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-maps3</artifactId>
 			<version>0.3</version>
-		</dependency>
+		</dependency>		  		
 		  		
 	</dependencies>
 	

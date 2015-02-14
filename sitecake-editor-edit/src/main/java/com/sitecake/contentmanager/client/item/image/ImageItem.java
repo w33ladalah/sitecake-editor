@@ -34,7 +34,9 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
 import com.sitecake.commons.client.config.Globals;
+import com.sitecake.commons.client.util.BasicServiceResponse;
 import com.sitecake.commons.client.util.DomUtil;
+import com.sitecake.commons.client.util.JavaScriptRegExp;
 import com.sitecake.commons.client.util.UrlBuilder;
 import com.sitecake.commons.client.util.dom.CSSStyleDeclaration;
 import com.sitecake.contentmanager.client.EventBus;
@@ -306,9 +308,9 @@ public class ImageItem extends ContentItem implements LinkableItem {
 	
 	protected boolean dirty = false;
 	
-	public static ImageItem create(ImageObject image) {
+	public static ImageItem create(ImageObject image, double parentWidthPx) {
 		ImageItem item = GWT.create(ImageItem.class);
-		item.init(image);
+		item.init(image, parentWidthPx);
 		return item;
 	}
 	
@@ -327,8 +329,6 @@ public class ImageItem extends ContentItem implements LinkableItem {
 	}
 
 	public void init(Element element) {
-		ImageObject imageObject = new ImageObject();
-		
 		ImageElement imgElement = element.cast();
 		if ( element.getTagName().toLowerCase().equals("a") ) {
 			link = element.getAttribute("href");
@@ -337,34 +337,38 @@ public class ImageItem extends ContentItem implements LinkableItem {
 
 		style = imgElement.getClassName();
 
-		// using getAttribute("src") instead of getSrc() in order to
-		// obtain relative URL present in the HTML text
-		imageObject.setSrc(imgElement.getAttribute("src"));
-		imageObject.setWidth(imgElement.getWidth());
-		imageObject.setHeight(imgElement.getHeight());
+		double parentWidth = CSSStyleDeclaration.get(element.getParentElement()).getPropertyValueDouble("width");
+		double imageWidth = imgElement.getWidth();
+
+		ImageObject imageObject = ImageObject.create(
+			imgElement.getAttribute("src"),
+			percentage(imageWidth, parentWidth),
+			imgElement.getWidth(),
+			imgElement.getHeight()
+		);
 		
 		description = imgElement.getAttribute("alt");
 		
-		init(imageObject, element);
+		init(imageObject, element, parentWidth);
 	}
 
-	public void init(ImageObject imageObject) {
+	public void init(ImageObject imageObject, double parentWidthPx) {
 		description = "";
 		
-		init(imageObject, null);
+		init(imageObject, null, parentWidthPx);
 	}
 	
-	private void init(ImageObject imageObject, Element element) {
+	private void init(ImageObject imageObject, Element element, double parentWidthPx) {
 
 		sourceImageObject = imageObject.clone();
 		transImageObject = sourceImageObject.clone();
-		imageRatio = ((double)sourceImageObject.getWidth()) / sourceImageObject.getHeight(); 
+		imageRatio = sourceImageObject.getRatio(); 
 		
 		finalState = new TransformationState(
-				imageObject.getWidth(),
-				imageObject.getHeight(),
-				imageObject.getWidth(),
-				imageObject.getHeight(), 0, 0, 0, 0);
+				imageObject.getWidthPx(parentWidthPx),
+				imageObject.getHeightPx(parentWidthPx),
+				imageObject.getWidthPx(parentWidthPx),
+				imageObject.getHeightPx(parentWidthPx), 0, 0, 0, 0);
 		
 		confirmedState = finalState.clone();
 		currentState = finalState.clone();
@@ -379,9 +383,8 @@ public class ImageItem extends ContentItem implements LinkableItem {
 		setContainerElementStyle();
 		
 		ImageElement img = DOM.createImg().<ImageElement>cast();
-		img.setSrc(sourceImageObject.getSrc());
-		img.setWidth(sourceImageObject.getWidth());
-		img.setHeight(sourceImageObject.getHeight());
+		img.setSrc(sourceImageObject.getSrc(parentWidthPx));
+		img.setAttribute("width", sourceImageObject.getWidth() + "%");
 		
 		frontPlane.appendChild(img);
 		backPlane.appendChild(img.cloneNode(false));
@@ -401,9 +404,9 @@ public class ImageItem extends ContentItem implements LinkableItem {
 		setContainerElementStyle();
 		
 		ImageElement img = DOM.createImg().<ImageElement>cast();
-		img.setSrc(sourceImageObject.getSrc());
-		img.setWidth(sourceImageObject.getWidth());
-		img.setHeight(sourceImageObject.getHeight());
+		double cntWidth = CSSStyleDeclaration.get(container.getElement()).getPropertyValueDouble("width");		
+		img.setSrc(sourceImageObject.getSrc(cntWidth));
+		img.setAttribute("width", sourceImageObject.getWidth() + "%");
 		
 		frontPlane.appendChild(img);
 		backPlane.appendChild(img.cloneNode(false));
@@ -443,14 +446,12 @@ public class ImageItem extends ContentItem implements LinkableItem {
 	@Override
 	public String getHtml() {
 		double cntWidth = CSSStyleDeclaration.get(container.getElement()).getPropertyValueDouble("width");
-		double imgWidth = transImageObject.getWidth();
-		double imgRelWidth = formatted(100*imgWidth/cntWidth);
 
 		String html = "<img alt=\"" + description + "\" " +
-				"style=\"width:" + imgRelWidth + "%\" " +
+				//"width=\"" + formatted(transImageObject.getWidth()) + "%\" " +
+				"style=\"width:" + formatted(transImageObject.getWidth()) + "%\" " +
 				(!"".equals(style) ? "class=\"" + style + "\" ": "") + 
-				"src=\"" + transImageObject.getSrc() + "\" " +
-				"sizes=\"" + ((transImageObject.getSizes() != null) ? transImageObject.getSizes() : "") + "\" " +
+				"src=\"" + transImageObject.getSrc(cntWidth) + "\" " +
 				"srcset=\"" + transImageObject.getSrcset() + "\"/>";
 		
 		if ( !"".equals(link) ) {
@@ -473,10 +474,11 @@ public class ImageItem extends ContentItem implements LinkableItem {
 		
 		int maxWidth = getMaxWidth();
 		
-		if ( finalState.getViewport().getWidth() > maxWidth ) {
+		//if ( finalState.getViewport().getWidth() > maxWidth ) {
 			finalState.resizeWidth(maxWidth, imageRatio);
+			transImageObject.setWidth(100.0);
 			refresh();
-		}
+		//}
 	}
 
 	@Override
@@ -542,8 +544,9 @@ public class ImageItem extends ContentItem implements LinkableItem {
 			transform();
 			return false;
 		} else if (!cancel && dirty && origMode.equals(Mode.RESIZE)) {
-			transImageObject.setWidth((int)finalState.getViewport().getWidth());
-			transImageObject.setHeight((int)finalState.getViewport().getHeight());
+			double cntWidth = CSSStyleDeclaration.get(container.getElement()).getPropertyValueDouble("width");
+			double imgWidth = finalState.getViewport().getWidth();
+			transImageObject.setWidth(percentage(imgWidth, cntWidth));
 			eventBus.fireEventDeferred(new PostEditingEndEvent(prev, this));			
 			return false;
 		}
@@ -1334,7 +1337,7 @@ public class ImageItem extends ContentItem implements LinkableItem {
 		});
 		
 		StringBuilder builder = new StringBuilder();
-		builder.append("image=" + URL.encodeQueryString(sourceImageObject.getSrc()));
+		builder.append("image=" + URL.encodeQueryString(sourceImageObject.getLargestSrc()));
 		builder.append("&");	
 		builder.append("data=" + calculateTransformation());	
 		request.setRequestData(builder.toString());
@@ -1367,21 +1370,22 @@ public class ImageItem extends ContentItem implements LinkableItem {
 	 * @return val in %
 	 */
 	private double percentage(double val, double ref) {
-		return (val * 100 / ref);
+		return (val * 100.0 / ref);
 	}
 	
 	private double formatted(double val) {
-		return Math.round(val * 1000)/1000;
+		return Math.round(val * 100000.0)/100000.0;
 	}
 	
 	private void onTransformResponse(Response response) {
 		if ( response.getStatusCode() == 200 ) {
-			ImageTransformResponse trResponse = ImageTransformResponse.get(response.getText()).cast();
+			BasicServiceResponse trResponse = BasicServiceResponse.get(response.getText()).cast();
 			if ( trResponse.isSuccess() ) {
-				transImageObject.setSrc(trResponse.getSrc());
-				transImageObject.setSrcset(trResponse.getSrcset());
-				transImageObject.setWidth((int)finalState.getViewport().getWidth());
-				transImageObject.setHeight((int)finalState.getViewport().getHeight());
+				transImageObject = ImageObject.create(trResponse);
+				double cntWidth = CSSStyleDeclaration.get(container.getElement()).getPropertyValueDouble("width");
+				double imgWidth = finalState.getViewport().getWidth();
+				transImageObject.setWidth(percentage(imgWidth, cntWidth));
+				
 				eventBus.fireEventDeferred(new PostEditingEndEvent(prev, this));
 			} else {
 				eventBus.fireEventDeferred(new ErrorNotificationEvent(Level.ERROR, 
@@ -1397,4 +1401,16 @@ public class ImageItem extends ContentItem implements LinkableItem {
 		eventBus.fireEventDeferred(new ErrorNotificationEvent(Level.ERROR, message));
 	}
 	
+	private static String imgUrlPattern = "(https?\\:\\/\\/[^\\/\\s\\\"\\'\\?\\#]+\\/[^\\s\\\"\\'\\#\\?]+\\.(jpe?g|png|gif)((\\?|\\#)[^\\s\\\"\\']*)?)";
+	
+	public static boolean testText(String text) {
+		return JavaScriptRegExp.test(imgUrlPattern, "i", text);
+	}
+	
+	public static ContentItem create(String text) {
+		String url = JavaScriptRegExp.match(imgUrlPattern, "i", text).get(1);
+		ImagePlaceholderItem item = ImagePlaceholderItem.create(url);
+		item.upload(url);
+		return item;
+	}	
 }

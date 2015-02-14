@@ -1,5 +1,7 @@
 package com.sitecake.contentmanager.client.dnd;
 
+import java.util.Map;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -10,6 +12,7 @@ import com.sitecake.contentmanager.client.item.ContentItem;
 import com.sitecake.contentmanager.client.item.HasContentItemCreator;
 import com.sitecake.contentmanager.client.item.fileuploader.FileUploaderItem;
 import com.sitecake.contentmanager.client.item.fileuploader.FileUploaderItem.Type;
+import com.sitecake.contentmanager.client.item.image.ImageItem;
 import com.sitecake.contentmanager.client.item.map.MapItem;
 import com.sitecake.contentmanager.client.item.video.VideoItem;
 import com.sitecake.contentmanager.client.toolbar.ContentItemCreator;
@@ -40,12 +43,20 @@ public class DnDUploadDragWidget extends Widget implements HasContentItemCreator
 				if ( fileList != null && fileList.length() > 0 ) {
 					newItem = FileUploaderItem.create(Type.GENERIC, fileList);
 				} else {
-					String text = dataTransfer.getData("Text");
-					if ( text != null && !"".equals(text) ) {
-						if ( VideoItem.testText(text) ) {
-							newItem = VideoItem.create(text);
-						} else if ( MapItem.testText(text) ) {
-							newItem = MapItem.create(text);
+					Map<String, String> allData = dataTransfer.allData();
+					for (String dataType : allData.keySet()) {
+						String text = allData.get(dataType);
+						if ( text != null && !"".equals(text) ) {
+							if ( ImageItem.testText(text) ) {
+								newItem = ImageItem.create(text);
+							} else if ( VideoItem.testText(text) ) {
+								newItem = VideoItem.create(text);
+							} else if ( MapItem.testText(text) ) {
+								newItem = MapItem.create(text);
+							}
+						}
+						if (newItem != null) {
+							break;
 						}
 					}
 				}

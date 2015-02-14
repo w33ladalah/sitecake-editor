@@ -13,9 +13,4 @@ public class UploadObjectResponse extends BasicServiceResponse {
 	public final native String getUrl()/*-{
 		return ( this.url ) ? this.url : null;
 	}-*/;
-	
-	public final native String getProperty(String prop)/*-{
-		return ( this[prop] ) ? this[prop] : null;
-	}-*/;
-
 }

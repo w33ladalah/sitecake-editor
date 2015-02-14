@@ -36,7 +36,8 @@
 		<repository>
 			<id>sitecake-maven-repo</id>
 			<url>https://github.com/sitecake/maven-repo/raw/master</url>
-		</repository>		
+		</repository>
+				
 	</repositories>
  
 	<properties>

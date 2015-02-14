@@ -441,21 +441,13 @@ public abstract class FileUploaderItem extends ContentItem {
 				
 				if ( uploadObject.getHeader("X-IMAGE") != null ) {
 
-					final ImageObject image = new ImageObject();
-					
-					image.setSrc(uploadObject.getResponse().getProperty("url"));
-
-					String width = uploadObject.getResponse().getProperty("width");
-					if ( width != null )
-						image.setWidth(Double.valueOf(width).intValue());
-					String height = uploadObject.getResponse().getProperty("height");
-					if ( height != null )
-						image.setHeight(Double.valueOf(height).intValue());
+					final ImageObject image = ImageObject.create(uploadObject.getResponse());
+					final double cntWidth = CSSStyleDeclaration.get(container.getElement()).getPropertyValueDouble("width");
 					
 					ContentItemCreator imageItemCreator = new ContentItemCreator() {
 						
 						public ContentItem create() {
-							ImageItem item = ImageItem.create(image);
+							ImageItem item = ImageItem.create(image, cntWidth);
 							return item;
 						}
 					};
@@ -610,9 +602,6 @@ public abstract class FileUploaderItem extends ContentItem {
 	private UploadObject createImageUploadObject(File file) {
 		UploadObject object = new UploadObject(file);
 		object.setHeader("X-IMAGE", "true");
-		int requestedWidth = (int)CSSStyleDeclaration.get(container.getElement()).getPropertyValueDouble("width");
-		if ( requestedWidth > 0 )
-			object.setHeader("X-RESIZE-WIDTH", String.valueOf(requestedWidth));
 		return object;
 	}
 
@@ -625,11 +614,6 @@ public abstract class FileUploaderItem extends ContentItem {
 	private UploadObject createSlideshowUploadObject(File file, int listIndex) {
 		UploadObject object = new UploadObject(file);
 		object.setHeader("X-IMAGE", "true");
-		if ( listIndex == 0 ) {
-			int requestedWidth = (int)CSSStyleDeclaration.get(container.getElement()).getPropertyValueDouble("width");
-			if ( requestedWidth > 0 )
-				object.setHeader("X-RESIZE-WIDTH", String.valueOf(requestedWidth));
-		}
 		return object;
 	}
 	

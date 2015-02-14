@@ -891,7 +891,7 @@ public class PageEditor implements DeleteHandler, EditItemHandler, OverItemHandl
 	
 	@Override
 	public void onUpload(UploadEvent event) {
-		ContentItem uploader = event.getFileUploaderItem();
+		ContentItem uploader = event.getOriginatingItem();
 		ContentContainer container = uploader.getContainer();
 		int startIndex = container.getItemIndex(uploader);
 		

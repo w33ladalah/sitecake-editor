@@ -4,9 +4,13 @@ import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
 
-public class JsonResponse extends JavaScriptObject {
+public class JsonResponse extends JSObject {
 
 	protected JsonResponse() {}
+	
+	final static native JavaScriptObject getEmptyObject()/*-{
+		return {};
+	}-*/;
 	
 	public final static JavaScriptObject get(String jsonResponse) {
 		JavaScriptObject object = null;
@@ -19,10 +23,5 @@ public class JsonResponse extends JavaScriptObject {
 		}
 
 		return object;
-	}
-	
-	private final static native JavaScriptObject getEmptyObject()/*-{
-		return {};
-	}-*/;
-	
+	}	
 }

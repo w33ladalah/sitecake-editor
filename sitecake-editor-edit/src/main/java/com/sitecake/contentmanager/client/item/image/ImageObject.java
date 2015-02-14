@@ -1,84 +1,146 @@
 package com.sitecake.contentmanager.client.item.image;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.google.gwt.core.client.JsArray;
+import com.sitecake.commons.client.util.JSObject;
+
 /**
- * Representation of an image managed by the sc backend.
- * After an image has been uploaded to the backend, the image
- * is stored and resized and an instance of <code>ImageObject</code>
- * is returned back to the sc editor.
+ * Representation of an image.
  */
 public class ImageObject {
 	
-	/**
-	 * The Image URL (src attribute of the IMG tag).
-	 */
-	private String src;
-	
-	private String srcset;
-	
-	private String sizes;
-	
-	/**
-	 * The width of the resized image in px.
-	 */
-	private int width;
-	
-	/**
-	 * The height of the resized image.
-	 */
-	private int height;
+	public class SrcItem {
+		private double width;
+		private double height;
+		private String url;
+		
+		public double getWidth() {
+			return width;
+		}
 
-	public String getSrc() {
-		return src;
+		public void setWidth(double width) {
+			this.width = width;
+		}
+
+		public double getHeight() {
+			return height;
+		}
+
+		public void setHeight(double height) {
+			this.height = height;
+		}
+
+		public String getUrl() {
+			return url;
+		}
+
+		public void setUrl(String url) {
+			this.url = url;
+		}
+
+		public SrcItem(double width, double height, String url) {
+			super();
+			this.width = width;
+			this.height = height;
+			this.url = url;
+		}
 	}
+	
+	private List<SrcItem> items;
+	
+	private double ratio;
+	
+	/**
+	 * The image width in percent.
+	 */
+	private double width;
 
-	public void setSrc(String src) {
-		this.src = src;
+	protected ImageObject() {}
+	
+	public String getLargestSrc() {
+		return items.get(0).url;
+	}
+	
+	public String getSrc(double containerWidth) {
+		String bestSrc = items.get(0).url;
+		double minDiff = Double.MAX_VALUE;
+		double targetWidth = (containerWidth * width) / 100.0;
+		for (SrcItem item : items) {
+			double diff = Math.abs(targetWidth - item.width);
+			if (diff < minDiff) {
+				minDiff = diff;
+				bestSrc = item.url;
+			}
+		}
+		return bestSrc;
 	}
 	
 	public String getSrcset() {
-		return srcset;
+		String srcset = "";
+		for (SrcItem item : items) {
+			srcset += "," + item.url + " " + Math.round(item.width) + "w";
+		}
+		return srcset.substring(1);
 	}
 
-	public void setSrcset(String srcset) {
-		this.srcset = srcset;
-	}
-
-	public String getSizes() {
-		return sizes;
-	}
-
-	public void setSizes(String sizes) {
-		this.sizes = sizes;
-	}
-
-	public int getWidth() {
+	public double getWidth() {
 		return width;
 	}
 
-	public void setWidth(int width) {
+	public void setWidth(double width) {
 		this.width = width;
 	}
 
-	public int getHeight() {
-		return height;
+	public double getRatio() {
+		return ratio;
 	}
-
-	public void setHeight(int height) {
-		this.height = height;
+	
+	public double getWidthPx(double ref) {
+		return (width * ref) / 100.0;
 	}
-
+	
+	public double getHeightPx(double ref) {
+		return getWidthPx(ref) / getRatio();
+	}
+	
 	/**
 	 * Returns a cloned <code>ImageObject</code> instance.
 	 */
 	public ImageObject clone() {
 		ImageObject clone = new ImageObject();
 
-		clone.src = src;
-		clone.srcset = srcset;
-		clone.sizes = sizes;
 		clone.width = width;
-		clone.height = height;
+		clone.ratio = ratio;
+		clone.items = new ArrayList<SrcItem>(items);
 		
 		return clone;
+	}
+	
+	public static ImageObject create(JSObject obj) {
+		ImageObject img = new ImageObject();
+		
+		img.items = new ArrayList<ImageObject.SrcItem>();
+		JsArray<JSObject> items = obj.getArrayProperty("srcset");
+		for (int i = 0; i < items.length(); i++) {
+			img.items.add(img.new SrcItem(
+					items.get(i).getNumberProperty("width"), 
+					items.get(i).getNumberProperty("height"), 
+					items.get(i).getProperty("url")));
+		}
+		img.width = 100.0;
+		img.ratio = obj.getNumberProperty("ratio");
+		return img;
+	}
+	
+	public static ImageObject create(String src, double width, double widthPx, double heightPx) {
+		ImageObject img = new ImageObject();
+		img.width = width;
+		img.ratio = widthPx/heightPx;
+		img.items = new ArrayList<ImageObject.SrcItem>();
+		img.items.add(img.new SrcItem(widthPx, heightPx, src));
+
+		return img;
 	}
 }
