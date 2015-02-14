@@ -338,7 +338,7 @@ public class ImageItem extends ContentItem implements LinkableItem {
 		style = imgElement.getClassName();
 
 		double parentWidth = CSSStyleDeclaration.get(element.getParentElement()).getPropertyValueDouble("width");
-		double imageWidth = imgElement.getWidth();
+		double imageWidth = CSSStyleDeclaration.get(imgElement).getPropertyValueDouble("width");
 
 		ImageObject imageObject = ImageObject.create(
 			imgElement.getAttribute("src"),
@@ -364,11 +364,12 @@ public class ImageItem extends ContentItem implements LinkableItem {
 		transImageObject = sourceImageObject.clone();
 		imageRatio = sourceImageObject.getRatio(); 
 		
+		double width = (parentWidthPx * imageObject.getWidth()) / 100.0;
+		double height = width / imageObject.getRatio();
 		finalState = new TransformationState(
-				imageObject.getWidthPx(parentWidthPx),
-				imageObject.getHeightPx(parentWidthPx),
-				imageObject.getWidthPx(parentWidthPx),
-				imageObject.getHeightPx(parentWidthPx), 0, 0, 0, 0);
+				width, height,
+				width, height, 
+				0, 0, 0, 0);
 		
 		confirmedState = finalState.clone();
 		currentState = finalState.clone();
@@ -384,7 +385,7 @@ public class ImageItem extends ContentItem implements LinkableItem {
 		
 		ImageElement img = DOM.createImg().<ImageElement>cast();
 		img.setSrc(sourceImageObject.getSrc(parentWidthPx));
-		img.setAttribute("width", sourceImageObject.getWidth() + "%");
+		img.setAttribute("width", width + "px");
 		
 		frontPlane.appendChild(img);
 		backPlane.appendChild(img.cloneNode(false));
@@ -474,11 +475,15 @@ public class ImageItem extends ContentItem implements LinkableItem {
 		
 		int maxWidth = getMaxWidth();
 		
-		//if ( finalState.getViewport().getWidth() > maxWidth ) {
+		if ( finalState.getViewport().getWidth() > maxWidth ) {
 			finalState.resizeWidth(maxWidth, imageRatio);
 			transImageObject.setWidth(100.0);
 			refresh();
-		//}
+		} else {
+			double targetWidth = finalState.getViewport().getWidth();
+			double cntWidth = CSSStyleDeclaration.get(container.getElement()).getPropertyValueDouble("width");
+			transImageObject.setWidth(percentage(targetWidth, cntWidth));
+		}
 	}
 
 	@Override
@@ -541,6 +546,9 @@ public class ImageItem extends ContentItem implements LinkableItem {
 		
 		boolean parentDirty = super.stopEditing(cancel);
 		if (!cancel && dirty && !origMode.equals(Mode.RESIZE)) { 
+			double cntWidth = CSSStyleDeclaration.get(container.getElement()).getPropertyValueDouble("width");
+			double imgWidth = finalState.getViewport().getWidth();
+			transImageObject.setWidth(percentage(imgWidth, cntWidth));
 			transform();
 			return false;
 		} else if (!cancel && dirty && origMode.equals(Mode.RESIZE)) {
