@@ -25,6 +25,12 @@
 		    </exclusions>
 		</dependency>
 	
+		<dependency>
+		    <groupId>junit</groupId>
+		    <artifactId>junit</artifactId>
+		    <version>4.12</version>
+		    <scope>test</scope>
+		</dependency>
 	
 		<dependency>
 		    <groupId>com.google.gwt</groupId>
@@ -55,6 +61,7 @@
 			<artifactId>selection</artifactId>
 			<version>20100915</version>
 		</dependency>
+		
   		<dependency>
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-maps3</artifactId>

@@ -12,7 +12,6 @@ import com.sitecake.contentmanager.client.event.EndEditingEvent;
 import com.sitecake.contentmanager.client.event.EndEditingHandler;
 import com.sitecake.contentmanager.client.event.MoveEvent;
 import com.sitecake.contentmanager.client.event.MoveEvent.Direction;
-import com.sitecake.contentmanager.client.event.PageManagerEvent;
 import com.sitecake.contentmanager.client.event.RedoEvent;
 import com.sitecake.contentmanager.client.event.SelectEvent;
 import com.sitecake.contentmanager.client.event.StartEditingEvent;

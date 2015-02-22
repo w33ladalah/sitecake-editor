@@ -1,275 +1,135 @@
 package com.sitecake.contentmanager.client.item.map;
 
-import java.util.HashMap;
-import java.util.List;
+import java.util.Date;
 
-import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.core.client.JsArray;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.maps.client.Map;
-import com.google.gwt.maps.client.MapOptions;
-import com.google.gwt.maps.client.MapTypeId;
-import com.google.gwt.maps.client.base.HasLatLng;
-import com.google.gwt.maps.client.base.LatLng;
-import com.sitecake.commons.client.util.JsStringUtil;
+import com.google.gwt.http.client.URL;
+import com.google.gwt.regexp.shared.MatchResult;
+import com.google.gwt.regexp.shared.RegExp;
 
-public class GoogleEmbeddedMap implements EmbeddedMap {
 
-	private double ratio;
+public class GoogleEmbeddedMap {
+
+	private String src;
 	
-	private double width;
+	public GoogleEmbeddedMap() {
+		super();
+	}
 	
-	private double height;
-	
-	private String publicCode;
-	
-	private String editCode;
-	
-	private String url;
-	
-	private Map map;
-	
-	@Override
-	public double getRatio() {
-		return ratio;
+	public String getCode() {
+		return "<iframe src=\"https:" + src + "\" " +
+				" width=\"100%\" height=\"100%\" frameborder=\"0\" " + 
+				"style=\"position:absolute;top:0;left:0\"></iframe>";
 	}
 
-	@Override
-	public double getWidth() {
-		return width;
-	}
-
-	@Override
-	public double getHeight() {
-		return height;
-	}
-
-	@Override
-	public void setRatio(double value) {
-		ratio = value;
-	}
-
-	@Override
-	public void setWidth(double value) {
-		width = value;
-	}
-
-	@Override
-	public void setHeight(double value) {
-		height = value;
-	}
-
-	@Override
-	public String getPublicCode() {
-		String result = publicCode;
-		result = result.replaceAll("height=\"###\"", "height=\"" + Double.valueOf(height).intValue() + "\"");
-		result = result.replaceAll("width=\"###\"", "width=\"" + Double.valueOf(width).intValue() + "\"");
-		return result;
-	}
-
-	@Override
-	public String getEditCode() {
-		String result = editCode;
-		result = result.replaceAll("height=\"###\"", "height=\"" + Double.valueOf(height).intValue() + "\"");
-		result = result.replaceAll("width=\"###\"", "width=\"" + Double.valueOf(width).intValue() + "\"");
-		return result;		
-	}
-
-	@Override
-	public EmbeddedMap cloneMap() {
+	public GoogleEmbeddedMap cloneMap() {
 		GoogleEmbeddedMap clone = new GoogleEmbeddedMap();
-		clone.ratio = this.ratio;
-		clone.width = this.width;
-		clone.height = this.height;
-		clone.publicCode = this.publicCode;
-		clone.editCode = this.editCode;
+		clone.src = src;
 		return clone;
 	}
-
-	@Override
-	public void resizeTarget(JsArray<Element> target) {
-		Element iframe = target.get(0);
-		if ( iframe != null ) {
-			int targetWidth = Double.valueOf(width).intValue();
-			int targetHeight = Double.valueOf(height).intValue();
-			
-			iframe.setAttribute("width", String.valueOf(targetWidth));
-			iframe.setAttribute("height", String.valueOf(targetHeight));
-		}
 		
-		if ( map != null ) {
-			triggerResize(map.getJso());
-		}
-	}
-
-	public void generateEditMap(Element container) {
-		MapOptions options = getMapOptions(url);
-		map = new Map((com.google.gwt.user.client.Element)container, options);
-		setKmlLayer(map.getJso(), url+"&output=kml");
-	}
-	
-	public void removeEditMap(Element container) {
-		String zoom = String.valueOf(map.getZoom());
-
-		HasLatLng latlng = map.getCenter();
-		String ll = String.valueOf(latlng.getLatitude()) + "," + String.valueOf(latlng.getLongitude());
-		
-		String mapTypeId = map.getMapTypeId();
-		String mapType;
-		MapTypeId mapTypes = new MapTypeId();
-		if ( mapTypes.getTerrain().equals(mapTypeId) ) {
-			mapType = "p";
-		} else if ( mapTypes.getSatellite().equals(mapTypeId) ) {
-			mapType = "k";
-		} else if ( mapTypes.getHybrid().equals(mapTypeId) ) {
-			mapType = "h";
-		} else {
-			mapType = "";
-		}
-		
-		url = url.replaceAll("(\\?|&)ll=[0-9\\.,\\-]+", "$1ll=" + ll);
-		
-		url = url.replaceAll("(\\?|&)z=[0-9]+", "");
-		url = url + "&z=" + zoom;
-		
-		url = url.replaceAll("(\\?|&)t=[a-z]+", "");
-		if ( mapType.length() > 0 ) {
-			url = url + "&t=" + mapType;
-		}
-		
-		publicCode = "<iframe height=\"###\" frameborder=\"0\" width=\"###\" frameborder=\"0\" scrolling=\"no\" marginheight=\"0\" marginwidth=\"0\"  src=\"" + 
-			url + "&output=embed" + "\"></iframe>";
-		editCode = "<iframe height=\"###\" frameborder=\"0\" width=\"###\" frameborder=\"0\" scrolling=\"no\" marginheight=\"0\" marginwidth=\"0\"  src=\"" + 
-			url + "&output=embed" + "\"></iframe>";
-	
-		map = null;
-		container.setInnerHTML(getEditCode());
-	}
-	
-	private MapOptions getMapOptions(String url) {
-		MapOptions options = new MapOptions();
-		java.util.Map<String, String> urlParams = new HashMap<String, String>();
-		
-		String[] urlParts = url.split("\\?");
-		if ( urlParts != null && urlParts.length > 1 ) {
-			String[] queryParts = urlParts[1].split("&(amp;)?");
-			for ( int i = 0; i < queryParts.length; i++ ) {
-				String[] paramParts = queryParts[i].split("=");
-				String paramName = paramParts[0];
-				String paramValue = paramParts.length > 1 ? paramParts[1] : "";
-				urlParams.put(paramName, paramValue);
-			}
-		}
-		
-		String zoomStr = urlParams.get("z");
-		if ( zoomStr == null || "".equals(zoomStr) ) {
-			if ( urlParams.containsKey("q") ) {
-				zoomStr = "16";
-			} else {
-				zoomStr = "3";
-			}
-		}
-		int zoom = Integer.parseInt(zoomStr);
-		options.setZoom(zoom);
-		
-		MapTypeId mapTypes = new MapTypeId();
-		String mapTypeId;
-		String mapTypeStr = urlParams.get("t");
-		if ( "k".equals(mapTypeStr) ) {
-			mapTypeId = mapTypes.getSatellite();
-		} else if ( "h".equals(mapTypeStr) ) {
-			mapTypeId = mapTypes.getHybrid();
-		} else if ( "p".equals(mapTypeStr) ) {
-			mapTypeId = mapTypes.getTerrain();
-		} else {
-			mapTypeId = mapTypes.getRoadmap();
-		}
-		options.setMapTypeId(mapTypeId);
-		
-		String llStr = urlParams.get("ll");
-		if ( llStr != null && !"".equals(llStr) ) {
-			String[] parts = llStr.split(",");
-			double lat = Double.parseDouble(parts[0]);
-			double lng = Double.parseDouble(parts[1]);
-			LatLng ll = new LatLng(lat, lng);
-			options.setCenter(ll);
-		} else {
-			options.setCenter(new LatLng(34.59, -21.62));
-			options.setZoom(3);
-		}
-		
-		options.setDraggable(true);
-		options.setMapTypeControl(true);
-		options.setNavigationControl(true);
-		options.setScaleControl(true);
-		options.setScrollwheel(true);
-		return options;
-	}
-	
-	private native void triggerResize(JavaScriptObject map)/*-{
-		$wnd.google.maps.event.trigger(map, 'resize');
-	}-*/;
-	
-	private native void setKmlLayer(JavaScriptObject map, String url)/*-{
-		var kmlLayer = new $wnd.google.maps.KmlLayer(url, {preserveViewport: true});
-		kmlLayer.setMap(map);		
-	}-*/;
-	
-	private static final String GOOGLE_MAP_RE = "(^|\\s|\")(https?://maps\\.google(\\.[a-zA-Z]{2,4}){1,2}/[^\\?]*\\?[^\"\\s]+)";
-	private static final String GOOGLE_NEW_MAP_RE = "(https?)://(www\\.)?google\\.([a-z]{2,4})/maps/(place/(.+)/)?@(-?[0-9\\.]+),(-?[0-9\\.]+),([0-9]+)(m|z)/?";
-	
 	public static GoogleEmbeddedMap create(String input) {
-		
+		GoogleEmbeddedMap map = null;
 		try {
-			List<String> matches = JsStringUtil.match(GOOGLE_NEW_MAP_RE, input);
-			if (matches != null) {
-				input = matches.get(1) + "://maps.google." + matches.get(3) + "/?" +
-						"ll=" + matches.get(6) + "," + matches.get(7) +
-						((matches.get(5) != null) ? "&q=" + matches.get(5) : "") +
-						"&z=" + ("m".equalsIgnoreCase(matches.get(9)) ?  "12" : matches.get(8));
+			if ((map = createFromUrl(input)) == null) {
+				map = createFromEmbed(input);
 			}
-			matches = JsStringUtil.match(GOOGLE_MAP_RE, input);
-			if ( matches == null || matches.size() < 3 || matches.get(2) == null ) return null;
-			
-			GoogleEmbeddedMap map = new GoogleEmbeddedMap();
-			String mapUrl = matches.get(2);
-			if ( mapUrl.indexOf("output=embed") == -1 ) {
-				mapUrl += "&output=embed";
-			}
-			
-			map.url = mapUrl.replaceAll("&(amp;)?output=[a-z]*", "");
-			map.url = mapUrl.replace("&amp;", "&");
-			
-			matches = JsStringUtil.match("\\swidth=\"?([0-9]+)", input);
-			if ( matches != null && matches.size() > 0 ) {
-				map.width = Double.parseDouble(matches.get(1));
-			} else {
-				map.width = -1;
-			}
-			
-			matches = JsStringUtil.match("\\sheight=\"?([0-9]+)", input);
-			if ( matches != null && matches.size() > 0 ) {
-				map.height = Double.parseDouble(matches.get(1));
-			} else {
-				map.height = -1;
-			}
-			
-			if ( map.width != -1 && map.height != -1 ) {
-				map.ratio = map.width / map.height;
-			} else {
-				map.ratio = 1.0;
-			}
-			
-			map.publicCode = "<iframe height=\"###\" frameborder=\"0\" width=\"###\" frameborder=\"0\" scrolling=\"no\" marginheight=\"0\" marginwidth=\"0\"  src=\"" + 
-				map.url + "&output=embed" + "\"></iframe>";
-			map.editCode = "<iframe height=\"###\" frameborder=\"0\" width=\"###\" frameborder=\"0\" scrolling=\"no\" marginheight=\"0\" marginwidth=\"0\"  src=\"" + 
-				map.url + "&output=embed" + "\"></iframe>";
-			
-			return map;
 		} catch (Throwable e) {
-			return null;
+			// do nothing
+			map = null;
 		}
+		return map;
+	}
+
+	// \1 - search, \2 - place, \3 - lat, \4 - lng, \5 - zl, \6 - dst, \7 - data, \8 - hl
+	private static final RegExp URL_RE = RegExp.compile(".*(?:https?):\\/\\/[^\\.]+\\.google\\.[^\\.]+\\/maps\\/(?:search\\/([^\\/]+)\\/)?(?:place\\/([^\\/]+)\\/)?(?:@(-?[0-9\\.]+),(-?[0-9\\.]+),(?:([0-9]{1,2})z)?(?:([0-9\\.]+)m)?)(?:.*data=([^\\/?#]+))?(?:.*hl=([a-z]+))", "i");
+	
+	private static GoogleEmbeddedMap createFromUrl(String url) {
+		GoogleEmbeddedMap map = null;
+		MatchResult matches = URL_RE.exec(url);
+		if (matches != null) {
+			map = new GoogleEmbeddedMap();
+			map.src = srcFromUrl(url, matches);
+		}
+		return map;
 	}
 	
+	// \1 - src
+	private static final RegExp EMBED_RE = RegExp.compile("^\\s*<iframe.*src\\s*=\\s*\"https?:(\\/\\/www\\.google\\.com\\/maps\\/embed\\?pb=[^\"]+)\".*?<\\/iframe>\\s*$", "i");
+	
+	private static GoogleEmbeddedMap createFromEmbed(String embed) {
+		GoogleEmbeddedMap map = null;
+		MatchResult matches = EMBED_RE.exec(embed);
+		if (matches != null) {
+			map = new GoogleEmbeddedMap();
+			map.src = matches.getGroup(1);
+		}
+		return map;		
+	}
+	
+	private static String srcFromUrl(String url, MatchResult matches) {
+		GoogleDataMap map = new GoogleDataMap();
+
+		String search = matches.getGroup(1);
+		String place = matches.getGroup(2);
+		String lat = matches.getGroup(3);
+		String lng = matches.getGroup(4);
+		String zl = matches.getGroup(5);
+		String dst = matches.getGroup(6);
+		String data = matches.getGroup(7);
+		String hl = matches.getGroup(8);
+		
+		GoogleDataMap dataMap = null;
+		if (data != null) {
+			dataMap = GoogleDataMap.fromString(data);
+		}
+		
+		if (zl != null) {
+			map.setProperty(dstFromZl(Integer.valueOf(zl), Double.valueOf(lat)), 1, 1, 1, 1);
+		} else if (dst != null) {
+			map.setProperty(dstFromM(Double.valueOf(dst)), 1, 1, 1, 1);
+		}
+		map.setProperty(Double.valueOf(lng), 1, 1, 1, 2);
+		map.setProperty(Double.valueOf(lat), 1, 1, 1, 3);
+
+		// satellite view
+		if (dataMap != null && (map.new Enum("3")).equals(dataMap.getPropertyEnum(3, 1))) {
+			map.setProperty(Float.valueOf(0), 1, 1, 2, 1);
+			map.setProperty(Float.valueOf(0), 1, 1, 2, 2);
+			map.setProperty(Float.valueOf(0), 1, 1, 2, 3);
+			map.setProperty(Integer.valueOf(1024), 1, 1, 3, 1);
+			map.setProperty(Integer.valueOf(768), 1, 1, 3, 2);
+			map.setProperty(Float.valueOf((float)13.1), 1, 1, 4);
+			map.setProperty(map.new Enum("1"), 1, 5);
+		}
+
+		if (search != null) {
+			map.setProperty(search, 1, 2, 1);
+		}
+		
+		if (place != null) {
+			String id;
+			if (dataMap != null && (id = dataMap.getPropertyString(4, 3, 1)) != null) {
+				map.setProperty(URL.encode(id), 1, 3, 1, 1);
+			}
+			map.setProperty(place, 1, 3, 1, 2);
+		}
+		map.setProperty("en", 3, 1);
+		if (hl != null && !"en".equalsIgnoreCase(hl)) {
+			map.setProperty(hl, 3, 2);
+		}
+		
+		map.setProperty(Long.valueOf(new Date().getTime()), 4);
+		
+		return "//www.google.com/maps/embed?pb=" + map.toString();
+	}
+	
+	private static double dstFromZl(int zl, double lat) {
+		return (Math.cos(Math.toRadians(lat))*522953466.88401723392)/Math.pow(2, zl);
+	}
+	
+	private static double dstFromM(double m) {
+		return (m * 4.354653828390115);
+	}
+
 	
 }
