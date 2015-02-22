@@ -14,6 +14,7 @@ import com.sitecake.contentmanager.client.item.fileuploader.FileUploaderItem;
 import com.sitecake.contentmanager.client.item.fileuploader.FileUploaderItem.Type;
 import com.sitecake.contentmanager.client.item.image.ImageItem;
 import com.sitecake.contentmanager.client.item.map.MapItem;
+import com.sitecake.contentmanager.client.item.twitter.TwitterStatusItem;
 import com.sitecake.contentmanager.client.item.video.VideoItem;
 import com.sitecake.contentmanager.client.toolbar.ContentItemCreator;
 
@@ -47,7 +48,9 @@ public class DnDUploadDragWidget extends Widget implements HasContentItemCreator
 					for (String dataType : allData.keySet()) {
 						String text = allData.get(dataType);
 						if ( text != null && !"".equals(text) ) {
-							if ( ImageItem.testText(text) ) {
+							if ( TwitterStatusItem.testText(text) ) {
+								newItem = TwitterStatusItem.create(text);
+							} else if ( ImageItem.testText(text) ) {
 								newItem = ImageItem.create(text);
 							} else if ( VideoItem.testText(text) ) {
 								newItem = VideoItem.create(text);

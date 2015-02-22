@@ -73,6 +73,8 @@ import com.sitecake.contentmanager.client.event.PublishEvent;
 import com.sitecake.contentmanager.client.event.PublishHandler;
 import com.sitecake.contentmanager.client.event.RedoEvent;
 import com.sitecake.contentmanager.client.event.RedoHandler;
+import com.sitecake.contentmanager.client.event.SaveRequestEvent;
+import com.sitecake.contentmanager.client.event.SaveRequestHandler;
 import com.sitecake.contentmanager.client.event.SelectEvent;
 import com.sitecake.contentmanager.client.event.SelectHandler;
 import com.sitecake.contentmanager.client.event.StartEditingEvent;
@@ -111,7 +113,7 @@ public class PageEditor implements DeleteHandler, EditItemHandler, OverItemHandl
 	UndoHandler, RedoHandler, CancelHandler, SelectorHandler, SelectHandler, MoveHandler,
 	NewItemHandler, UploadHandler, LogoutHandler, PublishHandler, EditCompleteHandler,
 	NewParagraphHandler, MergeParagraphHandler, ErrorNotificationHandler, TextBlockHandler,
-	PostEditingEndHandler, PageManagerHandler {
+	PostEditingEndHandler, PageManagerHandler, SaveRequestHandler {
 	
 	private class TransformationState {
 		private ContentItem item;
@@ -252,6 +254,7 @@ public class PageEditor implements DeleteHandler, EditItemHandler, OverItemHandl
 		eventBus.addHandler(TextBlockEvent.getType(), this);
 		eventBus.addHandler(PostEditingEndEvent.getType(), this);
 		eventBus.addHandler(PageManagerEvent.getType(), this);
+		eventBus.addHandler(SaveRequestEvent.getType(), this);
 		
 		Window.addWindowClosingHandler(new ClosingHandler() {
 			
@@ -563,6 +566,13 @@ public class PageEditor implements DeleteHandler, EditItemHandler, OverItemHandl
 
 		if ( ( editPhase.equals(EditPhase.IDLE) || editPhase.equals(EditPhase.EDITING_ITEM) ) && !event.getItem().equals(editedItem) ) {
 			contextMenu.show(event.getItem());
+		}
+	}
+
+	@Override
+	public void onSaveRequest(SaveRequestEvent event) {
+		if (editPhase.equals(EditPhase.IDLE)) {
+			save();
 		}
 	}
 

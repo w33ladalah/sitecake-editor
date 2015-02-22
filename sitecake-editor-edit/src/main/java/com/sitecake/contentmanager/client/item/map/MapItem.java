@@ -107,6 +107,8 @@ public class MapItem extends ContentItem {
 	
 	private double height;
 	
+	private String origText;
+	
 	public static MapItem create(String text) {
 		MapItem item = GWT.create(MapItem.class);
 		try {
@@ -145,6 +147,7 @@ public class MapItem extends ContentItem {
 		}
 		setElement(element);
 
+		origText = text;
 		embeddedMap = parse(text);
 		if ( embeddedMap == null ) {
 			throw new IllegalArgumentException();
@@ -323,6 +326,7 @@ public class MapItem extends ContentItem {
 	public ContentItem cloneItem() {
 		MapItem clone = new MapItem();
 		cloneItem(clone);
+		clone.init(origText);
 		clone.embeddedMap = embeddedMap.cloneMap();
 		clone.width = width;
 		clone.height = height;
