@@ -79,8 +79,7 @@ public class TwitterStatusItem extends ContentItem {
 
 	@Override
 	public String getHtml() {
-		return "<div class=\"" + DISCRIMINATOR + "\">" +
-					"<style>.twitter-tweet-rendered {width: 100% !important; max-width: 100% !important;}</style>" +
+		return "<div class=\"" + DISCRIMINATOR + "\" style=\"position:relative;max-width:99.2%;min-width:220px;width:537px;\">" +
 					"<blockquote class=\"twitter-tweet\">" +
 					"<a href=\"" + tweetUrl + "\"></a>" +
 					"</blockquote>" +
@@ -124,6 +123,7 @@ public class TwitterStatusItem extends ContentItem {
 		
 		statusContainer.setInnerHTML("");
 		statusContainer.setClassName(cssStyle.status());
+		getElement().removeClassName(cssStyle.initialized());
 		twitterWidgetLoad(tweetId, statusContainer, true);
 	}
 	
@@ -139,6 +139,7 @@ public class TwitterStatusItem extends ContentItem {
 	protected void onTweetLoaded() {
 		tweetUrl = obtainStatusUrl();
 		statusPlaceholder.addClassName(cssStyle.initialized());
+		getElement().addClassName(cssStyle.initialized());
 		eventBus.fireEventDeferred(new SaveRequestEvent());
 	}
 	

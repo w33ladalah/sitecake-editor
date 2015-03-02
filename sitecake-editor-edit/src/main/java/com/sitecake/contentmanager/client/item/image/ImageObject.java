@@ -143,4 +143,29 @@ public class ImageObject {
 
 		return img;
 	}
+	
+	public static ImageObject create(String src, String srcset, double width, double widthPx, double heightPx) {
+		ImageObject img = new ImageObject();
+		img.width = width;
+		img.ratio = widthPx/heightPx;
+		img.items = img.parseSrcset(srcset, img.ratio, widthPx);
+		return img;		
+	}
+	
+	private List<SrcItem> parseSrcset(String srcset, double ratio, double origWidth) {
+		ArrayList<SrcItem> items = new ArrayList<ImageObject.SrcItem>();
+		String[] elements = srcset.split(",");
+		for (String element : elements) {
+			String[] comps = element.split("\\s");
+			String url = comps[0];
+			String vwidth = comps[1];
+			double width = origWidth;
+			if (vwidth.endsWith("w")) {
+				width = Double.parseDouble(vwidth.substring(0, -1));
+			}
+			items.add(new SrcItem(width, width/ratio, url));
+		}
+		return items;
+	}
+
 }

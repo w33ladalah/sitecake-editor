@@ -29,6 +29,7 @@ import com.sitecake.contentmanager.client.event.UploadEvent;
 import com.sitecake.contentmanager.client.item.ContentItem;
 import com.sitecake.contentmanager.client.item.image.ImageItem;
 import com.sitecake.contentmanager.client.item.image.ImageObject;
+import com.sitecake.contentmanager.client.item.photoset.PhotoSetItem;
 import com.sitecake.contentmanager.client.item.slider.SliderEntry;
 import com.sitecake.contentmanager.client.item.slider.SliderItem;
 import com.sitecake.contentmanager.client.item.slideshow.SlideshowImage;
@@ -85,6 +86,7 @@ public abstract class FileUploaderItem extends ContentItem {
 		IMAGE,
 		SLIDESHOW,
 		SLIDER,
+		PHOTOSET,
 		AUDIO,
 		VIDEO
 	}
@@ -172,6 +174,7 @@ public abstract class FileUploaderItem extends ContentItem {
 			textMessage.addClassName(EditorClientBundle.INSTANCE.css().uploadTextImage());
 			break;
 		case SLIDESHOW:
+		case PHOTOSET:
 			textMessage.addClassName(EditorClientBundle.INSTANCE.css().uploadTextSlideshow());
 			break;
 		case SLIDER:
@@ -431,6 +434,30 @@ public abstract class FileUploaderItem extends ContentItem {
 			
 			contentItemCreators.add(slideshowCreator);
 			
+		} else if ( type.equals(Type.PHOTOSET) ) {
+			
+			final List<ImageObject> images = new ArrayList<ImageObject>();
+			
+			for ( UploadObject uploadObject : uploadBatch.getUploadObjects() ) {
+				
+				if ( !uploadObject.getStatus().equals(UploadObject.Status.UPLOADED) ) {
+					continue;
+				}
+				
+				final ImageObject image = ImageObject.create(uploadObject.getResponse());
+				images.add(image);
+			}
+			
+			ContentItemCreator slideshowCreator = new ContentItemCreator() {
+				
+				public ContentItem create() {
+					PhotoSetItem item = PhotoSetItem.create(images);
+					return item;
+				}
+			};
+			
+			contentItemCreators.add(slideshowCreator);
+			
 		} else {
 			
 			for ( UploadObject uploadObject : uploadBatch.getUploadObjects() ) {
@@ -493,6 +520,10 @@ public abstract class FileUploaderItem extends ContentItem {
 					break;
 				}
 			}
+			if (imageUploadForSlideshow) {
+				type = Type.PHOTOSET;
+				imageUploadForSlideshow = false;
+			}
 		} else {
 			imageUploadForSlideshow = false;
 		}
@@ -541,6 +572,7 @@ public abstract class FileUploaderItem extends ContentItem {
 		case IMAGE:
 		case SLIDESHOW:
 		case SLIDER:
+		case PHOTOSET:
 			isAllowed = mimeType.equals(MimeType.IMAGE_JPEG) ||
 				mimeType.equals(MimeType.IMAGE_GIF) ||
 				mimeType.equals(MimeType.IMAGE_PNG) ||
@@ -587,6 +619,8 @@ public abstract class FileUploaderItem extends ContentItem {
 					uploadObject = createSlideshowUploadObject(file, listIndex);
 				} else if ( type.equals(Type.SLIDER) ) {
 					uploadObject = createSliderImageUploadObject(file);
+				} else if ( type.equals(Type.PHOTOSET) ) {
+					uploadObject = createImageUploadObject(file);
 				} else {
 					uploadObject = createImageUploadObject(file);
 				}
@@ -624,6 +658,7 @@ public abstract class FileUploaderItem extends ContentItem {
 		case IMAGE:
 		case SLIDESHOW:
 		case SLIDER:
+		case PHOTOSET:
 			message = messages.selectFilesToUploadImage();
 			break;
 		case VIDEO:
@@ -653,6 +688,7 @@ public abstract class FileUploaderItem extends ContentItem {
 		case IMAGE:
 		case SLIDESHOW:
 		case SLIDER:
+		case PHOTOSET:
 			mimeTypes = MimeType.IMAGE_JPEG + "," + MimeType.IMAGE_GIF + "," + MimeType.IMAGE_PNG;
 			break;
 		case VIDEO:
