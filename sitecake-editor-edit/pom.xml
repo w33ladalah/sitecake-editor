@@ -3,7 +3,7 @@
   <parent>
     <artifactId>sitecake-editor</artifactId>
     <groupId>com.sitecake</groupId>
-    <version>2.1.0</version>
+    <version>2.1.1</version>
   </parent>
   
   <name>SiteCake Editor - Edit</name>
@@ -25,6 +25,12 @@
 		    </exclusions>
 		</dependency>
 	
+		<dependency>
+		    <groupId>junit</groupId>
+		    <artifactId>junit</artifactId>
+		    <version>4.12</version>
+		    <scope>test</scope>
+		</dependency>
 	
 		<dependency>
 		    <groupId>com.google.gwt</groupId>
@@ -55,12 +61,12 @@
 			<artifactId>selection</artifactId>
 			<version>20100915</version>
 		</dependency>
-
+		
   		<dependency>
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-maps3</artifactId>
 			<version>0.3</version>
-		</dependency>
+		</dependency>		  		
 		  		
 	</dependencies>
 	

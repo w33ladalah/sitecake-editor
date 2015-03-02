@@ -334,11 +334,24 @@ public class VideoItem extends ContentItem {
 		return "div." + DISCRIMINATOR;
 	}
 
+	private double percentage(double val, double ref) {
+		return (val * 100 / ref);
+	}
+	
+	private double formatted(double val) {
+		return Math.round(val * 1000)/1000;
+	}
+	
 	@Override
 	public String getHtml() {
+		double cnt = CSSStyleDeclaration.get(container.getElement()).getPropertyValueDouble("width");
+		double ratio = formatted(percentage(embeddedVideo.height, cnt));
+		double widthRel = formatted(percentage(embeddedVideo.width, cnt));
 		return "<div class=\"" + DISCRIMINATOR + "\" " + 
-				"style=\"width:" + embeddedVideo.width + "px;height:" + 
-				embeddedVideo.height + "px\">" +
+				"style=\"width:" + widthRel + "%;position:relative;overflow:hidden;height:0;padding-bottom:" + ratio + "%\"" + 
+				//"style=\"width:" + embeddedVideo.width + "px;height:" + 
+				//embeddedVideo.height + "px\">" +
+				">" +
 				getPublicCode() + 
 			"</div>";
 	}
@@ -450,15 +463,21 @@ public class VideoItem extends ContentItem {
 	
 	private String getPublicCode() {
 		String result = embeddedVideo.publicCode;
-		result = result.replaceAll("height=\"###\"", "height=\"" + Double.valueOf(embeddedVideo.height).intValue() + "\"");
-		result = result.replaceAll("width=\"###\"", "width=\"" + Double.valueOf(embeddedVideo.width).intValue() + "\"");
+		//result = result.replaceAll("height=\"###\"", "height=\"" + Double.valueOf(embeddedVideo.height).intValue() + "\"");
+		//result = result.replaceAll("width=\"###\"", "width=\"" + Double.valueOf(embeddedVideo.width).intValue() + "\"");
+		result = result.replaceAll("height=\"###\"", "height=\"" + "100%" + "\"");
+		result = result.replaceAll("width=\"###\"", "width=\"" + "100%" + "\" style=\"position:absolute;top:0;left:0\"");
+
 		return result;
 	}
 	
 	public String getEditCode() {
 		String result = embeddedVideo.editCode;
-		result = result.replaceAll("height=\"###\"", "height=\"" + Double.valueOf(embeddedVideo.height).intValue() + "\"");
-		result = result.replaceAll("width=\"###\"", "width=\"" + Double.valueOf(embeddedVideo.width).intValue() + "\"");
+		//result = result.replaceAll("height=\"###\"", "height=\"" + Double.valueOf(embeddedVideo.height).intValue() + "\"");
+		//result = result.replaceAll("width=\"###\"", "width=\"" + Double.valueOf(embeddedVideo.width).intValue() + "\"");
+		result = result.replaceAll("height=\"###\"", "height=\"" + "100%" + "\"");
+		result = result.replaceAll("width=\"###\"", "width=\"" + "100%" + "\" style=\"position:absolute;top:0;left:0\"");
+
 		return result;		
 	}
 	

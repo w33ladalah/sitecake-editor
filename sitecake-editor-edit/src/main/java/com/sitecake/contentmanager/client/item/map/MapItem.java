@@ -2,7 +2,6 @@ package com.sitecake.contentmanager.client.item.map;
 
 import com.allen_sauer.gwt.dnd.client.util.DOMUtil;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.EventTarget;
@@ -19,7 +18,6 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
-import com.sitecake.commons.client.util.DomSelector;
 import com.sitecake.commons.client.util.DomUtil;
 import com.sitecake.commons.client.util.dom.CSSStyleDeclaration;
 import com.sitecake.contentmanager.client.EventBus;
@@ -91,8 +89,6 @@ public class MapItem extends ContentItem {
 	
 	private boolean modified = false;
 	
-	private String oldEditCode;
-	
 	private boolean resizeRatioLocked;
 	
 	private Axis dragAxis;
@@ -105,7 +101,13 @@ public class MapItem extends ContentItem {
 	
 	private Messages messages = GinInjector.instance.getLocaleProxy().messages();
 	
-	private DomSelector domSelector = GinInjector.instance.getDomSelector();
+	private GoogleEmbeddedMap embeddedMap;
+	
+	private double width;
+	
+	private double height;
+	
+	private String origText;
 	
 	public static MapItem create(String text) {
 		MapItem item = GWT.create(MapItem.class);
@@ -118,8 +120,6 @@ public class MapItem extends ContentItem {
 		}
 		return item;
 	}
-	
-	private GoogleEmbeddedMap embeddedMap;
 	
 	protected MapItem() {
 		super();
@@ -134,22 +134,34 @@ public class MapItem extends ContentItem {
 	}
 	
 	private void init(String text, Element origElement) throws IllegalArgumentException {
+		double width = 0, height = 0;
+		
+		if (origElement != null) {
+			width = origElement.getClientWidth();
+			height = origElement.getClientHeight();
+		}
+
 		Element element = uiBinder.createAndBindUi(this);
 		if ( origElement != null ) {
 			DomUtil.replaceElement(origElement, element);
 		}
 		setElement(element);
 
+		origText = text;
 		embeddedMap = parse(text);
 		if ( embeddedMap == null ) {
 			throw new IllegalArgumentException();
 		}
-		codeContainer.setInnerHTML(embeddedMap.getEditCode());
+		codeContainer.setInnerHTML(embeddedMap.getCode());
 		
 		mousePosStart = new Point(0, 0);
 		mousePosCurrent = new Point(0, 0);
 		
-		resize(embeddedMap.getWidth(), embeddedMap.getHeight());
+		if (width != 0) {
+			resize(width, height);
+		} else {
+			resizeDefault();
+		}
 		
 		initHandlers();
 	}
@@ -190,15 +202,15 @@ public class MapItem extends ContentItem {
 			int x = event.getClientX() + Window.getScrollLeft();
 			int y = event.getClientY() + Window.getScrollTop();
 			mousePosStart.setXY(x, y);
-			startWidth = embeddedMap.getWidth();
-			startHeight = embeddedMap.getHeight();
+			startWidth = width;
+			startHeight = height;
 			
 			resizeRatioLocked = event.getNativeEvent().getShiftKey();
 			
 			RESIZE_MAX_RECT.setWidth(getMaxWidth());
 			if ( resizeRatioLocked ) {
-				RESIZE_MAX_RECT.setHeight(RESIZE_MAX_RECT.getWidth() / embeddedMap.getRatio());
-				RESIZE_MIN_RECT.setHeight(RESIZE_MIN_RECT.getWidth() / embeddedMap.getRatio());
+				RESIZE_MAX_RECT.setHeight(RESIZE_MAX_RECT.getWidth() / (width/height));
+				RESIZE_MIN_RECT.setHeight(RESIZE_MIN_RECT.getWidth() / (width/height));
 			} else {
 				RESIZE_MAX_RECT.setHeight(10000);
 			}
@@ -312,8 +324,12 @@ public class MapItem extends ContentItem {
 	
 	@Override
 	public ContentItem cloneItem() {
-		MapItem clone = MapItem.create(embeddedMap.getPublicCode());
+		MapItem clone = new MapItem();
 		cloneItem(clone);
+		clone.init(origText);
+		clone.embeddedMap = embeddedMap.cloneMap();
+		clone.width = width;
+		clone.height = height;
 		return clone;
 	}
 
@@ -327,13 +343,22 @@ public class MapItem extends ContentItem {
 		return "div." + DISCRIMINATOR;
 	}
 
+	private double percentage(double val, double ref) {
+		return (val * 100 / ref);
+	}
+	
+	private double formatted(double val) {
+		return Math.round(val * 1000)/1000;
+	}
+	
 	@Override
 	public String getHtml() {
+		double cnt = CSSStyleDeclaration.get(container.getElement()).getPropertyValueDouble("width");
+		double ratio = formatted(percentage(height, cnt));
+		double widthRel = formatted(percentage(width, cnt));
 		return "<div class=\"" + DISCRIMINATOR + "\" " + 
-				"style=\"width:" + embeddedMap.getWidth() + "px;height:" + 
-				embeddedMap.getHeight() + "px\">" +
-				embeddedMap.getPublicCode() + 
-			"</div>";
+				"style=\"width:" + widthRel + "%;position:relative;overflow:hidden;height:0;padding-bottom:" + ratio + "%\"" + 
+				">" + embeddedMap.getCode() + "</div>";
 	}
 	
 	@Override
@@ -344,18 +369,14 @@ public class MapItem extends ContentItem {
 		setSelected(false);
 		
 		modified = false;
-		oldEditCode = embeddedMap.getEditCode();
 		getElement().addClassName(cssStyle.edit());
-		codeContainer.setInnerHTML("");
-		embeddedMap.generateEditMap(codeContainer);
 	}
 
 	@Override
 	public boolean stopEditing(boolean cancel) {
 		getElement().removeClassName(cssStyle.edit());
-		embeddedMap.removeEditMap(codeContainer);
-		boolean dirty = !embeddedMap.getEditCode().equals(oldEditCode);
-		dirty |= super.stopEditing(cancel) | modified;
+		redraw();
+		boolean dirty = super.stopEditing(cancel) | modified;
 		return dirty;
 	}
 
@@ -381,23 +402,20 @@ public class MapItem extends ContentItem {
 		super.onInclusion();
 		// TODO: check why is this called three times on every drag/drop
 		int maxWidth = getMaxWidth();
-		if ( embeddedMap.getWidth() <= 0.0 || embeddedMap.getWidth() > maxWidth ) {
-			resize(maxWidth, maxWidth/embeddedMap.getRatio());
+		if ( width <= 0.0 || width > maxWidth ) {
+			resize(maxWidth, maxWidth/(width/height));
+			redraw();
 		}
 	}
 	
 	private void resize() {
 		// dx, dy, RESIZE_MAX_RECT, RESIZE_MIN_RECT, resizeRatioLocked, dragAxis
 		if ( resizeRatioLocked ) {
-			dy = dx / embeddedMap.getRatio();
+			dy = dx / (width/height);
 		}
 		
 		double newWidth = startWidth + dx;
 		double newHeight = startHeight + dy;
-		
-		if ( !resizeRatioLocked ) {
-			embeddedMap.setRatio(newWidth / newHeight);
-		}
 		
 		if ( resizeRatioLocked ) {
 			if ( newWidth < RESIZE_MIN_RECT.getWidth() ) {
@@ -423,23 +441,31 @@ public class MapItem extends ContentItem {
 		resize(newWidth, newHeight);
 	}
 	
+	private void resizeDefault() {
+		double width = 800;
+		if (container != null) {
+			width = CSSStyleDeclaration.get(container.getElement()).getPropertyValueDouble("width");
+		}
+		double height = width * (9.0/16.0);
+		resize(width, height);
+	}
+	
+	private void redraw() {
+		codeContainer.setInnerHTML(embeddedMap.getCode());
+	}
+	
 	private void resize(double width, double height) {
-		embeddedMap.setWidth(width);
-		embeddedMap.setHeight(height);
+		this.width = width;
+		this.height = height;
 		
-		int targetWidth = Double.valueOf(width).intValue();
-		int targetHeight = Double.valueOf(height).intValue();
-		
-		getElement().getStyle().setWidth(targetWidth, Unit.PX);
-		getElement().getStyle().setHeight(targetHeight, Unit.PX);
-		JsArray<Element> target = domSelector.select("iframe", codeContainer);
-		embeddedMap.resizeTarget(target);
+		getElement().getStyle().setWidth(width, Unit.PX);
+		getElement().getStyle().setHeight(height, Unit.PX);
 	}
 	
 	public static GoogleEmbeddedMap parse(String input) {
-		GoogleEmbeddedMap embeddedVideo = GoogleEmbeddedMap.create(input);
-		
-		return embeddedVideo;
+		//GoogleEmbeddedMap map = new GoogleEmbeddedMap();
+		return GoogleEmbeddedMap.create(input);
+		//return null;
 	}
 	
 	public static boolean testText(String input) {

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.0.3//EN" "http://google-web-toolkit.googlecode.com/svn/tags/2.0.3/distro-source/core/src/gwt-module.dtd">
 <module rename-to='contentmanager'>
-	<script src="http://maps.google.com/maps/api/js?sensor=false" />
-
+	<script src="//platform.twitter.com/widgets.js"/>
+	
 	<!-- Inherit the core Web Toolkit stuff. -->
 	<inherits name='com.google.gwt.user.User'/>
 	<inherits name="com.google.gwt.i18n.I18N"/>
@@ -15,7 +15,6 @@
 	<inherits name='com.allen_sauer.gwt.dnd.gwt-dnd'/>
 	<inherits name="org.adamtacy.GWTEffects"></inherits>
 	<inherits name="com.bfr.client.Selection"></inherits>
-	<inherits name="com.google.gwt.maps.Maps"></inherits>
 	<inherits name="com.sitecake.commons.Commons"></inherits>
 
 	<!--  -->
@@ -104,7 +103,9 @@
 	<replace-with class="com.sitecake.contentmanager.client.editable.SelectionImplStandard">
 		<when-type-is class="com.sitecake.contentmanager.client.editable.SelectionImpl"/>
 	</replace-with>
-		
+	
+	<source path="client" excludes="**/*Test.java"/>
+			
 	<!-- Specify the app entry point class. -->
 	<entry-point class='com.sitecake.contentmanager.client.Module'/>
 	

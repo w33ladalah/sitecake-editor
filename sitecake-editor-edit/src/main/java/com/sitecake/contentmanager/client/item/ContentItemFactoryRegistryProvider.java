@@ -9,6 +9,7 @@ import com.sitecake.contentmanager.client.item.map.MapItemFactory;
 import com.sitecake.contentmanager.client.item.slider.SliderItemFactory;
 import com.sitecake.contentmanager.client.item.slideshow.SlideshowItemFactory;
 import com.sitecake.contentmanager.client.item.text.TextItemFactory;
+import com.sitecake.contentmanager.client.item.twitter.TwitterStatusItemFactory;
 import com.sitecake.contentmanager.client.item.video.VideoItemFactory;
 
 public class ContentItemFactoryRegistryProvider implements Provider<ContentItemFactoryRegistry> {
@@ -19,6 +20,7 @@ public class ContentItemFactoryRegistryProvider implements Provider<ContentItemF
 
 		// order is important, the last added factory will be consulted only if no factory
 		// takes over
+		registry.registerFactory(new TwitterStatusItemFactory());
 		registry.registerFactory(new VideoItemFactory());
 		registry.registerFactory(new MapItemFactory());
 		registry.registerFactory(new SlideshowItemFactory());

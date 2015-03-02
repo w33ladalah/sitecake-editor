@@ -20,7 +20,12 @@ public class ItemDragController extends PickupDragController {
 
 	@Override
 	public void makeNotDraggable(Widget draggable) {
-		super.makeNotDraggable(draggable);
+		try {
+			super.makeNotDraggable(draggable);
+		} catch (RuntimeException e) {
+			// preventing exception in case makeNotDraggable called more than once
+			// do nothing
+		}
 	}
 
 	public void unselect(Widget draggable) {

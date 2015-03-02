@@ -1,5 +1,8 @@
 package com.sitecake.contentmanager.client.dom;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArrayString;
 
@@ -45,4 +48,13 @@ public final class DataTransfer extends JavaScriptObject {
 		}
 		return returnTypes;
 	}-*/;
+	
+	public Map<String, String> allData() {
+		Map<String, String> data = new HashMap<String, String>();
+		JsArrayString formats = getFormats();
+		for (int i = 0; i < formats.length(); i++) {
+			data.put(formats.get(i), getData(formats.get(i)));
+		}
+		return data;
+	}
 }

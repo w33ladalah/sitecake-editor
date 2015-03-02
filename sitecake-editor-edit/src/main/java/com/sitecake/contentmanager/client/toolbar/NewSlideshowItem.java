@@ -29,7 +29,7 @@ public class NewSlideshowItem extends NewItem {
 	public ContentItemCreator getContentItemCreator() {
 		return new ContentItemCreator() {
 			public ContentItem create() {
-				return FileUploaderItem.create(Type.SLIDESHOW);
+				return FileUploaderItem.create(Type.PHOTOSET);
 			}
 		};
 	}

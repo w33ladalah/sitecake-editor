@@ -12,7 +12,6 @@ import com.sitecake.contentmanager.client.event.EndEditingEvent;
 import com.sitecake.contentmanager.client.event.EndEditingHandler;
 import com.sitecake.contentmanager.client.event.MoveEvent;
 import com.sitecake.contentmanager.client.event.MoveEvent.Direction;
-import com.sitecake.contentmanager.client.event.PageManagerEvent;
 import com.sitecake.contentmanager.client.event.RedoEvent;
 import com.sitecake.contentmanager.client.event.SelectEvent;
 import com.sitecake.contentmanager.client.event.StartEditingEvent;
@@ -163,11 +162,13 @@ public class KeyboardController implements CloseHandler<Window> {
 					sink = true;
 				}
 				break;
+			/*
 			case KEY_P:
 				if ( !editMode && !pageManagerMode) {
 					eventBus.fireEvent(new PageManagerEvent(true));
 					sink = true;
-				}				
+				}
+			*/				
 		}
 		
 		if ( sink ) {

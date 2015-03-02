@@ -3,7 +3,7 @@ package com.sitecake.contentmanager.client.event;
 import java.util.List;
 
 import com.google.gwt.event.shared.GwtEvent;
-import com.sitecake.contentmanager.client.item.fileuploader.FileUploaderItem;
+import com.sitecake.contentmanager.client.item.ContentItem;
 import com.sitecake.contentmanager.client.toolbar.ContentItemCreator;
 
 public class UploadEvent extends GwtEvent<UploadHandler> {
@@ -14,20 +14,20 @@ public class UploadEvent extends GwtEvent<UploadHandler> {
 		return TYPE;
 	}
 
-	private FileUploaderItem fileUploaderItem;
+	private ContentItem originatingItem;
 	
 	private List<ContentItemCreator> contentItemCreators;
 	
-	public FileUploaderItem getFileUploaderItem() {
-		return fileUploaderItem;
+	public ContentItem getOriginatingItem() {
+		return originatingItem;
 	}
 
 	public List<ContentItemCreator> getContentItemCreators() {
 		return contentItemCreators;
 	}
 
-	public UploadEvent(FileUploaderItem fileUploaderItem, List<ContentItemCreator> contentItemCreators) {
-		this.fileUploaderItem = fileUploaderItem;
+	public UploadEvent(ContentItem originatingItem, List<ContentItemCreator> contentItemCreators) {
+		this.originatingItem = originatingItem;
 		this.contentItemCreators = contentItemCreators;
 	}
 
