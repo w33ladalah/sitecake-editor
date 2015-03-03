@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gwt.core.client.JavaScriptException;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.dom.client.Element;
@@ -63,7 +64,20 @@ public class ContentStyleRegistryImpl implements ContentStyleRegistry {
 			for (int i = 0; i < styleSheets.length(); i++) {
 				StyleSheet styleSheet = styleSheets.get(i);
 				if (styleSheet == null) continue;
-				JsArray<CSSStyleRule> cssRules = styleSheet.cssRules();
+				
+				// In Chrome, if stylesheet originates from a different domain,
+			    // ss.cssRules simply won't exist. I believe the same is true for IE, but
+			    // I haven't tested it.
+			    //
+			    // In Firefox, if stylesheet originates from a different domain, trying
+			    // to access ss.cssRules will throw a SecurityError. Hence, we must use
+			    // try/catch to detect this condition in Firefox.				
+				JsArray<CSSStyleRule> cssRules;
+				try {
+					cssRules = styleSheet.cssRules();
+				} catch(JavaScriptException e) {
+					cssRules = null;
+				}
 				if (cssRules == null) continue;
 				for (int j = 0; j < cssRules.length(); j++) {
 					CSSStyleRule rule = cssRules.get(j);

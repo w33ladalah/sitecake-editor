@@ -2,6 +2,7 @@ package com.sitecake.contentmanager.client.item.twitter;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -94,15 +95,26 @@ public class TwitterStatusItem extends ContentItem {
 	}
 	
 	public static TwitterStatusItem create(String text) {
+		MatchResult matches = testRe.exec(text);
+		if (matches == null) {
+			return null;
+		}
 		TwitterStatusItem item = new TwitterStatusItem();
-		String tweetId = testRe.exec(text).getGroup(1);
+		String tweetId = matches.getGroup(1);
 		item.init(tweetId, null);
 		return item;
 	}
 	
 	public static TwitterStatusItem create(Element element) {
+		if (element == null) {
+			return null;
+		}
+		MatchResult matches = testRe.exec(element.getInnerHTML());
+		if (matches == null) {
+			return null;
+		}		
 		TwitterStatusItem item = new TwitterStatusItem();
-		String tweetId = testRe.exec(element.getInnerHTML()).getGroup(1);
+		String tweetId = matches.getGroup(1);
 		item.init(tweetId, element);
 		return item;		
 	}

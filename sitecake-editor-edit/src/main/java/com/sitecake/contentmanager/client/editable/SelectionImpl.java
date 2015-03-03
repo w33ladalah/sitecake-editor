@@ -181,6 +181,8 @@ public abstract class SelectionImpl implements Selection {
 	 */
 	@Override
 	public void select(Node node) {
+		if ( node == null ) return;
+		
 		if ( node.hasChildNodes() ) {
 			Node startContainer = node.getFirstChild();
 			int startOffset = 0;

@@ -3,6 +3,7 @@ package com.sitecake.commons.client.util;
 import com.google.gwt.core.client.JavaScriptException;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Display;
+import com.sitecake.commons.client.util.dom.CSSStyleDeclaration;
 
 
 public class DomUtil {
@@ -51,5 +52,25 @@ public class DomUtil {
 
 	private static native boolean queryCommandStateNative(String cmd) /*-{
     	return !!$doc.queryCommandState(cmd);
-	}-*/;	
+	}-*/;
+	
+	public static double getElementInnerWidth(Element element) {
+		if (element == null) return 0;
+		
+		double width;
+		try {
+			width = CSSStyleDeclaration.get(element).getPropertyValueDouble("width");
+		} catch(Exception e) {
+			width = element.getClientWidth();
+		}
+		return width;
+	}
+	
+	public static double getElementOuterWidth(Element element) {
+		if (element == null) return 0;
+		
+		double width;
+		width = element.getOffsetWidth();
+		return width;
+	}
 }

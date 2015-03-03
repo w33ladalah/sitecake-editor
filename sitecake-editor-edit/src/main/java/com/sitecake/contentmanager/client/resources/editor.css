@@ -571,10 +571,12 @@ body {
 	top: 0px;
     width: 320px;	
     height: 21px;
-    padding: 2px 0 0 0;
+    padding: 0;   
 }
 
-.link-editor-url-input {
+.link-editor-url-input,
+.link-editor-url-input:focus,
+.link-editor-url-input:disabled {
     background-color: #FFFFFF;
     border: medium none;
     outline: medium none;
@@ -582,7 +584,11 @@ body {
     font: 10px/11px Verdana,Geneva,sans-serif;
     height: 12px;
     padding: 3px 6px 4px;
-    width: 320px;	
+    width: 320px;
+	box-shadow: unset;
+	display: block;
+	box-sizing:unset;
+	transition:disabled;	
 }
 
 .link-editor-unlink-button {

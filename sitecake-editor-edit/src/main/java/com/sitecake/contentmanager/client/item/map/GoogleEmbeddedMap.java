@@ -41,7 +41,7 @@ public class GoogleEmbeddedMap {
 	}
 
 	// \1 - search, \2 - place, \3 - lat, \4 - lng, \5 - zl, \6 - dst, \7 - data, \8 - hl
-	private static final RegExp URL_RE = RegExp.compile(".*(?:https?):\\/\\/[^\\.]+\\.google\\.[^\\.]+\\/maps\\/(?:search\\/([^\\/]+)\\/)?(?:place\\/([^\\/]+)\\/)?(?:@(-?[0-9\\.]+),(-?[0-9\\.]+),(?:([0-9]{1,2})z)?(?:([0-9\\.]+)m)?)(?:.*data=([^\\/?#]+))?(?:.*hl=([a-z]+))", "i");
+	private static final RegExp URL_RE = RegExp.compile(".*(?:https?):\\/\\/[^\\.]+\\.google\\.[^\\.]+\\/maps\\/(?:search\\/([^\\/]+)\\/)?(?:place\\/([^\\/]+)\\/)?(?:@(-?[0-9\\.]+),(-?[0-9\\.]+),(?:([0-9]{1,2})z)?(?:([0-9\\.]+)m)?)(?:.*data=([^\\/?#]+))?(?:.*hl=([a-z]+))?", "i");
 	
 	private static GoogleEmbeddedMap createFromUrl(String url) {
 		GoogleEmbeddedMap map = null;

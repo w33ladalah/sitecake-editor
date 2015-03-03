@@ -193,6 +193,10 @@ public abstract class ListItem extends ContentEditableBaseItem implements Editab
 	@Override
 	public boolean stopEditing(boolean cancel) {
 		
+		if (linking) {
+			link(linkUrlBackup, true);
+		}
+		
 		getElement().setAttribute("contentEditable", "false");
 		
 		for ( HandlerRegistration handlerRegistration : handlerRegistrations ) {

@@ -337,9 +337,11 @@ public class ImageItem extends ContentItem implements LinkableItem {
 
 		style = imgElement.getClassName();
 
-		double parentWidth = CSSStyleDeclaration.get(element.getParentElement()).getPropertyValueDouble("width");
-		double imageWidth = CSSStyleDeclaration.get(imgElement).getPropertyValueDouble("width");
-
+		//double parentWidth = CSSStyleDeclaration.get(element.getParentElement()).getPropertyValueDouble("width");
+		double parentWidth = DomUtil.getElementInnerWidth(element.getParentElement());
+		//double imageWidth = CSSStyleDeclaration.get(imgElement).getPropertyValueDouble("width");
+		double imageWidth = DomUtil.getElementInnerWidth(imgElement);
+		
 		ImageObject imageObject = ImageObject.create(
 			imgElement.getAttribute("src"),
 			percentage(imageWidth, parentWidth),
@@ -405,7 +407,8 @@ public class ImageItem extends ContentItem implements LinkableItem {
 		setContainerElementStyle();
 		
 		ImageElement img = DOM.createImg().<ImageElement>cast();
-		double cntWidth = CSSStyleDeclaration.get(container.getElement()).getPropertyValueDouble("width");		
+		//double cntWidth = CSSStyleDeclaration.get(container.getElement()).getPropertyValueDouble("width");
+		double cntWidth = DomUtil.getElementInnerWidth(container.getElement());
 		img.setSrc(sourceImageObject.getSrc(cntWidth));
 		img.setAttribute("width", sourceImageObject.getWidth() + "%");
 		
@@ -446,7 +449,8 @@ public class ImageItem extends ContentItem implements LinkableItem {
 
 	@Override
 	public String getHtml() {
-		double cntWidth = CSSStyleDeclaration.get(container.getElement()).getPropertyValueDouble("width");
+		//double cntWidth = CSSStyleDeclaration.get(container.getElement()).getPropertyValueDouble("width");
+		double cntWidth = DomUtil.getElementInnerWidth(container.getElement());
 
 		String html = "<img alt=\"" + description + "\" " +
 				//"width=\"" + formatted(transImageObject.getWidth()) + "%\" " +
@@ -481,7 +485,8 @@ public class ImageItem extends ContentItem implements LinkableItem {
 			refresh();
 		} else {
 			double targetWidth = finalState.getViewport().getWidth();
-			double cntWidth = CSSStyleDeclaration.get(container.getElement()).getPropertyValueDouble("width");
+			//double cntWidth = CSSStyleDeclaration.get(container.getElement()).getPropertyValueDouble("width");
+			double cntWidth = DomUtil.getElementInnerWidth(container.getElement());
 			transImageObject.setWidth(percentage(targetWidth, cntWidth));
 		}
 	}
@@ -546,13 +551,15 @@ public class ImageItem extends ContentItem implements LinkableItem {
 		
 		boolean parentDirty = super.stopEditing(cancel);
 		if (!cancel && dirty && !origMode.equals(Mode.RESIZE)) { 
-			double cntWidth = CSSStyleDeclaration.get(container.getElement()).getPropertyValueDouble("width");
+			//double cntWidth = CSSStyleDeclaration.get(container.getElement()).getPropertyValueDouble("width");
+			double cntWidth = DomUtil.getElementInnerWidth(container.getElement());
 			double imgWidth = finalState.getViewport().getWidth();
 			transImageObject.setWidth(percentage(imgWidth, cntWidth));
 			transform();
 			return false;
 		} else if (!cancel && dirty && origMode.equals(Mode.RESIZE)) {
-			double cntWidth = CSSStyleDeclaration.get(container.getElement()).getPropertyValueDouble("width");
+			//double cntWidth = CSSStyleDeclaration.get(container.getElement()).getPropertyValueDouble("width");
+			double cntWidth = DomUtil.getElementInnerWidth(container.getElement());
 			double imgWidth = finalState.getViewport().getWidth();
 			transImageObject.setWidth(percentage(imgWidth, cntWidth));
 			eventBus.fireEventDeferred(new PostEditingEndEvent(prev, this));			
@@ -1295,14 +1302,14 @@ public class ImageItem extends ContentItem implements LinkableItem {
 		Double maxWidth = 0.0;
 		
 		if ( container != null ) {
-			maxWidth = CSSStyleDeclaration.get(container.getElement()).getPropertyValueDouble("width");
+			maxWidth = DomUtil.getElementInnerWidth(container.getElement()); //CSSStyleDeclaration.get(container.getElement()).getPropertyValueDouble("width");
 			CSSStyleDeclaration cssStyle = CSSStyleDeclaration.get(getElement());
-			maxWidth -= cssStyle.getPropertyValueInt("margin-left");
-			maxWidth -= cssStyle.getPropertyValueInt("margin-right");
-			maxWidth -= cssStyle.getPropertyValueInt("padding-left");
-			maxWidth -= cssStyle.getPropertyValueInt("padding-right");
-			maxWidth -= cssStyle.getPropertyValueInt("border-left-width");
-			maxWidth -= cssStyle.getPropertyValueInt("border-right-width");
+			try { maxWidth -= cssStyle.getPropertyValueInt("margin-left"); } catch (NumberFormatException e) {};
+			try { maxWidth -= cssStyle.getPropertyValueInt("margin-right"); } catch (NumberFormatException e) {};
+			try { maxWidth -= cssStyle.getPropertyValueInt("padding-left"); } catch (NumberFormatException e) {};
+			try { maxWidth -= cssStyle.getPropertyValueInt("padding-right"); } catch (NumberFormatException e) {};
+			try { maxWidth -= cssStyle.getPropertyValueInt("border-left-width"); } catch (NumberFormatException e) {};
+			try { maxWidth -= cssStyle.getPropertyValueInt("border-right-width"); } catch (NumberFormatException e) {};
 		}
 		
 		return maxWidth.intValue();
@@ -1390,7 +1397,7 @@ public class ImageItem extends ContentItem implements LinkableItem {
 			BasicServiceResponse trResponse = BasicServiceResponse.get(response.getText()).cast();
 			if ( trResponse.isSuccess() ) {
 				transImageObject = ImageObject.create(trResponse);
-				double cntWidth = CSSStyleDeclaration.get(container.getElement()).getPropertyValueDouble("width");
+				double cntWidth = DomUtil.getElementInnerWidth(container.getElement());//CSSStyleDeclaration.get(container.getElement()).getPropertyValueDouble("width");
 				double imgWidth = finalState.getViewport().getWidth();
 				transImageObject.setWidth(percentage(imgWidth, cntWidth));
 				
