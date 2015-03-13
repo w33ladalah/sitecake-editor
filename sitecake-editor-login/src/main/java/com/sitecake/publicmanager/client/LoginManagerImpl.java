@@ -4,10 +4,13 @@ import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.http.client.Request;
+import com.google.gwt.http.client.RequestBuilder;
+import com.google.gwt.http.client.RequestCallback;
+import com.google.gwt.http.client.RequestException;
+import com.google.gwt.http.client.Response;
 import com.google.gwt.http.client.URL;
-import com.google.gwt.jsonp.client.JsonpRequestBuilder;
 import com.google.gwt.user.client.Window.Location;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.sitecake.commons.client.config.Globals;
 import com.sitecake.commons.client.util.DomSelector;
@@ -106,48 +109,54 @@ public class LoginManagerImpl implements LoginManager {
 		urlBuilder.setParameter("action", "login");
 		urlBuilder.setParameter("credentials", URL.encodeQueryString(credentialHash));
 		
-		JsonpRequestBuilder requestBuilder = new JsonpRequestBuilder();
-		try {
-			requestBuilder.requestObject( urlBuilder.buildString(), new AsyncCallback<LoginResponse>() {
-	
-				@Override
-				public void onFailure(Throwable caught) {
-					onLoginError(caught.getMessage());
-				}
-	
-				@Override
-				public void onSuccess(LoginResponse response) {
-					onLoginResponse(response);
-				}
-
-			});
+		RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.GET, urlBuilder.buildString());
+		requestBuilder.setHeader("Content-Type", "application/x-www-form-urlencoded");		
+		requestBuilder.setCallback(new RequestCallback() {						
+			
+			@Override
+			public void onResponseReceived(Request request, Response response) {				
+				onLoginResponse(response);			
+			}		
+			
+			@Override
+			public void onError(Request request, Throwable exception) {				
+				onLoginError(exception.getMessage());			
+			}		
+		});
 		
-		} catch (Throwable exception) {
-			onLoginError(exception.getMessage());
+		try {
+			requestBuilder.send();
+		} catch (RequestException e) {
+			onLoginError(e.getMessage());
 		}		
 	}
 	
-	private void onLoginResponse(LoginResponse loginResponse) {
-	
-		switch ( loginResponse.getStatus() ) {
-			case LoginResponse.SUCCESS:
-				onLoginSuccess();
-				break;
-			
-			case LoginResponse.INVALID_CREDENTIAL:
-				loginDialog.setProgress(false);
-				loginDialog.setMessage(messages.loginAttemptOutcomeInvalidCredential());
-				break;
+	private void onLoginResponse(Response response) {
+		if ( response.getStatusCode() < 400 ) {
+			LoginResponse loginResponse = LoginResponse.get(response.getText()).cast();
+
+			switch ( loginResponse.getStatus() ) {
+				case LoginResponse.SUCCESS:
+					onLoginSuccess();
+					break;
 				
-			case LoginResponse.LOCKED:
-				loginDialog.setProgress(false);
-				loginDialog.setMessage(messages.loginAttemptOutcomeLocked());
-				break;
-			
-			case LoginResponse.ERROR:
-			default:
-				onLoginError(loginResponse.getErrorMessage());
-				break;
+				case LoginResponse.INVALID_CREDENTIAL:
+					loginDialog.setProgress(false);
+					loginDialog.setMessage(messages.loginAttemptOutcomeInvalidCredential());
+					break;
+					
+				case LoginResponse.LOCKED:
+					loginDialog.setProgress(false);
+					loginDialog.setMessage(messages.loginAttemptOutcomeLocked());
+					break;
+				
+				case LoginResponse.ERROR:
+				default:
+					onLoginError(loginResponse.getErrorMessage());
+					break;
+			}
+		} else {
+			onLoginError(response.getStatusText() + "\n" + response.getText());
 		}
 	}
 	
@@ -188,49 +197,57 @@ public class LoginManagerImpl implements LoginManager {
 		urlBuilder.setParameter("credentials", URL.encodeQueryString(credentialHash));
 		urlBuilder.setParameter("newCredentials", URL.encodeQueryString(newCredentialHash));
 		
-		JsonpRequestBuilder requestBuilder = new JsonpRequestBuilder();
-		try {
-			requestBuilder.requestObject( urlBuilder.buildString(), new AsyncCallback<ChangeResponse>() {
-	
-				@Override
-				public void onFailure(Throwable caught) {
-					onChangeError(caught.getMessage());
-				}
-	
-				@Override
-				public void onSuccess(ChangeResponse response) {
-					onChangeResponse(response);
-				}
-				
-			});
+		RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.GET, urlBuilder.buildString());
+		requestBuilder.setHeader("Content-Type", "application/x-www-form-urlencoded");		
+		requestBuilder.setCallback(new RequestCallback() {						
+			
+			@Override
+			public void onResponseReceived(Request request, Response response) {				
+				onChangeResponse(response);			
+			}		
+			
+			@Override
+			public void onError(Request request, Throwable exception) {				
+				onChangeError(exception.getMessage());			
+			}		
+		});	
 		
-		} catch (Throwable exception) {
-			onChangeError(exception.getMessage());
+		try {
+			requestBuilder.send();
+		} catch (RequestException e) {
+			onChangeError(e.getMessage());
 		}		
 	}
 	
-	private void onChangeResponse(ChangeResponse response) {
-	
-		switch ( response.getStatus() ) {
-			case ChangeResponse.SUCCESS:
-				onChangeSuccess();
-				break;
-			
-			case ChangeResponse.INVALID_CREDENTIAL:
-				loginDialog.setProgress(false);
-				loginDialog.setMessage(messages.changeAttemptOutcomeInvalidCredential());
-				break;
+	private void onChangeResponse(Response response) {
+		if ( response.getStatusCode() < 400 ) {
+			ChangeResponse changeResponse = ChangeResponse.get(response.getText()).cast();
+
+			switch ( changeResponse.getStatus() ) {
+				case ChangeResponse.SUCCESS:
+					onChangeSuccess();
+					break;
 				
-			case ChangeResponse.INVALID_NEW_CREDENTIAL:
-				loginDialog.setProgress(false);
-				loginDialog.setMessage(messages.changeAttemptOutcomeInvalidNewCredential());
-				break;
-			
-			case ChangeResponse.ERROR:
-			default:
-				onChangeError(response.getErrorMessage());
-				break;
+				case ChangeResponse.INVALID_CREDENTIAL:
+					loginDialog.setProgress(false);
+					loginDialog.setMessage(messages.changeAttemptOutcomeInvalidCredential());
+					break;
+					
+				case ChangeResponse.INVALID_NEW_CREDENTIAL:
+					loginDialog.setProgress(false);
+					loginDialog.setMessage(messages.changeAttemptOutcomeInvalidNewCredential());
+					break;
+				
+				case ChangeResponse.ERROR:
+				default:
+					onChangeError(changeResponse.getErrorMessage());
+					break;
+			}
+		} else {
+			onLoginError(response.getStatusText() + "\n" + response.getText());
 		}
+		
+
 	}
 	
 	private void onChangeError(String message) {
