@@ -469,7 +469,7 @@ public class PageManager extends Composite {
 	}
 	
 	private void gotoUrl(String url) {
-		Window.Location.assign("sc-admin.php?page=" + url);		
+		Window.Location.assign("sitecake.php?page=" + url);		
 	}
 	
 	private native String getCurrentPageId()/*-{
