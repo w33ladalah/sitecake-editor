@@ -10,6 +10,8 @@ public class ContentItemFactoryRegistryImpl implements
 
 	private List<ContentItemFactory> factories;
 	
+	private ContentItemFactory defaultFactory;
+	
 	public ContentItemFactoryRegistryImpl() {
 		factories = new ArrayList<ContentItemFactory>();
 	}
@@ -17,6 +19,12 @@ public class ContentItemFactoryRegistryImpl implements
 	@Override
 	public void registerFactory(ContentItemFactory factory) {
 		factories.add(factory);
+	}
+	
+	@Override
+	public void registerDefaultFactory(ContentItemFactory factory) {
+		factories.add(factory);
+		defaultFactory = factory;
 	}
 
 	@Override
@@ -33,6 +41,9 @@ public class ContentItemFactoryRegistryImpl implements
 		return factory;
 	}
 	
-	
+	@Override
+	public ContentItemFactory getDefaultFactory() {
+		return defaultFactory;
+	}
 
 }

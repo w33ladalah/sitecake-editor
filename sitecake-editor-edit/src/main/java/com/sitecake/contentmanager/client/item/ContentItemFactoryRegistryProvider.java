@@ -29,8 +29,7 @@ public class ContentItemFactoryRegistryProvider implements Provider<ContentItemF
 		registry.registerFactory(new HtmlItemFactory());
 		registry.registerFactory(new ListItemFactory());
 		registry.registerFactory(new TextItemFactory());
-		registry.registerFactory(new GenericContentItemFactory());
-		
+		registry.registerDefaultFactory(new GenericContentItemFactory());
 		return registry;
 	}
 
