@@ -138,16 +138,24 @@ public class VideoItem extends ContentItem {
 	
 	private void init(String text, Element origElement) throws IllegalArgumentException {
 		Element element = uiBinder.createAndBindUi(this);
+		double itemWidth = 0;
+		
 		if ( origElement != null ) {
+			itemWidth = DomUtil.getElementInnerWidth(origElement);
 			DomUtil.replaceElement(origElement, element);
 		}
+		
 		setElement(element);
 
 		embeddedVideo = parse(text);
 		if ( embeddedVideo == null ) {
 			throw new IllegalArgumentException();
 		}
-		if ( embeddedVideo.width == -1 ) {
+		
+		if ( itemWidth > 0 ) {
+			embeddedVideo.width = itemWidth;
+			embeddedVideo.height = embeddedVideo.width/embeddedVideo.ratio;			
+		} else if ( embeddedVideo.width == -1 ) {
 			embeddedVideo.width = getMaxWidth();
 			embeddedVideo.height = embeddedVideo.width/embeddedVideo.ratio;
 		}
@@ -335,11 +343,11 @@ public class VideoItem extends ContentItem {
 	}
 
 	private double percentage(double val, double ref) {
-		return (val * 100 / ref);
+		return (val * 100.0 / ref);
 	}
 	
 	private double formatted(double val) {
-		return Math.round(val * 1000)/1000;
+		return Math.round(val * 1000.0)/1000.0;
 	}
 	
 	@Override
