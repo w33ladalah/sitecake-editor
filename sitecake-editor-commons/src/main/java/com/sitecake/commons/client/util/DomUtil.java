@@ -57,13 +57,26 @@ public class DomUtil {
 	public static double getElementInnerWidth(Element element) {
 		if (element == null) return 0;
 		
-		double width;
+		double width,
+				clientWidth = element.getClientWidth(), // width + padding-left + padding-right
+				paddingLeft = 0,
+				paddingRight = 0;
+		
 		try {
-			width = CSSStyleDeclaration.get(element).getPropertyValueDouble("width");
-		} catch(Exception e) {
-			width = element.getClientWidth();
+			paddingLeft = CSSStyleDeclaration.get(element).getPropertyValueDouble("padding-left");
+		} catch (Exception e) {
+			paddingLeft = 0;
 		}
-		return width;
+		
+		try {
+			paddingRight = CSSStyleDeclaration.get(element).getPropertyValueDouble("padding-right");
+		} catch (Exception e) {
+			paddingRight = 0;
+		}
+		
+		width = clientWidth - paddingLeft - paddingRight;
+		
+		return (width < 0) ? 0 : width;
 	}
 	
 	public static double getElementOuterWidth(Element element) {
@@ -73,4 +86,14 @@ public class DomUtil {
 		width = element.getOffsetWidth();
 		return width;
 	}
+	
+	public static native String outerHtml(Element element)/*-{
+		var txt, ax, el = $doc.createElement("div");
+		el.appendChild(element.cloneNode(false));
+		txt = el.innerHTML;      
+		ax = txt.indexOf('>') + 1;
+		txt = txt.substring(0, ax) + element.innerHTML + txt.substring(ax);
+		el = null;
+		return txt;	
+	}-*/;
 }
