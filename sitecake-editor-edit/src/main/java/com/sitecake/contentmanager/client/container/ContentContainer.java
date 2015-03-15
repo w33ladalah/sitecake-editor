@@ -17,12 +17,14 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.InsertPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.sitecake.commons.client.util.DomUtil;
 import com.sitecake.contentmanager.client.EventBus;
 import com.sitecake.contentmanager.client.GinInjector;
 import com.sitecake.contentmanager.client.commons.Point;
 import com.sitecake.contentmanager.client.contextmenu.ContextMenu;
 import com.sitecake.contentmanager.client.dnd.ContentContainerDropController;
 import com.sitecake.contentmanager.client.dnd.ItemDragController;
+import com.sitecake.contentmanager.client.event.ErrorNotificationEvent;
 import com.sitecake.contentmanager.client.event.OverItemEvent;
 import com.sitecake.contentmanager.client.item.ContentItem;
 import com.sitecake.contentmanager.client.item.ContentItemFactory;
@@ -73,8 +75,22 @@ public class ContentContainer extends ComplexPanel implements InsertPanel {
 			Node node = nodes.getItem(idx);
 			if ( node.getNodeType() == Node.ELEMENT_NODE ) {
 				ContentItemFactory itemFactory = registry.getFactory((Element)node);
-				ContentItem item = itemFactory.create((Element)node);
-				accept(item);
+				ContentItem item = null;
+				try {
+					item = itemFactory.create((Element)node);
+				} catch (Exception e) {
+					try {
+						item = registry.getDefaultFactory().create((Element)node);
+						eventBus.fireEventDeferred(new ErrorNotificationEvent(ErrorNotificationEvent.Level.WARNING, 
+								"[cnt:" + this.name + "]: error:", "<xmp>" + DomUtil.outerHtml((Element)node) + "</xmp>"));
+					} catch (Exception ex) {
+						eventBus.fireEventDeferred(new ErrorNotificationEvent(ErrorNotificationEvent.Level.WARNING,
+								"[cnt:" + this.name + "]: error:", "<xmp>" + DomUtil.outerHtml((Element)node) + "</xmp>"));
+					}
+				}
+				if (item != null) {
+					accept(item);
+				}
 			}
 		}		
 		

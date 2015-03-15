@@ -344,11 +344,11 @@ public class MapItem extends ContentItem {
 	}
 
 	private double percentage(double val, double ref) {
-		return (val * 100 / ref);
+		return (val * 100.0 / ref);
 	}
 	
 	private double formatted(double val) {
-		return Math.round(val * 1000)/1000;
+		return Math.round(val * 1000.0)/1000.0;
 	}
 	
 	@Override

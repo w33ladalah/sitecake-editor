@@ -16,8 +16,8 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.sitecake.commons.client.config.Globals;
 import com.sitecake.commons.client.util.BasicServiceResponse;
+import com.sitecake.commons.client.util.DomUtil;
 import com.sitecake.commons.client.util.UrlBuilder;
-import com.sitecake.commons.client.util.dom.CSSStyleDeclaration;
 import com.sitecake.contentmanager.client.EventBus;
 import com.sitecake.contentmanager.client.GinInjector;
 import com.sitecake.contentmanager.client.event.ErrorNotificationEvent;
@@ -126,7 +126,7 @@ public class ImagePlaceholderItem extends ContentItem {
 				UploadEvent event = new UploadEvent(this, contentItemCreators);
 				
 				final ImageObject image = ImageObject.create(trResponse);
-				final double cntWidth = CSSStyleDeclaration.get(container.getElement()).getPropertyValueDouble("width");	
+				final double cntWidth = DomUtil.getElementInnerWidth(container.getElement());	
 				
 				ContentItemCreator imageItemCreator = new ContentItemCreator() {
 					
