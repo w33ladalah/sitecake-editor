@@ -82,10 +82,10 @@ public class ContentContainer extends ComplexPanel implements InsertPanel {
 					try {
 						item = registry.getDefaultFactory().create((Element)node);
 						eventBus.fireEventDeferred(new ErrorNotificationEvent(ErrorNotificationEvent.Level.WARNING, 
-								"[cnt:" + this.name + "]: error:", "<xmp>" + DomUtil.outerHtml((Element)node) + "</xmp>"));
+								"[cnt:" + this.name + "]: error: " + e.getClass().getName() + " " + e.getMessage(), "<xmp>" + DomUtil.outerHtml((Element)node) + "</xmp>"));
 					} catch (Exception ex) {
 						eventBus.fireEventDeferred(new ErrorNotificationEvent(ErrorNotificationEvent.Level.WARNING,
-								"[cnt:" + this.name + "]: error:", "<xmp>" + DomUtil.outerHtml((Element)node) + "</xmp>"));
+								"[cnt:" + this.name + "]: error: " + e.getClass().getName() + ex.getMessage(), "<xmp>" + DomUtil.outerHtml((Element)node) + "</xmp>"));
 					}
 				}
 				if (item != null) {

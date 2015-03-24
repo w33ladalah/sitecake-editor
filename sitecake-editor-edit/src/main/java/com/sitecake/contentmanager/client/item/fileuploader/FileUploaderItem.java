@@ -15,9 +15,9 @@ import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.sitecake.commons.client.config.ConfigRegistry;
+import com.sitecake.commons.client.util.DomUtil;
 import com.sitecake.commons.client.util.HumanReadable;
 import com.sitecake.commons.client.util.MimeType;
-import com.sitecake.commons.client.util.dom.CSSStyleDeclaration;
 import com.sitecake.contentmanager.client.EventBus;
 import com.sitecake.contentmanager.client.GinInjector;
 import com.sitecake.contentmanager.client.dom.File;
@@ -469,7 +469,7 @@ public abstract class FileUploaderItem extends ContentItem {
 				if ( uploadObject.getHeader("X-IMAGE") != null ) {
 
 					final ImageObject image = ImageObject.create(uploadObject.getResponse());
-					final double cntWidth = CSSStyleDeclaration.get(container.getElement()).getPropertyValueDouble("width");
+					final double cntWidth = DomUtil.getElementInnerWidth(container.getElement());
 					
 					ContentItemCreator imageItemCreator = new ContentItemCreator() {
 						

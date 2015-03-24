@@ -337,9 +337,7 @@ public class ImageItem extends ContentItem implements LinkableItem {
 
 		style = imgElement.getClassName();
 
-		//double parentWidth = CSSStyleDeclaration.get(element.getParentElement()).getPropertyValueDouble("width");
 		double parentWidth = DomUtil.getElementInnerWidth(element.getParentElement());
-		//double imageWidth = CSSStyleDeclaration.get(imgElement).getPropertyValueDouble("width");
 		double imageWidth = DomUtil.getElementInnerWidth(imgElement);
 		
 		ImageObject imageObject = ImageObject.create(
@@ -407,7 +405,6 @@ public class ImageItem extends ContentItem implements LinkableItem {
 		setContainerElementStyle();
 		
 		ImageElement img = DOM.createImg().<ImageElement>cast();
-		//double cntWidth = CSSStyleDeclaration.get(container.getElement()).getPropertyValueDouble("width");
 		double cntWidth = DomUtil.getElementInnerWidth(container.getElement());
 		img.setSrc(sourceImageObject.getSrc(cntWidth));
 		img.setAttribute("width", sourceImageObject.getWidth() + "%");
@@ -449,12 +446,12 @@ public class ImageItem extends ContentItem implements LinkableItem {
 
 	@Override
 	public String getHtml() {
-		//double cntWidth = CSSStyleDeclaration.get(container.getElement()).getPropertyValueDouble("width");
 		double cntWidth = DomUtil.getElementInnerWidth(container.getElement());
+		double widthRel = transImageObject.getWidth();
+		String width = (widthRel > 99.5) ? "100%" : (formatted(transImageObject.getWidthPx(cntWidth)) + "px");
 
 		String html = "<img alt=\"" + description + "\" " +
-				//"width=\"" + formatted(transImageObject.getWidth()) + "%\" " +
-				"style=\"width:" + formatted(transImageObject.getWidth()) + "%\" " +
+				"style=\"width:" + width + ";max-width:100%;\" " +
 				(!"".equals(style) ? "class=\"" + style + "\" ": "") + 
 				"src=\"" + transImageObject.getSrc(cntWidth) + "\" " +
 				"srcset=\"" + transImageObject.getSrcset() + "\"/>";
@@ -485,7 +482,6 @@ public class ImageItem extends ContentItem implements LinkableItem {
 			refresh();
 		} else {
 			double targetWidth = finalState.getViewport().getWidth();
-			//double cntWidth = CSSStyleDeclaration.get(container.getElement()).getPropertyValueDouble("width");
 			double cntWidth = DomUtil.getElementInnerWidth(container.getElement());
 			transImageObject.setWidth(percentage(targetWidth, cntWidth));
 		}
@@ -551,14 +547,12 @@ public class ImageItem extends ContentItem implements LinkableItem {
 		
 		boolean parentDirty = super.stopEditing(cancel);
 		if (!cancel && dirty && !origMode.equals(Mode.RESIZE)) { 
-			//double cntWidth = CSSStyleDeclaration.get(container.getElement()).getPropertyValueDouble("width");
 			double cntWidth = DomUtil.getElementInnerWidth(container.getElement());
 			double imgWidth = finalState.getViewport().getWidth();
 			transImageObject.setWidth(percentage(imgWidth, cntWidth));
 			transform();
 			return false;
 		} else if (!cancel && dirty && origMode.equals(Mode.RESIZE)) {
-			//double cntWidth = CSSStyleDeclaration.get(container.getElement()).getPropertyValueDouble("width");
 			double cntWidth = DomUtil.getElementInnerWidth(container.getElement());
 			double imgWidth = finalState.getViewport().getWidth();
 			transImageObject.setWidth(percentage(imgWidth, cntWidth));
@@ -1302,7 +1296,7 @@ public class ImageItem extends ContentItem implements LinkableItem {
 		Double maxWidth = 0.0;
 		
 		if ( container != null ) {
-			maxWidth = DomUtil.getElementInnerWidth(container.getElement()); //CSSStyleDeclaration.get(container.getElement()).getPropertyValueDouble("width");
+			maxWidth = DomUtil.getElementInnerWidth(container.getElement());
 			CSSStyleDeclaration cssStyle = CSSStyleDeclaration.get(getElement());
 			try { maxWidth -= cssStyle.getPropertyValueInt("margin-left"); } catch (NumberFormatException e) {};
 			try { maxWidth -= cssStyle.getPropertyValueInt("margin-right"); } catch (NumberFormatException e) {};
@@ -1397,7 +1391,7 @@ public class ImageItem extends ContentItem implements LinkableItem {
 			BasicServiceResponse trResponse = BasicServiceResponse.get(response.getText()).cast();
 			if ( trResponse.isSuccess() ) {
 				transImageObject = ImageObject.create(trResponse);
-				double cntWidth = DomUtil.getElementInnerWidth(container.getElement());//CSSStyleDeclaration.get(container.getElement()).getPropertyValueDouble("width");
+				double cntWidth = DomUtil.getElementInnerWidth(container.getElement());
 				double imgWidth = finalState.getViewport().getWidth();
 				transImageObject.setWidth(percentage(imgWidth, cntWidth));
 				

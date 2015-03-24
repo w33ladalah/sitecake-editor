@@ -18,8 +18,8 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
+import com.sitecake.commons.client.util.DomSelector;
 import com.sitecake.commons.client.util.DomUtil;
-import com.sitecake.commons.client.util.dom.CSSStyleDeclaration;
 import com.sitecake.contentmanager.client.EventBus;
 import com.sitecake.contentmanager.client.GinInjector;
 import com.sitecake.contentmanager.client.commons.Axis;
@@ -130,7 +130,8 @@ public class MapItem extends ContentItem {
 	}
 	
 	void init(Element origElement) {
-		init(origElement.getInnerHTML(), origElement);
+		String text = GinInjector.instance.getDomSelector().select("iframe", origElement).get(0).getParentElement().getInnerHTML();
+		init(text, origElement);
 	}
 	
 	private void init(String text, Element origElement) throws IllegalArgumentException {
@@ -353,12 +354,15 @@ public class MapItem extends ContentItem {
 	
 	@Override
 	public String getHtml() {
-		double cnt = CSSStyleDeclaration.get(container.getElement()).getPropertyValueDouble("width");
-		double ratio = formatted(percentage(height, cnt));
+		double cnt = DomUtil.getElementInnerWidth(container.getElement());
+		double ratio = formatted(percentage(height, width));
 		double widthRel = formatted(percentage(width, cnt));
-		return "<div class=\"" + DISCRIMINATOR + "\" " + 
-				"style=\"width:" + widthRel + "%;position:relative;overflow:hidden;height:0;padding-bottom:" + ratio + "%\"" + 
-				">" + embeddedMap.getCode() + "</div>";
+		String widthStr = (widthRel > 99.5) ? "100%" : (width + "px");
+		
+		return "<div class=\"" + DISCRIMINATOR + "\" style=\"width:" + widthStr + ";max-width:100%;position:relative;\">" + 
+				"<div style=\"width:100%;position:relative;overflow:hidden;height:0;padding-bottom:" + ratio + "%\">" + 
+					embeddedMap.getCode() + 
+				"</div></div>";
 	}
 	
 	@Override
@@ -384,14 +388,7 @@ public class MapItem extends ContentItem {
 		Double maxWidth = 0.0;
 		
 		if ( container != null ) {
-			maxWidth = CSSStyleDeclaration.get(container.getElement()).getPropertyValueDouble("width");
-			CSSStyleDeclaration cssStyle = CSSStyleDeclaration.get(getElement());
-			maxWidth -= cssStyle.getPropertyValueInt("margin-left");
-			maxWidth -= cssStyle.getPropertyValueInt("margin-right");
-			maxWidth -= cssStyle.getPropertyValueInt("padding-left");
-			maxWidth -= cssStyle.getPropertyValueInt("padding-right");
-			maxWidth -= cssStyle.getPropertyValueInt("border-left-width");
-			maxWidth -= cssStyle.getPropertyValueInt("border-right-width");
+			maxWidth = DomUtil.getElementInnerWidth(container.getElement());
 		}
 		
 		return maxWidth.intValue();
@@ -444,7 +441,7 @@ public class MapItem extends ContentItem {
 	private void resizeDefault() {
 		double width = 800;
 		if (container != null) {
-			width = CSSStyleDeclaration.get(container.getElement()).getPropertyValueDouble("width");
+			width = DomUtil.getElementInnerWidth(container.getElement());
 		}
 		double height = width * (9.0/16.0);
 		resize(width, height);

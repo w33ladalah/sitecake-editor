@@ -79,12 +79,37 @@ public class DomUtil {
 		return (width < 0) ? 0 : width;
 	}
 	
-	public static double getElementOuterWidth(Element element) {
+	public static double getElementInnerHeight(Element element) {
 		if (element == null) return 0;
 		
-		double width;
-		width = element.getOffsetWidth();
-		return width;
+		double height,
+				clientHeight = element.getClientHeight(), // height + padding-top + padding-bottom
+				paddingTop = 0,
+				paddingBottom = 0;
+		
+		try {
+			paddingTop = CSSStyleDeclaration.get(element).getPropertyValueDouble("padding-top");
+		} catch (Exception e) {
+			paddingTop = 0;
+		}
+		
+		try {
+			paddingBottom = CSSStyleDeclaration.get(element).getPropertyValueDouble("padding-bottom");
+		} catch (Exception e) {
+			paddingBottom = 0;
+		}
+		
+		height = clientHeight - paddingTop - paddingBottom;
+		
+		return (height < 0) ? 0 : height;
+	}
+	
+	public static double getElementOuterWidth(Element element) {
+		return (element == null) ? 0 : element.getOffsetWidth();
+	}
+	
+	public static double getElementOuterHeight(Element element) {
+		return (element == null) ? 0 : element.getOffsetHeight();
 	}
 	
 	public static native String outerHtml(Element element)/*-{

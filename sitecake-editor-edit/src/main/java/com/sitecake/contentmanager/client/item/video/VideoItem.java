@@ -24,7 +24,6 @@ import com.google.gwt.user.client.Window;
 import com.sitecake.commons.client.util.DomSelector;
 import com.sitecake.commons.client.util.DomUtil;
 import com.sitecake.commons.client.util.JsStringUtil;
-import com.sitecake.commons.client.util.dom.CSSStyleDeclaration;
 import com.sitecake.contentmanager.client.EventBus;
 import com.sitecake.contentmanager.client.GinInjector;
 import com.sitecake.contentmanager.client.commons.Axis;
@@ -32,6 +31,7 @@ import com.sitecake.contentmanager.client.commons.Point;
 import com.sitecake.contentmanager.client.commons.Rectangle;
 import com.sitecake.contentmanager.client.event.EditCompleteEvent;
 import com.sitecake.contentmanager.client.event.ErrorNotificationEvent;
+import com.sitecake.contentmanager.client.event.SaveRequestEvent;
 import com.sitecake.contentmanager.client.item.ContentItem;
 import com.sitecake.contentmanager.client.item.video.EmbeddedVideo.VideoType;
 import com.sitecake.contentmanager.client.resources.Messages;
@@ -138,10 +138,11 @@ public class VideoItem extends ContentItem {
 	
 	private void init(String text, Element origElement) throws IllegalArgumentException {
 		Element element = uiBinder.createAndBindUi(this);
-		double itemWidth = 0;
+		double itemWidth = -1.0, itemHeight = -1.0;
 		
 		if ( origElement != null ) {
-			itemWidth = DomUtil.getElementInnerWidth(origElement);
+			itemWidth = DomUtil.getElementOuterWidth(origElement);
+			itemHeight = DomUtil.getElementOuterHeight(origElement);
 			DomUtil.replaceElement(origElement, element);
 		}
 		
@@ -154,8 +155,15 @@ public class VideoItem extends ContentItem {
 		
 		if ( itemWidth > 0 ) {
 			embeddedVideo.width = itemWidth;
+			if ( itemHeight > 0 ) {
+				embeddedVideo.height = itemHeight;
+				embeddedVideo.ratio = itemWidth/itemHeight;
+			} else {
+				embeddedVideo.height = itemWidth/1.68;	
+			}
+		} else if ( embeddedVideo.width > 0 ) {
 			embeddedVideo.height = embeddedVideo.width/embeddedVideo.ratio;			
-		} else if ( embeddedVideo.width == -1 ) {
+		} else {
 			embeddedVideo.width = getMaxWidth();
 			embeddedVideo.height = embeddedVideo.width/embeddedVideo.ratio;
 		}
@@ -352,16 +360,15 @@ public class VideoItem extends ContentItem {
 	
 	@Override
 	public String getHtml() {
-		double cnt = CSSStyleDeclaration.get(container.getElement()).getPropertyValueDouble("width");
-		double ratio = formatted(percentage(embeddedVideo.height, cnt));
+		double cnt = DomUtil.getElementInnerWidth(container.getElement());
+		double ratio = formatted(percentage(embeddedVideo.height, embeddedVideo.width));
 		double widthRel = formatted(percentage(embeddedVideo.width, cnt));
-		return "<div class=\"" + DISCRIMINATOR + "\" " + 
-				"style=\"width:" + widthRel + "%;position:relative;overflow:hidden;height:0;padding-bottom:" + ratio + "%\"" + 
-				//"style=\"width:" + embeddedVideo.width + "px;height:" + 
-				//embeddedVideo.height + "px\">" +
-				">" +
+		String width = (widthRel > 99.5) ? "100%" : (embeddedVideo.width + "px");
+		
+		return "<div class=\"" + DISCRIMINATOR + "\" style=\"width:" + width + ";max-width:100%;position:relative;\">" +
+				"<div style=\"width:100%;position:relative;overflow:hidden;height:0;padding-bottom:" + ratio + "%\">" + 
 				getPublicCode() + 
-			"</div>";
+			"</div></div>";
 	}
 	
 	@Override
@@ -379,6 +386,9 @@ public class VideoItem extends ContentItem {
 	public boolean stopEditing(boolean cancel) {
 		resizeControles.getStyle().setDisplay(Display.NONE);
 		boolean dirty = super.stopEditing(cancel) | modified;
+		if (dirty) {
+			eventBus.fireEventDeferred(new SaveRequestEvent());
+		}
 		return dirty;
 	}
 
@@ -386,14 +396,7 @@ public class VideoItem extends ContentItem {
 		Double maxWidth = 0.0;
 		
 		if ( container != null ) {
-			maxWidth = CSSStyleDeclaration.get(container.getElement()).getPropertyValueDouble("width");
-			CSSStyleDeclaration cssStyle = CSSStyleDeclaration.get(getElement());
-			maxWidth -= cssStyle.getPropertyValueInt("margin-left");
-			maxWidth -= cssStyle.getPropertyValueInt("margin-right");
-			maxWidth -= cssStyle.getPropertyValueInt("padding-left");
-			maxWidth -= cssStyle.getPropertyValueInt("padding-right");
-			maxWidth -= cssStyle.getPropertyValueInt("border-left-width");
-			maxWidth -= cssStyle.getPropertyValueInt("border-right-width");
+			maxWidth = DomUtil.getElementInnerWidth(container.getElement());
 		}
 		
 		return maxWidth.intValue();
@@ -513,14 +516,14 @@ public class VideoItem extends ContentItem {
 		EmbeddedVideo embeddedVideo = new EmbeddedVideo();
 		embeddedVideo.type = VideoType.YOUTUBE;
 		
-		matches = JsStringUtil.match("width=\"?([0-9]+)", input);
+		matches = JsStringUtil.match("width=\"?([0-9]+)\"", input);
 		if ( matches != null && matches.size() > 0 ) {
 			embeddedVideo.width = Double.parseDouble(matches.get(1));
 		} else {
 			embeddedVideo.width = -1;
 		}
 		
-		matches = JsStringUtil.match("height=\"?([0-9]+)", input);
+		matches = JsStringUtil.match("height=\"?([0-9]+)\"", input);
 		if ( matches != null && matches.size() > 0 ) {
 			embeddedVideo.height = Double.parseDouble(matches.get(1));
 		} else {

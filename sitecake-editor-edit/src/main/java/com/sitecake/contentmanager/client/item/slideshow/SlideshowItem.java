@@ -25,7 +25,6 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
 import com.sitecake.commons.client.util.DomUtil;
 import com.sitecake.commons.client.util.Guid;
-import com.sitecake.commons.client.util.dom.CSSStyleDeclaration;
 import com.sitecake.contentmanager.client.EventBus;
 import com.sitecake.contentmanager.client.GinInjector;
 import com.sitecake.contentmanager.client.commons.Axis;
@@ -586,7 +585,7 @@ public class SlideshowItem extends ContentItem {
 		
 		confirmedState.set(finalState);
 		
-		double maxWidth = CSSStyleDeclaration.get(container.getElement()).getPropertyValueDouble("width");
+		double maxWidth = DomUtil.getElementInnerWidth(container.getElement());
 		double maxHeight = maxWidth / coverImageRatio;
 		
 		RESIZE_MAX_RECT.setWidth( maxWidth );
@@ -629,7 +628,7 @@ public class SlideshowItem extends ContentItem {
 	}
 	
 	private void adjustDimension() {
-		double maxWidth = CSSStyleDeclaration.get(container.getElement()).getPropertyValueDouble("width");
+		double maxWidth = DomUtil.getElementInnerWidth(container.getElement());
 		double maxHeight = maxWidth / coverImageRatio;
 		
 		if ( finalState.getRect().getWidth() > maxWidth ) {

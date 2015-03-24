@@ -894,7 +894,9 @@ public class PageEditor implements DeleteHandler, EditItemHandler, OverItemHandl
 					newContentItem.cloneItem(), new Position(container, index));
 			history.put(createTransformation);
 			switchToNewEditPhase(EditPhase.IDLE);
-			eventBus.fireEventDeferred(new EditItemEvent(newContentItem));
+			if (newContentItem.intiateEditUponCreation()) {
+				eventBus.fireEventDeferred(new EditItemEvent(newContentItem));
+			}
 			save();
 		}
 	}

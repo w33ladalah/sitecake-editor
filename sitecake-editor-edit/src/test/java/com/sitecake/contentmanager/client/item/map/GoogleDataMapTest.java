@@ -1,8 +1,7 @@
 package com.sitecake.contentmanager.client.item.map;
 
-import static org.junit.Assert.*;
-
-import java.util.Date;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
 

@@ -1,7 +1,5 @@
 package com.sitecake.contentmanager.client.item.map;
 
-import static org.junit.Assert.*;
-
 import java.util.ArrayList;
 import java.util.List;
 

@@ -7,18 +7,14 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.ImageElement;
-import com.google.gwt.regexp.shared.RegExp;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.sitecake.commons.client.util.DomSelector;
 import com.sitecake.commons.client.util.DomUtil;
-import com.sitecake.commons.client.util.dom.CSSStyleDeclaration;
-import com.sitecake.contentmanager.client.EventBus;
 import com.sitecake.contentmanager.client.GinInjector;
 import com.sitecake.contentmanager.client.item.ContentItem;
 import com.sitecake.contentmanager.client.item.image.ImageObject;
-import com.sitecake.contentmanager.client.resources.Messages;
 
 public class PhotoSetItem extends ContentItem {
 	public static final String DISCRIMINATOR = "sc-photoset";
@@ -39,9 +35,9 @@ public class PhotoSetItem extends ContentItem {
 	@UiField
 	Element setContainer;
 	
-	private EventBus eventBus = GinInjector.instance.getEventBus();
+	//private EventBus eventBus = GinInjector.instance.getEventBus();
 	
-	private Messages messages = GinInjector.instance.getLocaleProxy().messages();
+	//private Messages messages = GinInjector.instance.getLocaleProxy().messages();
 	
 	private DomSelector domSelector = GinInjector.instance.getDomSelector();
 	
@@ -83,7 +79,7 @@ public class PhotoSetItem extends ContentItem {
 	private String getPhotoSetCode() {
 		double cntWidth = 680;
 		if (container != null) {
-			cntWidth = CSSStyleDeclaration.get(container.getElement()).getPropertyValueDouble("width");
+			cntWidth = DomUtil.getElementInnerWidth(container.getElement());
 		}
 		
 		String code = "<div>";
@@ -116,13 +112,13 @@ public class PhotoSetItem extends ContentItem {
 	}
 	
 	//Google+ album URL schema
-	private RegExp gplusUrlSchema = RegExp.compile("https?:\\/\\/plus\\.google\\.com\\/photos\\/[0-9a-z]+\\/albums\\/[0-9a-z]+");
+	//private RegExp gplusUrlSchema = RegExp.compile("https?:\\/\\/plus\\.google\\.com\\/photos\\/[0-9a-z]+\\/albums\\/[0-9a-z]+");
 	
 	// uniq(matches[][1]) 
-	private RegExp gplusLinksRe = RegExp.compile("\\[\"(https:\\/\\/[^\\.]+\\.googleusercontent\\.com\\/[^\"]+)\\\",\\d+,\\d+\\]", "gmi");
+	//private RegExp gplusLinksRe = RegExp.compile("\\[\"(https:\\/\\/[^\\.]+\\.googleusercontent\\.com\\/[^\"]+)\\\",\\d+,\\d+\\]", "gmi");
 	
 	// DropBox album URL schema
-	private RegExp dropboxUrlSchema = RegExp.compile("https?:\\/\\/www\\.dropbox\\.com\\/sc\\/[^\\s]+");
+	//private RegExp dropboxUrlSchema = RegExp.compile("https?:\\/\\/www\\.dropbox\\.com\\/sc\\/[^\\s]+");
 
 	public static boolean testText(String text) {
 		//return (testRe.exec(text) != null);

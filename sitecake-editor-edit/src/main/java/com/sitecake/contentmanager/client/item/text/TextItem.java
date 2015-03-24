@@ -78,6 +78,11 @@ public class TextItem extends ContentItem implements EditableTextItem {
 	}
 
 	@Override
+	public boolean intiateEditUponCreation() {
+		return true;
+	}
+
+	@Override
 	public String getContentTypeName() {
 		String contentTypeName = null;
 		

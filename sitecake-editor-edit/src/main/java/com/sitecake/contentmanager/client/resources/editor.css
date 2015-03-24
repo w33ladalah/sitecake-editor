@@ -8,6 +8,7 @@ html {
 }
 
 body {
+	height: auto !important;
 	min-height: 100%;
 }
 
@@ -514,7 +515,7 @@ body {
 	-moz-border-radius:4px 0 0 4px;
 	-webkit-border-radius:4px 0 0 4px;
 	
-	width:75px;
+	width:85px;
 	height:23px; 	
 	padding-left: 10px;
 	font: 9px Verdana, Geneva, sans-serif;
@@ -574,9 +575,9 @@ body {
     padding: 0;   
 }
 
-.link-editor-url-input,
-.link-editor-url-input:focus,
-.link-editor-url-input:disabled {
+input.link-editor-url-input,
+input.link-editor-url-input:focus,
+input.link-editor-url-input:disabled {
     background-color: #FFFFFF;
     border: medium none;
     outline: medium none;

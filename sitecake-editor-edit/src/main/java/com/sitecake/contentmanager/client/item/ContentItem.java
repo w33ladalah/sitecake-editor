@@ -193,6 +193,10 @@ public abstract class ContentItem extends WidgetEx implements HasClickHandlers, 
 		return true;
 	}
 	
+	public boolean intiateEditUponCreation() {
+		return false;
+	}
+	
 	public void startEditing(String mode) {
 		if ( edited ) return;
 		
