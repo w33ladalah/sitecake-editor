@@ -13,7 +13,6 @@
 		<g:HTML styleName="{res.css.loginDialogBackground}"/>
 		<g:Image styleName="{res.css.loginDialogLogo}" resource="{res.logo}" ui:field="logo"/>
 		<g:Label styleName="{res.css.loginDialogVersion}" ui:field="versionLabel"/>
-		<g:HTML styleName="{res.css.loginDialogLogoSpace}" ui:field="brand"/>
 		
 		<g:PushButton styleName="{res.css.loginCloseButton}" ui:field="closeButton">
 			<g:upFace>

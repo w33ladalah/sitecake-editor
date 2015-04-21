@@ -26,7 +26,6 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PasswordTextBox;
@@ -63,9 +62,6 @@ public class LoginDialog extends Composite {
 
 	@UiField
 	Image logo;
-	
-	@UiField
-	HTML brand;
 	
 	@UiField
 	PasswordTextBox credentialInput;
@@ -148,13 +144,6 @@ public class LoginDialog extends Composite {
 		
 		String version = "ver " + SiteCakeVersion.id;
 		versionLabel.setText(version);
-		
-		String brandHtml = getConfigBrandHtml();
-		if ( brandHtml != null ) {
-			logo.setVisible(false);
-			versionLabel.setVisible(false);
-			brand.setHTML(brandHtml);
-		}
 		
 		setVisible(false);
 	
@@ -350,14 +339,5 @@ public class LoginDialog extends Composite {
 				
 			}
 		});
-	}
-	
-	private native String getConfigBrandHtml()/*-{
-		if ( $wnd.sitecakeGlobals && $wnd.sitecakeGlobals.config &&
-			$wnd.sitecakeGlobals.config['LoginDialog.brandHtml'] ) {
-				return $wnd.sitecakeGlobals.config['LoginDialog.brandHtml'];
-		} else {
-				return null;
-		}
-	}-*/;	
+	}	
 }
