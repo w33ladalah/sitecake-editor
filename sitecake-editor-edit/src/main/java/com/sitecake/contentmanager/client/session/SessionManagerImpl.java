@@ -127,7 +127,7 @@ public class SessionManagerImpl implements SessionManager {
 	private void doLogout() {
 		RootPanel.getBodyElement().getStyle().setCursor(Cursor.WAIT);
 		String path = Location.getPath();
-		path = path.replaceAll("sc\\-admin\\.php", "");
+		path = path.replaceAll("sitecake\\.php", "");
 		String page = Location.getParameter("page");
 		if (page == null) {
 			page = "";
