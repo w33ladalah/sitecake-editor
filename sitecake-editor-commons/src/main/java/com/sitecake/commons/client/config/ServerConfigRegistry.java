@@ -60,7 +60,7 @@ public class ServerConfigRegistry extends AbstractConfigRegistry {
 		for (String line : lines) {
 			line = line.trim();
 			if ( "".equals(line) || line.startsWith("#") ) continue;
-			String[] comps = line.split("=");
+			String[] comps = line.split("=", 2);
 			String key = comps[0].trim();
 			String val = comps[1].trim();
 			registry.put(key, val);
