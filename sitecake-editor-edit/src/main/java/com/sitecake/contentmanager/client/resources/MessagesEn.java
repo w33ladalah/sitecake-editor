@@ -4,7 +4,7 @@ package com.sitecake.contentmanager.client.resources;
 
 public interface MessagesEn extends com.google.gwt.i18n.client.Messages, Messages {
 
-	@DefaultMessage("SiteCake encountered a problem!")
+	@DefaultMessage("CMS encountered a problem!")
 	String errorMessage1();
 	
 	@DefaultMessage("Help us correct the issue and <a target=\"_blank\" href=\"http://support.sitecake.com/anonymous_requests/new\">tell us what happened</a>. Please include the report from below. To continue editing just <a href=\"javascript:location.reload()\">reload</a> the page.")
@@ -49,7 +49,7 @@ public interface MessagesEn extends com.google.gwt.i18n.client.Messages, Message
 	@DefaultMessage("Uploading:")
 	String uploadingFiles();
 	
-	@DefaultMessage("SiteCake editor needs Chrome Frame browser plugin to be installed.")
+	@DefaultMessage("CMS editor needs Chrome Frame browser plugin to be installed.")
 	String cfMissingMessage();
 	
 	@DefaultMessage("Default Style")
@@ -97,7 +97,7 @@ public interface MessagesEn extends com.google.gwt.i18n.client.Messages, Message
 	@DefaultMessage("All attempts to save the last content modifications failed.")
 	String giveUpContentSaving();
 	
-	@DefaultMessage("A new version of SiteCake is <a href='http://sitecake.com/download.html' target='_blank'>available</a> ({0}).")
+	@DefaultMessage("A new version of CMS is <a href='http://sitecake.com/download.html' target='_blank'>available</a> ({0}).")
 	String versionUpdateMessage(String version);
 	
 	@DefaultMessage("Invalid configuration parameter found <strong>{0} {1}</strong>.")

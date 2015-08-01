@@ -4,7 +4,7 @@ package com.sitecake.contentmanager.client.resources;
 public interface Messages {
 
 	//@Description("The first line of error message shown in case of an unknown error (uncaught exception)")
-	//@DefaultMessage("SiteCake encountered a problem!")
+	//@DefaultMessage("CMS encountered a problem!")
 	String errorMessage1();
 	
 	//@Description("The second line of error message shown in case of an unknown error (uncaught exception)")
@@ -64,7 +64,7 @@ public interface Messages {
 	String uploadingFiles();
 	
 	//@Description("A message that appears in case of IE browser that has no Chrome Frame installed - CF is needed by SiteCake to work correctly in IE")
-	//@DefaultMessage("SiteCake editor needs Chrome Frame browser plugin to be installed.")
+	//@DefaultMessage("CMS editor needs Chrome Frame browser plugin to be installed.")
 	String cfMissingMessage();
 	
 	//@Description("The text label of the default CSS style for a content item - it appears in the style drop-down list together with custom style names")
@@ -128,7 +128,7 @@ public interface Messages {
 	String giveUpContentSaving();
 	
 	//@Description("The text notice shown in case a new version/upgrade of SiteCake is available ( {0} - a version available )")
-	//@DefaultMessage("A new version of SiteCake is <a href='http://sitecake.com/download.html' target='_blank'>available</a> ({0}).")
+	//@DefaultMessage("A new version of CMS is <a href='http://sitecake.com/download.html' target='_blank'>available</a> ({0}).")
 	String versionUpdateMessage(String version);
 	
 	//@Description("The warning message shown in case the SiteCake configuration contains an invalid paramter ( {0} - parameter name, {1} - parameter value")

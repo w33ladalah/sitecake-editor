@@ -3,7 +3,7 @@ package com.sitecake.publicmanager.client.resources;
 public interface Messages {
 
 	//@Description("A general message shown on the crash page in case of an unknown error")
-	//@DefaultMessage("SiteCake encountered a problem!")
+	//@DefaultMessage("CMS encountered a problem!")
 	String errorMessage1();
 	
 	//@Description("The second, more detail message shown on the crash page in case of an unknown error")

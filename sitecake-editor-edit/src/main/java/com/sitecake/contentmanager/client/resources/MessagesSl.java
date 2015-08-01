@@ -49,7 +49,7 @@ public interface MessagesSl extends com.google.gwt.i18n.client.Messages, Message
 	@DefaultMessage("Nalaganje:")
 	String uploadingFiles();
 	
-	@DefaultMessage("SiteCake urejevalnik potrebuje naložen Chrome Frame dodatek.")
+	@DefaultMessage("CMS urejevalnik potrebuje naložen Chrome Frame dodatek.")
 	String cfMissingMessage();
 	
 	@DefaultMessage("Privzet stil")
@@ -97,7 +97,7 @@ public interface MessagesSl extends com.google.gwt.i18n.client.Messages, Message
 	@DefaultMessage("Vsi poskusi shranjevanja posodobitev vsebine so spodleteli.")
 	String giveUpContentSaving();
 	
-	@DefaultMessage("<a href='http://sitecake.com/download.html' target='_blank'>Na voljo</a> ({0}) je nova verzija SiteCake urejevalnika.")
+	@DefaultMessage("<a href='http://sitecake.com/download.html' target='_blank'>Na voljo</a> ({0}) je nova verzija CMS urejevalnika.")
 	String versionUpdateMessage(String version);
 	
 	@DefaultMessage("Napaka v nastavitvah <strong>{0} {1}</strong>.")

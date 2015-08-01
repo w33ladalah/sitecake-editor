@@ -3,7 +3,7 @@ package com.sitecake.publicmanager.client.resources;
 
 public interface MessagesFr extends Messages, com.google.gwt.i18n.client.Messages {
 	
-	@DefaultMessage("SiteCake a rencontré un problème!")
+	@DefaultMessage("CMS a rencontré un problème!")
 	String errorMessage1();
 	
 	@DefaultMessage("Aidez-nous à corriger ce problème et <a target=\"_blank\" href=\"http://support.sitecake.com/anonymous_requests/new\">dites-nous ce qui s’est passé</a>. Merci d’inclure le rapport d’erreur ci-dessous. Pour continuer à éditer, vous n’avez qu’a <a href=\"javascript:location.reload()\">recharger</a> la page.")

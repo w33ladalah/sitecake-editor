@@ -3,10 +3,10 @@ package com.sitecake.publicmanager.client.resources;
 
 public interface MessagesDk extends Messages, com.google.gwt.i18n.client.Messages {
 	
-	@DefaultMessage("Der opstod et problem med SiteCake!")
+	@DefaultMessage("Der opstod et problem med CMS!")
 	String errorMessage1();
 	
-	@DefaultMessage("Fortľl os om problemet og gżr SiteCake bedre.  <a target=\"_blank\" href=\"http://support.sitecake.com/anonymous_requests/new\">Skriv til os her</a> (Engelsk). Inkluder venligst den nedenstŚende rapport. Żnsker du at forsľtte med at redigere, sŚ  <a href=javascript:location.reload()\">opdater siden</a>.")
+	@DefaultMessage("Fortľl os om problemet og gżr CMS bedre.  <a target=\"_blank\" href=\"http://support.sitecake.com/anonymous_requests/new\">Skriv til os her</a> (Engelsk). Inkluder venligst den nedenstŚende rapport. Żnsker du at forsľtte med at redigere, sŚ  <a href=javascript:location.reload()\">opdater siden</a>.")
 	String errorMessage2();
 	
 	@DefaultMessage("Adgangskode")

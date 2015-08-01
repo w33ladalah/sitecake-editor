@@ -4,10 +4,10 @@ package com.sitecake.contentmanager.client.resources;
 
 public interface MessagesDk extends com.google.gwt.i18n.client.Messages, Messages {
 
-	@DefaultMessage("Der opstod et problem med SiteCake!")
+	@DefaultMessage("Der opstod et problem med CMS!")
 	String errorMessage1();
 	
-	@DefaultMessage("Fortľl os om problemet og hjľlp til at gżre SiteCake bedre.  <a target=\"_blank\" href=\"http://support.sitecake.com/anonymous_requests/new\">Skriv til os her</a> (Engelsk). Inkluder venligst den nedenstŚende rapport. Żnsker du at forsľtte med at redigere, sŚ  <a href=\"javascript:location.reload()\">updater siden</a>.")
+	@DefaultMessage("Fortľl os om problemet og hjľlp til at gżre CMS bedre.  <a target=\"_blank\" href=\"http://support.sitecake.com/anonymous_requests/new\">Skriv til os her</a> (Engelsk). Inkluder venligst den nedenstŚende rapport. Żnsker du at forsľtte med at redigere, sŚ  <a href=\"javascript:location.reload()\">updater siden</a>.")
 	String errorMessage2();
 	
 	@DefaultMessage("Der opstod en ukendt fejl.")
@@ -97,10 +97,10 @@ public interface MessagesDk extends com.google.gwt.i18n.client.Messages, Message
 	@DefaultMessage("Efter flere forsżg kunne hjemmesiden stadig ikke uploades - prżv igen senere.")
 	String giveUpContentSaving();
 	
-	@DefaultMessage("En ny version af SiteCake er klar til download <a href='http://sitecake.com/download.html' target='_blank'>Hent den her</a> ({0}).")
+	@DefaultMessage("En ny version af CMS er klar til download <a href='http://sitecake.com/download.html' target='_blank'>Hent den her</a> ({0}).")
 	String versionUpdateMessage(String version);
 	
-	@DefaultMessage("Der er problemer med parametrene i konfigurationen af SiteCake. Der er problemer med <strong>{0} {1}</strong>.")
+	@DefaultMessage("Der er problemer med parametrene i konfigurationen af CMS. Der er problemer med <strong>{0} {1}</strong>.")
 	String invalidConfigParameter(String parameter, String value);
 	
 	@DefaultMessage("Videoen kunne ikke indsľttes pga. problemer med koden eller URL’en.")

@@ -3,7 +3,7 @@ package com.sitecake.publicmanager.client.resources;
 
 public interface MessagesPtBr extends Messages, com.google.gwt.i18n.client.Messages {
 	
-	@DefaultMessage("Ops! O SiteCake teve um problema!")
+	@DefaultMessage("Ops! O CMS teve um problema!")
 	String errorMessage1();
 	
 	@DefaultMessage("Ajude-nos a corrigir este problema nos dizendo <a target=\"_blank\" href=\"http://suporte.sitecake.com.br/solicitacoes_anonimas/nova\">o que aconteceu</a>. Por favor inclua o relatório abaixo. Para continuar editando apenas <a href=\"javascript:location.reload()\">atualize</a> a página.")

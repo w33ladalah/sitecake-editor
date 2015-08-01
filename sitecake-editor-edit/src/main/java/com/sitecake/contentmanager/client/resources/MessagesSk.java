@@ -4,7 +4,7 @@ package com.sitecake.contentmanager.client.resources;
 
 public interface MessagesSk extends com.google.gwt.i18n.client.Messages, Messages {
 
-	@DefaultMessage("V SiteCake došlo k preblému!")
+	@DefaultMessage("V CMS došlo k preblému!")
 	String errorMessage1();
 	
 	@DefaultMessage("Pomôžte nám opraviť túto chybu a <a target=\"_blank\" href=\"http://support.sitecake.com/anonymous_requests/new\">napíšte čo sa stalo</a>. Uveďte prosím aj nižšie uvedenú správu.  Ak chcete pokračovať v úpravách, <a href=\"javascript:location.reload()\">obnovte</a> stránku.")
@@ -49,7 +49,7 @@ public interface MessagesSk extends com.google.gwt.i18n.client.Messages, Message
 	@DefaultMessage("Nahrávam:")
 	String uploadingFiles();
 	
-	@DefaultMessage("SiteCake editor potrebuje k svojmu chodu nainštalovať Chrome Frame browser plugin.")
+	@DefaultMessage("CMS editor potrebuje k svojmu chodu nainštalovať Chrome Frame browser plugin.")
 	String cfMissingMessage();
 	
 	@DefaultMessage("Predvolený štýl")
@@ -97,7 +97,7 @@ public interface MessagesSk extends com.google.gwt.i18n.client.Messages, Message
 	@DefaultMessage("Všetky pokusy o uloženie posledných zmien zlyhali.")
 	String giveUpContentSaving();
 	
-	@DefaultMessage("Nová verzia SiteCake je <a href='http://sitecake.com/download.html' target='_blank'>dostupná</a> ({0}).")
+	@DefaultMessage("Nová verzia CMS je <a href='http://sitecake.com/download.html' target='_blank'>dostupná</a> ({0}).")
 	String versionUpdateMessage(String version);
 	
 	@DefaultMessage("Neznámy konfiguračný parameter <strong>{0} {1}</strong>.")

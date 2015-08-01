@@ -49,7 +49,7 @@ public interface MessagesRu extends com.google.gwt.i18n.client.Messages, Message
 	@DefaultMessage("Загрузка:")
 	String uploadingFiles();
 	
-	@DefaultMessage("Редактор SiteCake рекомендует установить плагин для Google Chrome, Frame.")
+	@DefaultMessage("Редактор CMS рекомендует установить плагин для Google Chrome, Frame.")
 	String cfMissingMessage();
 	
 	@DefaultMessage("По умолчанию")

@@ -5,7 +5,7 @@ package com.sitecake.contentmanager.client.resources;
 
 public interface MessagesSr extends com.google.gwt.i18n.client.Messages, Messages {
 	
-	@DefaultMessage("SiteCake je naišao na problem!")
+	@DefaultMessage("CMS je naišao na problem!")
 	String errorMessage1();
 	
 	@DefaultMessage("Pomozite nam da otklonimo problem, recite nam <a target=\"_blank\" href=\"http://support.sitecake.com/anonymous_requests/new\">šta se dogodilo</a>. Molimo Vas da priložite i donji izvištaj. Za nastavak rada dovoljno je da <a href=\"javascript:location.reload()\">osvežite</a> stranicu.")
@@ -50,7 +50,7 @@ public interface MessagesSr extends com.google.gwt.i18n.client.Messages, Message
 	@DefaultMessage("Prenos:")
 	String uploadingFiles();
 	
-	@DefaultMessage("SiteCake-u je potreban Chrome Frame dodatak za pretraživač da bi se mogao koristiti.")
+	@DefaultMessage("CMS-u je potreban Chrome Frame dodatak za pretraživač da bi se mogao koristiti.")
 	String cfMissingMessage();
 	
 	@DefaultMessage("Podrazumevani stil")
@@ -98,7 +98,7 @@ public interface MessagesSr extends com.google.gwt.i18n.client.Messages, Message
 	@DefaultMessage("Ni jedan pokušaj snimanja poslednjih izmena nije uspeo.")
 	String giveUpContentSaving();
 	
-	@DefaultMessage("Nova verzija SiteCake-a je <a href='http://sitecake.com/download.html' target='_blank'>dostupna</a> ({0}).")
+	@DefaultMessage("Nova verzija CMS-a je <a href='http://sitecake.com/download.html' target='_blank'>dostupna</a> ({0}).")
 	String versionUpdateMessage(String version);
 	
 	@DefaultMessage("Konfiguracioni parametar <strong>{0} {1}</strong> nije ispravan.")

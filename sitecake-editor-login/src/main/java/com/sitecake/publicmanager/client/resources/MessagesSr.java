@@ -3,7 +3,7 @@ package com.sitecake.publicmanager.client.resources;
 
 public interface MessagesSr extends Messages, com.google.gwt.i18n.client.Messages {
 	
-	@DefaultMessage("SiteCake je naišao na problem!")
+	@DefaultMessage("CMS je naišao na problem!")
 	String errorMessage1();
 	
 	@DefaultMessage("Pomozite nam da otklonimo problem, recite nam <a target=\"_blank\" href=\"http://support.sitecake.com/anonymous_requests/new\">šta se dogodilo</a>. Molimo Vas da priložite i donji izvištaj. Za nastavak rada dovoljno je da <a href=javascript:location.reload()\">osvežite</a> stranicu.")

@@ -4,7 +4,7 @@ package com.sitecake.contentmanager.client.resources;
 
 public interface MessagesPtBr extends com.google.gwt.i18n.client.Messages, Messages {
 
-	@DefaultMessage("Ops! O SiteCake teve um problema!")
+	@DefaultMessage("Ops! O CMS teve um problema!")
 	String errorMessage1();
 	
 	@DefaultMessage("Ajude-nos a corrigir este problema nos dizendo <a target=\"_blank\" href=\"http://suporte.sitecake.com.br/solicitacoes_anonimas/nova\">o que aconteceu</a>. Por favor inclua o relatório abaixo. Para continuar editando apenas <a href=\"javascript:location.reload()\">atualize</a> a página.")
@@ -49,7 +49,7 @@ public interface MessagesPtBr extends com.google.gwt.i18n.client.Messages, Messa
 	@DefaultMessage("Carregando:")
 	String uploadingFiles();
 	
-	@DefaultMessage("Para o editor SiteCake funcionar no Internet Explorer você instalar o plugin Google Chrome Frame.")
+	@DefaultMessage("Para o editor CMS funcionar no Internet Explorer você instalar o plugin Google Chrome Frame.")
 	String cfMissingMessage();
 	
 	@DefaultMessage("Estilo padrão")
@@ -97,7 +97,7 @@ public interface MessagesPtBr extends com.google.gwt.i18n.client.Messages, Messa
 	@DefaultMessage("Todas as ultimas tentativas de salvar as modificações de conteúdo falharam.")
 	String giveUpContentSaving();
 	
-	@DefaultMessage("Uma nova versão do SiteCake <a href='http://sitecake.com.br/download' target='_blank'>está disponível</a> ({0}).")
+	@DefaultMessage("Uma nova versão do CMS <a href='http://sitecake.com.br/download' target='_blank'>está disponível</a> ({0}).")
 	String versionUpdateMessage(String version);
 	
 	@DefaultMessage("Este parâmetro de configuração esta incorreto: <strong>{0} {1}</strong>.")

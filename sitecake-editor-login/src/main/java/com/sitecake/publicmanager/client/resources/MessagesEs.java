@@ -3,7 +3,7 @@ package com.sitecake.publicmanager.client.resources;
 
 public interface MessagesEs extends Messages, com.google.gwt.i18n.client.Messages {
 	
-	@DefaultMessage("Ups! SiteCake ha encontrado un problema!")
+	@DefaultMessage("Ups! CMS ha encontrado un problema!")
 	String errorMessage1();
 	
 	@DefaultMessage("Ayúdanos a resolverlo y <a target=\"_blank\"href=\"http://support.sitecake.com/anonymous_requests/new\">cuentanos que ha pasado </a>. Por favor, adjunta el informe de abajo. Para seguir editando <a href=javascript:location.reload()\">recargue</a> la página.")
