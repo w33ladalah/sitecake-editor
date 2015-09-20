@@ -3,6 +3,7 @@ package com.sitecake.contentmanager.client.upload;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.sitecake.commons.client.util.MimeBase64;
 import com.sitecake.commons.client.util.MimeType;
 import com.sitecake.contentmanager.client.dom.File;
 
@@ -47,7 +48,7 @@ public class UploadObject {
 
 	public void setFileName(String fileName) {
 		this.fileName = fileName;
-		headers.put("X-FILENAME", fileName);
+		headers.put("X-FILENAME", MimeBase64.encode(fileName));
 	}
 
 	public String getMimeType() {
@@ -92,7 +93,7 @@ public class UploadObject {
 
 		status = Status.INITALIZED;
 		fileName = file.name();
-		headers.put("X-FILENAME", fileName);
+		headers.put("X-FILENAME", MimeBase64.encode(fileName));
 		
 		mimeType = file.mediaType();
 		if ( mimeType == null || "".equals(mimeType) ) {
