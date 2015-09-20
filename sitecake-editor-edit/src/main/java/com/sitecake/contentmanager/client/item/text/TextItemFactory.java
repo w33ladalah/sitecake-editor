@@ -9,7 +9,7 @@ import com.sitecake.contentmanager.client.item.ContentItemFactory;
 
 public class TextItemFactory implements ContentItemFactory {
 	
-	private static final String TAG_NAME_PATTERN = "(p)|(h[1-6]{1})";
+	private static final String TAG_NAME_PATTERN = "^(?:p|h[1-6])$";
 	
 	@Inject
 	public TextItemFactory() {
@@ -18,7 +18,7 @@ public class TextItemFactory implements ContentItemFactory {
 	@Override
 	public boolean isFor(Element element) {
 		String tagName = element.getTagName().toLowerCase();
-		return JavaScriptRegExp.test(TAG_NAME_PATTERN, tagName) ? true : false; 
+		return JavaScriptRegExp.test(TAG_NAME_PATTERN, tagName); 
 	}
 
 	@Override
