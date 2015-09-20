@@ -6,6 +6,7 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Widget;
+import com.sitecake.commons.client.config.Globals;
 
 public class ErrorMessageOverlay extends Widget {
 
@@ -30,7 +31,14 @@ public class ErrorMessageOverlay extends Widget {
 		
 		this.firstRow.setInnerHTML(firstRow);
 		this.secondRow.setInnerHTML(secondRow);
+		errorDump = "Sitecake version: " + Globals.get().getServerVersionId() + 
+				"; PHP version: " + Globals.get().getPhpVersion() + 
+				"; User Agent: " + getUserAgent() + "; \n\r" + errorDump;
 		this.errorDump.setInnerHTML(errorDump);
 	}
+	
+	private native String getUserAgent()/*-{
+		return $wnd.navigator.userAgent;
+	}-*/;
 
 }

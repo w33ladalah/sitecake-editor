@@ -127,9 +127,10 @@ public class Module implements EntryPoint {
 		});
 		
 		// load all services (also remote-dependent ones)
+		injector.getConfigRegistry();
 		injector.getSessionManager();
 		injector.getUpdateManager();
-
+		
 		barrier.release();
 	}
 	

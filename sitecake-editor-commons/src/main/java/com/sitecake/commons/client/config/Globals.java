@@ -41,4 +41,8 @@ public class Globals extends JavaScriptObject {
 	public final native String getServerVersionId()/*-{
 		return ( this.serverVersionId ) ? this.serverVersionId : "<unknown>";
 	}-*/;
+	
+	public final native String getPhpVersion()/*-{
+		return ( this.phpVersion ) ? this.phpVersion : "<unknown>";
+	}-*/;	
 }
