@@ -61,13 +61,13 @@ public class Module implements EntryPoint {
 			}
 		});
 
+		messages = GinInjector.instance.getLocaleProxy().messages();
 		injector.getConfigRegistry();
 
 		barrier.release();		
 	}
 
 	private void onModuleLoad3() {
-		messages = GinInjector.instance.getLocaleProxy().messages();
 		injector.getLoginManager();
 	}
 	
