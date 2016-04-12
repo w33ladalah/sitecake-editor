@@ -448,10 +448,10 @@ public class ImageItem extends ContentItem implements LinkableItem {
 	public String getHtml() {
 		double cntWidth = DomUtil.getElementInnerWidth(container.getElement());
 		double widthRel = transImageObject.getWidth();
-		String width = (widthRel > 99.5) ? "100%" : (formatted(transImageObject.getWidthPx(cntWidth)) + "px");
+		String width = (widthRel > 99.5) ? "100%" : (formatted(widthRel) + "%");
 
 		String html = "<img alt=\"" + description + "\" " +
-				"style=\"width:" + width + ";max-width:100%;\" " +
+				("style=\"width:" + width + ";\" ") +
 				(!"".equals(style) ? "class=\"" + style + "\" ": "") + 
 				"src=\"" + transImageObject.getSrc(cntWidth) + "\" " +
 				"srcset=\"" + transImageObject.getSrcset() + "\"/>";
