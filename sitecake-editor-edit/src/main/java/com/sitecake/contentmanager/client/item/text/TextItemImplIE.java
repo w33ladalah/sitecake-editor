@@ -46,6 +46,6 @@ public class TextItemImplIE extends TextItem {
 	}-*/;
 	
 	protected String onPaste(String text) {
-		return processPastedText(text);
+		return processPastedText(text, true);
 	}	
 }

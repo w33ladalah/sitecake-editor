@@ -172,7 +172,7 @@ public class TextItem extends ContentItem implements EditableTextItem {
 	
 	TextItem(Element element) {
 		super();
-		init(element);
+		init(element, true);
 	}
 	
 	TextItem(String htmlText, Type type, String style) {
@@ -196,11 +196,15 @@ public class TextItem extends ContentItem implements EditableTextItem {
 		if ( style != null && !style.equals("") ) {
 			element.addClassName(style);
 		}
-		init(element);
+		init(element, false);
 	}
 	
 	void init(Element element) {
-		htmlText = processPastedText(element.getInnerHTML());
+		init(element, true);
+	}
+	
+	void init(Element element, boolean fromOrigElement) {
+		htmlText = processPastedText(element.getInnerHTML(), !fromOrigElement);
 		type = extractType(element);
 		style = element.getClassName(); 
 		element.setInnerHTML(htmlText);
@@ -348,7 +352,7 @@ public class TextItem extends ContentItem implements EditableTextItem {
 	}
 	
 	// TODO: use external paste processor and use it only upon a real paste event
-	protected String processPastedText(String rawText) {
+	protected String processPastedText(String rawText, boolean convertNL) {
 		String output = rawText;
 		
 		boolean msoContent = false;
@@ -378,7 +382,7 @@ public class TextItem extends ContentItem implements EditableTextItem {
 		// strip style
 		output = JavaScriptRegExp.replace(output, " style=\"([^\"]+)\"", "gi", "");
 
-		if ( !msoContent ) {
+		if ( !msoContent && convertNL) {
 			// replace crlf with breaks
 			output = JavaScriptRegExp.replace(output, "\r?\n", "g", "<br/>");
 		}

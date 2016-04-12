@@ -127,7 +127,7 @@ public class TextItemImplStandard extends TextItem {
 
 		// purify the pasted text to remove all unsupported styling
 		// and tags
-		html = processPastedText(html);
+		html = processPastedText(html, true);
 		
 		// return the focus on the edited element
 		getElement().focus();
