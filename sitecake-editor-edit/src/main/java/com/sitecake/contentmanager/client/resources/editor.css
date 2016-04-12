@@ -3,15 +3,6 @@
 @def CONTEXT_MENU_BUTTONS 1000000015;
 @def Z_INDEX_ERROR_NOTIFICATION_DISPLAY 2000090000;
 
-html {
-	height: 100% !important;
-}
-
-body {
-	height: auto !important;
-	min-height: 100%;
-}
-
 
 @sprite .context-menu-horizontal-border {
 	gwt-image: 'blueBorderHorizontalBackground';
