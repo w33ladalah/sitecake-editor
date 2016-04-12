@@ -31,6 +31,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import com.sitecake.commons.client.config.ConfigRegistry;
+import com.sitecake.commons.client.util.DomUtil;
 import com.sitecake.contentmanager.client.container.ContentContainer;
 import com.sitecake.contentmanager.client.container.ContentContainerFactory;
 import com.sitecake.contentmanager.client.content.ContentManager;
@@ -788,12 +789,18 @@ public class PageEditor implements DeleteHandler, EditItemHandler, OverItemHandl
 		}
 		
 		// ensure that the selection target element is not a clickable element (e.g. navigation anchor)
-		// for now, skip only <a> tags
+		// for now, skip only <a> tags (and all tags within <a> tag).
 		// TODO: document a special market (css class) for navigation elements that could be used in
 		// HTML templates and that will prevet lasso selection to start
 		EventTarget target = context.getStartTargetElement();
 		if ( Element.is(target) && "a".equals(Element.as(target).getTagName().toLowerCase()) ) {
 			throw new VetoSelectException();
+		}
+		List<Node> parents = DomUtil.getParents(Node.as(target));
+		for (Node parent : parents) {
+			if (Element.is(parent) && "a".equals(Element.as(parent).getTagName().toLowerCase()) ) {
+				throw new VetoSelectException();
+			}
 		}
 		
 		// ensure that the selection target element is not a sitecake toolbox widget
