@@ -1,8 +1,13 @@
 package com.sitecake.commons.client.util;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.gwt.core.client.JavaScriptException;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.Style.Display;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.sitecake.commons.client.util.dom.CSSStyleDeclaration;
 
 
@@ -121,4 +126,38 @@ public class DomUtil {
 		el = null;
 		return txt;	
 	}-*/;
+	
+	/**
+	 * Returns a list of parent nodes for the given node up to
+	 * (but not included) the given <code>body</code> tag. The list 
+	 * starts with the inner-most parent.
+	 * 
+	 * @param node a node which parents will be returned
+	 * @return a list of parent nodes
+	 */	
+	public static List<Node> getParents(Node node) {
+		return getParents(node, RootPanel.getBodyElement());
+	}
+	
+	/**
+	 * Returns a list of parent nodes for the given node up to
+	 * (but not included) the given <code>topLimit</code> node.
+	 * The list starts with the inner-most parent.
+	 * 
+	 * @param node a node which parents will be returned
+	 * @param topLimit a node that acts as the parent list terminator
+	 * @return a list of parent nodes
+	 */
+	public static List<Node> getParents(Node node, Node topLimit) {
+		List<Node> parents = new ArrayList<Node>();
+		
+		Node parent = node.getParentNode();
+		while ( parent != null && !parent.equals(topLimit) ) {
+			parents.add(parent);
+			parent = parent.getParentNode();
+		}
+		
+		return parents;
+	}
+	
 }
