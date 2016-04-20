@@ -835,7 +835,7 @@ public class Range {
 						innerRange.removeMarkup(markup, rangeTreeNode.node.getParentNode());
 					}
 				}
-			} else {
+			} else if (!Type.COLLAPSED.equals(rangeTreeNode.type)) {
 				// TODO check whether the object may be replaced by the given markup
 				// recurse into the children (if any), but not if nesting is not
 				// allowed and the object is of the markup to be added
