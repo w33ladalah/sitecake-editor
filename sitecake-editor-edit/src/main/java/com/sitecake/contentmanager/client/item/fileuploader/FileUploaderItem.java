@@ -468,8 +468,8 @@ public abstract class FileUploaderItem extends ContentItem {
 				
 				if ( uploadObject.getHeader("X-IMAGE") != null ) {
 
-					final ImageObject image = ImageObject.create(uploadObject.getResponse());
 					final double cntWidth = DomUtil.getElementInnerWidth(container.getElement());
+					final ImageObject image = ImageObject.create(uploadObject.getResponse(), cntWidth);
 					
 					ContentItemCreator imageItemCreator = new ContentItemCreator() {
 						

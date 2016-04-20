@@ -119,6 +119,10 @@ public class ImageObject {
 	}
 	
 	public static ImageObject create(JSObject obj) {
+		return create(obj, 0);
+	}
+	
+	public static ImageObject create(JSObject obj, double refWidth) {
 		ImageObject img = new ImageObject();
 		
 		img.items = new ArrayList<ImageObject.SrcItem>();
@@ -129,7 +133,12 @@ public class ImageObject {
 					items.get(i).getNumberProperty("height"), 
 					items.get(i).getProperty("url")));
 		}
-		img.width = 100.0;
+		if (refWidth > 0) {
+			img.width = img.items.get(0).width * 100.0 / refWidth;
+			img.width = (img.width > 100.0) ? 100.0 : img.width;
+		} else {
+			img.width = 100.0;
+		}
 		img.ratio = obj.getNumberProperty("ratio");
 		return img;
 	}
