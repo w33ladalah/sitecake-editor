@@ -536,9 +536,9 @@ public class VideoItem extends ContentItem {
 			embeddedVideo.ratio = 1.68;
 		}
 		
-		embeddedVideo.publicCode = "<iframe height=\"###\" frameborder=\"0\" width=\"###\" allowfullscreen=\"\" src=\"http://www.youtube.com/embed/" + videoId + 
+		embeddedVideo.publicCode = "<iframe height=\"###\" frameborder=\"0\" width=\"###\" allowfullscreen=\"\" src=\"https://www.youtube.com/embed/" + videoId + 
 			"?wmode=transparent&" + playHD + "\"></iframe>";
-		embeddedVideo.editCode = "<iframe height=\"###\" frameborder=\"0\" width=\"###\" allowfullscreen=\"\" src=\"http://www.youtube.com/embed/" + videoId + 
+		embeddedVideo.editCode = "<iframe height=\"###\" frameborder=\"0\" width=\"###\" allowfullscreen=\"\" src=\"https://www.youtube.com/embed/" + videoId + 
 			"?wmode=transparent&" + playHD + "\"></iframe>";
 
 		return embeddedVideo;
