@@ -33,6 +33,7 @@ import com.sitecake.contentmanager.client.event.DeleteEvent;
 import com.sitecake.contentmanager.client.event.EditItemEvent;
 import com.sitecake.contentmanager.client.event.SelectEvent;
 import com.sitecake.contentmanager.client.item.ContentItem;
+import com.sitecake.contentmanager.client.item.fileuploader.FileUploaderItem;
 import com.sitecake.contentmanager.client.resources.EditorClientBundle;
 
 public class ContextMenu extends Widget {
@@ -188,6 +189,12 @@ public class ContextMenu extends Widget {
 		setTargetStyle(item);
 		Style contextMenuStyle = getElement().getStyle();
 
+		if (item instanceof FileUploaderItem) {
+			contextMenuStyle.clearZIndex();
+		} else {
+			contextMenuStyle.setZIndex(2000000000);
+		}
+		
 		if ( forced ) {
 			contextMenuStyle.setOpacity(100);
 			contextMenuStyle.setDisplay(Style.Display.BLOCK);

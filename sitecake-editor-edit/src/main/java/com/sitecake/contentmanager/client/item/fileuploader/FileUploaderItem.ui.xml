@@ -20,6 +20,7 @@
 		
 		.select-container {
 			position: absolute;
+			z-index: 2000000099;
 			top: 0;
 			left: 0;
 			right: 0;
@@ -35,7 +36,7 @@
 			height: 1000px;
 			opacity: 0;
 			filter: literal("alpha(opacity=0)");
-			z-index: 11000000;
+			z-index: 2000000100;
 			cursor: pointer;
 		}
 		

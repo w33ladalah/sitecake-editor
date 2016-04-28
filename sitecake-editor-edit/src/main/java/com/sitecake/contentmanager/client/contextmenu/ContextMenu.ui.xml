@@ -7,7 +7,7 @@
 	<ui:style>
 		.container {
 			position: absolute;
-			z-index:2000000000;
+			/*z-index:2000000000;*/
 			width:400px;
 			height:400px;
 			top: 530px;
