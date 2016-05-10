@@ -1,5 +1,7 @@
 package com.sitecake.contentmanager.client.session;
 
+import java.util.Date;
+
 import com.google.gwt.dom.client.Style.Cursor;
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestBuilder;
@@ -127,12 +129,12 @@ public class SessionManagerImpl implements SessionManager {
 	private void doLogout() {
 		RootPanel.getBodyElement().getStyle().setCursor(Cursor.WAIT);
 		String path = Location.getPath();
-		path = path.replaceAll("sitecake\\.php", "");
+		path = path.replaceAll("([^\\/]+\\.php", "");
 		String page = Location.getParameter("page");
 		if (page == null) {
 			page = "";
 		}
-		Location.replace(path + page);
+		Location.replace(path + page + "?refresh=" + (new Date().getTime()));
 	}
 	
 	private void errorHandler(String errorMessage) {
