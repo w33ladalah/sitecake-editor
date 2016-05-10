@@ -1,5 +1,6 @@
 package com.sitecake.commons.client.config;
 
+import java.util.Date;
 import java.util.HashMap;
 
 import com.google.gwt.http.client.Request;
@@ -26,6 +27,8 @@ public class ServerConfigRegistry extends AbstractConfigRegistry {
 		if (configUrl == null || "".equals(configUrl)) {
 			throw new IllegalArgumentException("sitecakeGlobals.configUrl not set");
 		}
+		
+		configUrl += (configUrl.contains("?") ? "&" : "?") + "cacherefresh=" + (new Date().getTime());
 		
 		RequestBuilder rb = new RequestBuilder(RequestBuilder.GET, configUrl);
 		
