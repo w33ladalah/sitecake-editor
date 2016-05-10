@@ -2,9 +2,9 @@ package com.sitecake.contentmanager.client.update;
 
 import java.util.Date;
 
+import com.google.gwt.http.client.RequestBuilder;
+import com.google.gwt.http.client.RequestException;
 import com.google.gwt.http.client.URL;
-import com.google.gwt.jsonp.client.JsonpRequestBuilder;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.sitecake.commons.client.config.Globals;
 import com.sitecake.commons.client.util.MimeBase64;
@@ -73,24 +73,11 @@ public class BasicUpdateManagerImpl implements UpdateManager {
 		
 		urlBuilder.setParameter("data", URL.encodeQueryString(data));
 		
-		JsonpRequestBuilder requestBuilder = new JsonpRequestBuilder();
+		RequestBuilder rb = new RequestBuilder(RequestBuilder.GET, urlBuilder.buildString());
 		try {
-			requestBuilder.requestObject( urlBuilder.buildString(), new AsyncCallback<UpdateServiceResponse>() {
-	
-				@Override
-				public void onFailure(Throwable caught) {
-					errorHandler(caught.getMessage());
-				}
-	
-				@Override
-				public void onSuccess(UpdateServiceResponse response) {
-					successHandler(response);
-				}
-				
-			});
-		
-		} catch (Throwable exception) {
-			errorHandler(exception.getMessage());
+			rb.send();
+		} catch (RequestException e) {
+			// silently skip
 		}		
 	}
 	
@@ -103,9 +90,10 @@ public class BasicUpdateManagerImpl implements UpdateManager {
 		// remember the time of the last update check
 		long currentTime = new Date().getTime();
 		propertyManager.setProperty(LAST_UPDATE_CHECK, String.valueOf(currentTime), PropertyScope.APPLICATION);
-		
+		/*
 		if ( response.getUpdate() ) {
 			eventBus.fireEventDeferred(new ErrorNotificationEvent(Level.WARNING, messages.versionUpdateMessage(response.getUpdateVersion())));
 		}
+		*/
 	}
 }
