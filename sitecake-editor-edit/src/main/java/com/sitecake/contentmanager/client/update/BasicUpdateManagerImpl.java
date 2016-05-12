@@ -2,8 +2,11 @@ package com.sitecake.contentmanager.client.update;
 
 import java.util.Date;
 
+import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestBuilder;
+import com.google.gwt.http.client.RequestCallback;
 import com.google.gwt.http.client.RequestException;
+import com.google.gwt.http.client.Response;
 import com.google.gwt.http.client.URL;
 import com.google.inject.Inject;
 import com.sitecake.commons.client.config.Globals;
@@ -74,6 +77,13 @@ public class BasicUpdateManagerImpl implements UpdateManager {
 		urlBuilder.setParameter("data", URL.encodeQueryString(data));
 		
 		RequestBuilder rb = new RequestBuilder(RequestBuilder.GET, urlBuilder.buildString());
+		rb.setCallback(new RequestCallback() {
+			@Override
+			public void onResponseReceived(Request request, Response response) {}
+			
+			@Override
+			public void onError(Request request, Throwable exception) {}
+		});
 		try {
 			rb.send();
 		} catch (RequestException e) {
